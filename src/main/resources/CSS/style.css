@@ -1,0 +1,296 @@
+/* =======================================
+   ESTRUCTURA GENERAL Y SCROLL
+======================================= */
+.sidebar {
+    -fx-background-color: #0F172A;
+}
+
+.main-content {
+    -fx-background-color: #F8FAFC;
+}
+
+.scroll-pane-custom {
+    -fx-background-color: transparent;
+    -fx-background: #F8FAFC; /* Quita el gris feo por defecto de JavaFX */
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+.scroll-pane-custom > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* =======================================
+   MENÚ LATERAL (SIDEBAR)
+======================================= */
+.logo-text {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.logo-subtext {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 13px;
+    -fx-padding: 5 0 20 0;
+}
+
+.menu-item {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 16px;
+    -fx-padding: 12 15 12 15;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.menu-item:hover {
+    -fx-background-color: #1E293B;
+    -fx-text-fill: white;
+}
+
+.menu-item-active {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(to right, #6366F1, #8B5CF6); /* Degradado del diseño */
+    -fx-padding: 12 15 12 15;
+    -fx-background-radius: 8;
+}
+
+/* Perfil y Logout */
+.user-profile-box {
+    -fx-background-color: #1E293B;
+    -fx-padding: 15;
+    -fx-background-radius: 12;
+}
+
+.avatar-circle {
+    -fx-background-color: #F59E0B;
+    -fx-text-fill: #0F172A;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-padding: 10;
+    -fx-background-radius: 50%;
+}
+
+.user-name {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.user-role {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 12px;
+}
+
+.logout-btn {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 0 0 0 10;
+}
+.logout-btn:hover {
+    -fx-text-fill: white;
+}
+
+/* =======================================
+   CONTENIDO CENTRAL
+======================================= */
+.header-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0F172A;
+}
+
+.header-subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: #64748B;
+}
+
+/* =======================================
+   TARJETAS SUPERIORES (KPI)
+======================================= */
+.kpi-card {
+    -fx-background-radius: 12;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0, 0, 4);
+    -fx-cursor: hand;
+}
+.kpi-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 8);
+    -fx-translate-y: -3px;
+}
+
+.kpi-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: #475569;
+    -fx-font-weight: bold;
+}
+
+.kpi-number {
+    -fx-font-size: 38px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #0F172A;
+}
+
+.kpi-footer {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+}
+
+/* Iconos de las tarjetas */
+.kpi-icon {
+    -fx-font-size: 24px;
+    -fx-text-fill: white;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 12;
+    -fx-alignment: center;
+    -fx-max-height: 50px;
+}
+
+.card-orange { -fx-background-color: #FFF7ED; }
+.icon-orange { -fx-background-color: #EA580C; }
+
+.card-blue { -fx-background-color: #EFF6FF; }
+.icon-blue { -fx-background-color: #3B82F6; }
+
+.card-green { -fx-background-color: #F0FDF4; }
+.icon-green { -fx-background-color: #10B981; }
+
+.card-purple { -fx-background-color: #FAF5FF; }
+.icon-purple { -fx-background-color: #D946EF; }
+
+
+/* =======================================
+   GRÁFICOS Y PANELES BLANCOS
+======================================= */
+.chart-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0, 0, 4);
+}
+
+.chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0F172A;
+}
+
+.link-text {
+    -fx-text-fill: #3B82F6;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+/* =======================================
+   LISTA DE ACTIVIDAD RECIENTE
+======================================= */
+.list-item {
+    -fx-padding: 10 0 10 0;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-style: solid;
+}
+
+.list-icon {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+    -fx-padding: 8 10 8 10;
+    -fx-background-radius: 10;
+}
+
+.list-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0F172A;
+}
+
+.list-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+}
+
+.list-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #94A3B8;
+}
+
+/* Píldoras de estado */
+.status-pill {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 20;
+}
+.status-progreso {
+    -fx-background-color: #DBEAFE;
+    -fx-text-fill: #1D4ED8;
+}
+.status-pendiente {
+    -fx-background-color: #FFEDD5;
+    -fx-text-fill: #C2410C;
+}
+.status-completado {
+    -fx-background-color: #DCFCE7;
+    -fx-text-fill: #15803D;
+}
+
+/* =======================================
+   CAJA CRECIMIENTO (TENDENCIA MENSUAL)
+======================================= */
+.growth-box {
+    -fx-background-color: #FAF5FF;
+    -fx-border-color: #E9D5FF;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
+}
+.growth-icon {
+    -fx-font-size: 20px;
+    -fx-text-fill: #9333EA;
+}
+.growth-title {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6B7280;
+}
+.growth-value {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #9333EA;
+}
+
+/* =======================================
+   LIMPIEZA DE GRÁFICOS JAVAFX
+======================================= */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: #E2E8F0;
+    -fx-stroke-dash-array: 5 5;
+}
+
+/* =======================================
+   COLORES DE LOS GRÁFICOS JAVAFX
+======================================= */
+/* Gráfico de barras: Serie 1 (Completados - Verde) */
+.default-color0.chart-bar { -fx-bar-fill: #10B981; }
+/* Gráfico de barras: Serie 2 (Nuevos - Azul) */
+.default-color1.chart-bar { -fx-bar-fill: #3B82F6; }
+
+/* Gráfico de líneas (Morado) */
+.default-color0.chart-series-line { -fx-stroke: #8B5CF6; -fx-stroke-width: 3px; }
+.default-color0.chart-line-symbol { -fx-background-color: #8B5CF6, white; }
+
+/* Gráfico Circular (Donut simulado) */
+.default-color0.chart-pie { -fx-pie-color: #3B82F6; } /* Fontanería Azul */
+.default-color1.chart-pie { -fx-pie-color: #F59E0B; } /* Electricidad Naranja */
+.default-color2.chart-pie { -fx-pie-color: #A855F7; } /* Ascensores Morado */
+
+/* Quitar los bordes feos de las leyendas */
+.chart-legend { -fx-background-color: transparent; }

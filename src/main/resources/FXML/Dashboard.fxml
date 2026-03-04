@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="900.0" prefWidth="1400.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dmontoro.fixitapi.controllers.controllersfxml.DashboardController">
+
+    <left>
+        <VBox prefWidth="260.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Label styleClass="logo-text" text="🔧 FixIt" />
+                <Label styleClass="logo-subtext" text="Panel de Control" />
+
+                <VBox spacing="10.0" styleClass="menu-box">
+                    <children>
+                        <Label styleClass="menu-item-active" text="⊞ Dashboard" />
+                        <Label styleClass="menu-item" text="📄 Gestión de Avisos" />
+                        <Label styleClass="menu-item" text="📦 Inventario" />
+                        <Label styleClass="menu-item" text="👥 Técnicos" />
+                        <Label styleClass="menu-item" text="🏢 Clientes" />
+                    </children>
+                    <VBox.margin>
+                        <Insets top="30.0" />
+                    </VBox.margin>
+                </VBox>
+
+                <Region VBox.vgrow="ALWAYS" />
+
+                <VBox spacing="15.0">
+                    <children>
+                        <HBox styleClass="user-profile-box" spacing="15.0" alignment="CENTER_LEFT">
+                            <children>
+                                <Label styleClass="avatar-circle" text="JL" />
+                                <VBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label styleClass="user-name" text="Jefe Luigi" />
+                                        <Label styleClass="user-role" text="Administrador" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                        <Label styleClass="logout-btn" text="↳ Cerrar Sesión" />
+                    </children>
+                </VBox>
+            </children>
+            <padding>
+                <Insets bottom="30.0" left="25.0" right="25.0" top="30.0" />
+            </padding>
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane-custom" BorderPane.alignment="CENTER">
+            <content>
+                <VBox styleClass="main-content" spacing="25.0">
+                    <children>
+
+                        <VBox spacing="5.0">
+                            <children>
+                                <Label styleClass="header-title" text="Dashboard" />
+                                <Label styleClass="header-subtitle" text="Resumen general del sistema" />
+                            </children>
+                        </VBox>
+
+                        <HBox spacing="20.0">
+                            <children>
+                                <HBox styleClass="kpi-card, card-orange" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="kpi-title" text="Avisos Pendientes" />
+                                                <Label fx:id="lblPendientes" styleClass="kpi-number, text-orange" text="0" />
+                                                <Region VBox.vgrow="ALWAYS" />
+                                                <Label styleClass="kpi-footer" text="Actualizado ahora" />
+                                            </children>
+                                        </VBox>
+                                        <Label styleClass="kpi-icon, icon-orange" text="🕒" />
+                                    </children>
+                                </HBox>
+
+                                <HBox styleClass="kpi-card, card-blue" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="kpi-title" text="En Progreso" />
+                                                <Label fx:id="lblEnProgreso" styleClass="kpi-number, text-blue" text="0" />
+                                                <Region VBox.vgrow="ALWAYS" />
+                                                <Label styleClass="kpi-footer" text="Técnicos activos" />
+                                            </children>
+                                        </VBox>
+                                        <Label styleClass="kpi-icon, icon-blue" text="📈" />
+                                    </children>
+                                </HBox>
+
+                                <HBox styleClass="kpi-card, card-green" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="kpi-title" text="Completados" />
+                                                <Label fx:id="lblCompletados" styleClass="kpi-number, text-green" text="0" />
+                                                <Region VBox.vgrow="ALWAYS" />
+                                                <Label styleClass="kpi-footer" text="Trabajos cerrados" />
+                                            </children>
+                                        </VBox>
+                                        <Label styleClass="kpi-icon, icon-green" text="📋" />
+                                    </children>
+                                </HBox>
+
+                                <HBox styleClass="kpi-card, card-purple" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label styleClass="kpi-title" text="Total General" />
+                                                <Label fx:id="lblUrgentes" styleClass="kpi-number, text-purple" text="0" />
+                                                <Region VBox.vgrow="ALWAYS" />
+                                                <Label styleClass="kpi-footer" text="Avisos históricos" />
+                                            </children>
+                                        </VBox>
+                                        <Label styleClass="kpi-icon, icon-purple" text="❗" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="20.0">
+                            <children>
+                                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS" prefHeight="350.0">
+                                    <children>
+                                        <Label styleClass="chart-title" text="Actividad Semanal" />
+                                        <BarChart fx:id="barChartActividad" VBox.vgrow="ALWAYS" legendSide="BOTTOM">
+                                            <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
+                                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                                        </BarChart>
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="chart-card" prefWidth="400.0" prefHeight="350.0">
+                                    <children>
+                                        <Label styleClass="chart-title" text="Por Categoría" />
+                                        <PieChart fx:id="pieChartCategoria" VBox.vgrow="ALWAYS" legendSide="BOTTOM" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="20.0">
+                            <children>
+                                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS" spacing="15.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT">
+                                            <Label styleClass="chart-title" text="Actividad Reciente" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                                            <Label styleClass="link-text" text="Ver todos →" />
+                                        </HBox>
+
+                                        <HBox styleClass="list-item" alignment="CENTER_LEFT" spacing="15.0">
+                                            <Label styleClass="list-icon, icon-blue" text="💧" />
+                                            <VBox HBox.hgrow="ALWAYS">
+                                                <Label styleClass="list-title" text="Restaurante El Buen Sabor" />
+                                                <Label styleClass="list-subtitle" text="Técnico: Mario Bros" />
+                                            </VBox>
+                                            <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                                <Label styleClass="status-pill, status-progreso" text="EN PROGRESO" />
+                                                <Label styleClass="list-time" text="Hace 15 min" />
+                                            </VBox>
+                                        </HBox>
+
+                                        <HBox styleClass="list-item" alignment="CENTER_LEFT" spacing="15.0">
+                                            <Label styleClass="list-icon, icon-orange" text="⚡" />
+                                            <VBox HBox.hgrow="ALWAYS">
+                                                <Label styleClass="list-title" text="Oficinas TechCorp" />
+                                                <Label styleClass="list-subtitle" text="Técnico: Luigi Verde" />
+                                            </VBox>
+                                            <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                                <Label styleClass="status-pill, status-pendiente" text="PENDIENTE" />
+                                                <Label styleClass="list-time" text="Hace 1 hora" />
+                                            </VBox>
+                                        </HBox>
+
+                                        <HBox styleClass="list-item" alignment="CENTER_LEFT" spacing="15.0">
+                                            <Label styleClass="list-icon, icon-purple" text="⚙️" />
+                                            <VBox HBox.hgrow="ALWAYS">
+                                                <Label styleClass="list-title" text="Hotel Vista Hermosa" />
+                                                <Label styleClass="list-subtitle" text="Técnico: Peach Princess" />
+                                            </VBox>
+                                            <VBox alignment="CENTER_RIGHT" spacing="5.0">
+                                                <Label styleClass="status-pill, status-completado" text="COMPLETADO" />
+                                                <Label styleClass="list-time" text="Hace 2 horas" />
+                                            </VBox>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="chart-card" prefWidth="400.0" spacing="10.0">
+                                    <children>
+                                        <Label styleClass="chart-title" text="Tendencia Mensual" />
+                                        <LineChart fx:id="lineChartTendencia" VBox.vgrow="ALWAYS" legendVisible="false" prefHeight="200.0">
+                                            <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
+                                            <yAxis><NumberAxis side="LEFT" /></yAxis>
+                                        </LineChart>
+                                        <HBox styleClass="growth-box" alignment="CENTER_LEFT" spacing="10.0">
+                                            <Label styleClass="growth-icon" text="📈" />
+                                            <VBox>
+                                                <Label styleClass="growth-title" text="Crecimiento" />
+                                                <Label styleClass="growth-value" text="+8.5%" />
+                                            </VBox>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                    </children>
+                    <padding>
+                        <Insets bottom="50.0" left="40.0" right="40.0" top="40.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
