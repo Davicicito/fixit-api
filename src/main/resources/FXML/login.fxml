@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+<HBox prefHeight="800.0" prefWidth="1200.0" styleClass="login-root" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dmontoro.fixitapi.controllers.controllersfxml.LoginController">
+
+    <VBox alignment="CENTER_LEFT" spacing="30.0" styleClass="login-left-side" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets bottom="60.0" left="80.0" right="60.0" top="60.0" />
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <Label fx:id="iconoLlave" styleClass="login-logo-icon" text="🔧" />
+
+            <VBox>
+                <HBox>
+                    <children>
+                        <Label styleClass="login-logo-text-fix" text="Fix" />
+                        <Label styleClass="login-logo-text-it" text="It" />
+                    </children>
+                </HBox>
+                <Label styleClass="login-logo-subtext" text="Gestión de Reparaciones" />
+            </VBox>
+        </HBox>
+        <VBox spacing="10.0">
+            <Label styleClass="login-title-white" text="Panel de Control para" />
+            <Label styleClass="login-title-blue" text="Administradores" />
+            <Label styleClass="login-description" text="Gestiona tu equipo de técnicos, controla el inventario y supervisa todos los avisos de reparación desde un único lugar." wrapText="true" />
+        </VBox>
+
+        <GridPane hgap="20.0" vgap="20.0">
+            <VBox styleClass="login-stat-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../IMAGES/portapapeles.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="lblTotalAvisos" styleClass="stat-number" text="Cargando..." />
+                <Label styleClass="stat-label" text="Gestión de Avisos" />
+            </VBox>
+
+            <VBox styleClass="login-stat-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../IMAGES/obrero.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="lblTotalTecnicos" styleClass="stat-number" text="..." />
+                <Label styleClass="stat-label" text="Técnicos Activos" />
+            </VBox>
+
+            <VBox styleClass="login-stat-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../IMAGES/edificio.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="lblTotalClientes" styleClass="stat-number" text="..." />
+                <Label styleClass="stat-label" text="Clientes" />
+            </VBox>
+
+            <VBox styleClass="login-stat-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <ImageView fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../IMAGES/estrella.png" />
+                    </image>
+                </ImageView>
+                <Label fx:id="lblTasaExito" styleClass="stat-number" text="..." />
+                <Label styleClass="stat-label" text="Tasa de Éxito" />
+            </VBox>
+        </GridPane>
+    </VBox>
+
+    <VBox alignment="CENTER" styleClass="login-right-side" HBox.hgrow="ALWAYS">
+        <VBox styleClass="login-card" spacing="25.0" maxWidth="450.0">
+            <padding>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <ImageView fitHeight="40.0" fitWidth="40.0" preserveRatio="true">
+                    <image>
+                        <Image url="@../IMAGES/escudo.png" />
+                    </image>
+                </ImageView>
+                <VBox>
+                    <Label styleClass="login-form-title" text="Acceso Administrativo" />
+                    <Label styleClass="login-form-subtitle" text="Panel de Control del Jefe" />
+                </VBox>
+            </HBox>
+
+            <Region styleClass="login-divider" />
+
+            <VBox spacing="20.0">
+                <VBox spacing="8.0">
+                    <Label styleClass="login-input-label" text="Correo Electrónico" />
+                    <TextField fx:id="txtEmail" promptText="admin@fixit.com" styleClass="login-input" />
+                </VBox>
+                <VBox spacing="8.0">
+                    <Label styleClass="login-input-label" text="Contraseña" />
+                    <PasswordField fx:id="txtPassword" promptText="🔒  ••••••••" styleClass="login-input" />
+                </VBox>
+            </VBox>
+
+            <HBox alignment="CENTER_LEFT">
+                <CheckBox text="Recordarme" styleClass="login-checkbox" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="¿Olvidaste tu contraseña?" styleClass="login-link" />
+            </HBox>
+
+            <Button text="→ Acceder al Panel" styleClass="login-btn" maxWidth="Infinity" onAction="#iniciarSesion" />
+
+            <VBox alignment="CENTER" spacing="15.0">
+                <Label text="Información de Acceso" styleClass="login-info-label" />
+                <HBox styleClass="login-alert-box" spacing="10.0" alignment="CENTER_LEFT">
+                    <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                        <image>
+                            <Image url="@../IMAGES/escudo.png" />
+                        </image>
+                    </ImageView>
+                    <VBox>
+                        <Label styleClass="alert-title" text="Acceso Restringido" />
+                        <Label styleClass="alert-text" text="Este panel está reservado exclusivamente para administradores y jefes de equipo." wrapText="true" />
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+    </VBox>
+</HBox>

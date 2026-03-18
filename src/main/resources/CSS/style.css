@@ -20,20 +20,52 @@
 }
 
 /* =======================================
-   MENÚ LATERAL (SIDEBAR)
+   MENÚ LATERAL (SIDEBAR) - LOGO
 ======================================= */
-.logo-text {
+.sidebar-logo-icon {
+    -fx-background-color: linear-gradient(to bottom right, #6366F1, #8B5CF6);
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 12;
+}
+
+/* =======================================
+   LOGOS Y TÍTULOS (LOGIN)
+======================================= */
+
+.login-logo-text-fix {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+}
+
+.login-logo-text-it {
+    -fx-text-fill: #F59E0B; /* Amarillo/Ámbar de la marca */
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+}
+.logo-text-fix {
     -fx-text-fill: white;
     -fx-font-size: 28px;
-    -fx-font-weight: bold;
+    -fx-font-weight: 900;
+}
+
+.logo-text-it {
+    -fx-text-fill: #F59E0B; /* Amarillo/Ámbar de la marca */
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
 }
 
 .logo-subtext {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 13px;
-    -fx-padding: 5 0 20 0;
+    -fx-padding: 0;
 }
 
+/* =======================================
+   MENÚ LATERAL (SIDEBAR) - ITEMS
+======================================= */
 .menu-item {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 16px;
@@ -68,7 +100,12 @@
     -fx-text-fill: #0F172A;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
-    -fx-padding: 10;
+    /* El truco para que no se aplaste NUNCA */
+    -fx-min-width: 45px;
+    -fx-min-height: 45px;
+    -fx-pref-width: 45px;
+    -fx-pref-height: 45px;
+    -fx-alignment: center;
     -fx-background-radius: 50%;
 }
 
@@ -294,3 +331,289 @@
 
 /* Quitar los bordes feos de las leyendas */
 .chart-legend { -fx-background-color: transparent; }
+
+/* =======================================
+   NUEVOS ICONOS DE ACTIVIDAD RECIENTE
+======================================= */
+.list-icon-wrapper {
+    -fx-background-radius: 12;
+}
+
+/* Colores dinámicos para los técnicos */
+.bg-blue   { -fx-background-color: #3B82F6; }
+.bg-orange { -fx-background-color: #F59E0B; }
+.bg-purple { -fx-background-color: #D946EF; }
+.bg-green  { -fx-background-color: #10B981; }
+.bg-red    { -fx-background-color: #EF4444; }
+.bg-teal   { -fx-background-color: #14B8A6; }
+.bg-pink   { -fx-background-color: #EC4899; }
+.bg-indigo { -fx-background-color: #6366F1; }
+
+/* =======================================
+   PANTALLA DE LOGIN (ADMIN)
+======================================= */
+.login-root {
+    /* Degradado oscuro elegante para el fondo global */
+    -fx-background-color: linear-gradient(to bottom right, #0F172A, #1E1B4B);
+}
+
+.login-left-side {
+    -fx-max-width: 600px;
+}
+
+.login-right-side {
+    /* Un ligero fondo translúcido a la derecha para dar contraste */
+    -fx-background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Logos y Títulos (Izquierda) */
+.login-logo-icon {
+    -fx-background-color: linear-gradient(to bottom right, #6366F1, #8B5CF6);
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-padding: 15;
+    -fx-background-radius: 12;
+}
+
+.login-logo-text {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: 900;
+}
+
+.login-logo-subtext {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 14px;
+}
+
+.login-title-white {
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.login-title-blue {
+    -fx-text-fill: #60A5FA; /* Azul claro */
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+}
+
+.login-description {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 16px;
+    -fx-padding: 10 0 20 0;
+}
+
+/* Tarjetas de Estadísticas (Izquierda) */
+.login-stat-card {
+    -fx-background-color: rgba(30, 41, 59, 0.6); /* Gris azulado oscuro translúcido */
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.05);
+    -fx-border-radius: 12;
+    -fx-padding: 20;
+    -fx-pref-width: 200px;
+}
+.stat-icon { -fx-font-size: 20px; }
+.stat-number { -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; }
+.stat-label { -fx-text-fill: #94A3B8; -fx-font-size: 13px; }
+
+/* Tarjeta Blanca de Login (Derecha) */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 30, 0, 0, 10);
+}
+
+.login-shield-icon {
+    -fx-text-fill: #EF4444; /* Escudo rojo */
+    -fx-font-size: 30px;
+}
+
+.login-form-title {
+    -fx-text-fill: #0F172A;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+}
+
+.login-form-subtitle {
+    -fx-text-fill: #64748B;
+    -fx-font-size: 13px;
+}
+
+.login-divider {
+    -fx-background-color: linear-gradient(to right, #3B82F6, #EC4899);
+    -fx-pref-height: 3px;
+    -fx-background-radius: 2;
+}
+
+.login-input-label {
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.login-input {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12 15 12 15;
+    -fx-font-size: 14px;
+}
+.login-input:focused {
+    -fx-border-color: #3B82F6;
+    -fx-background-color: white;
+}
+
+.login-checkbox { -fx-text-fill: #475569; }
+.login-link { -fx-text-fill: #3B82F6; -fx-cursor: hand; -fx-font-weight: bold; }
+
+.login-btn {
+    -fx-background-color: linear-gradient(to right, #3B82F6, #EC4899);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.login-btn:hover {
+    -fx-background-color: linear-gradient(to right, #2563EB, #DB2777);
+}
+
+.login-info-label { -fx-text-fill: #94A3B8; -fx-font-size: 12px; }
+
+.login-alert-box {
+    -fx-background-color: #EFF6FF;
+    -fx-border-color: #BFDBFE;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 15;
+}
+.alert-title { -fx-text-fill: #1E3A8A; -fx-font-size: 12px; -fx-font-weight: bold; }
+.alert-text { -fx-text-fill: #3B82F6; -fx-font-size: 11px; }
+
+/* =======================================
+   PANTALLA: GESTIÓN DE AVISOS
+======================================= */
+
+/* Botón principal (Azul brillante) */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #6366F1, #8B5CF6);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(to right, #4F46E5, #7C3AED);
+}
+
+/* Tarjetas KPI de Color Sólido */
+.kpi-solid-card {
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-min-height: 100px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
+}
+.kpi-solid-title {
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+.kpi-solid-number {
+    -fx-font-size: 36px;
+    -fx-font-weight: 900;
+    -fx-text-fill: white;
+}
+
+.bg-solid-blue   { -fx-background-color: linear-gradient(to right, #0EA5E9, #3B82F6); }
+.bg-solid-orange { -fx-background-color: linear-gradient(to right, #F97316, #EF4444); }
+.bg-solid-purple { -fx-background-color: linear-gradient(to right, #8B5CF6, #A855F7); }
+.bg-solid-green  { -fx-background-color: linear-gradient(to right, #10B981, #22C55E); }
+
+/* Barra de Filtros y Búsqueda */
+.filter-bar {
+    -fx-background-color: transparent;
+}
+.search-box {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 0 15 0 15;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+}
+.search-input {
+    -fx-background-color: transparent;
+    -fx-padding: 12 0 12 0;
+    -fx-font-size: 14px;
+}
+.search-input:focused {
+    -fx-background-color: transparent;
+}
+
+/* Botones de Filtro (Tabs) */
+.filter-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #475569;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+.filter-btn-active {
+    -fx-background-color: #0F172A;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+/* =======================================
+   ESTILOS DE LA TABLA (TableView)
+======================================= */
+.custom-table {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 10, 0, 0, 4);
+}
+.custom-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #E2E8F0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.custom-table .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 15 10 15 10;
+}
+.custom-table .column-header .label {
+    -fx-text-fill: #0F172A;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+}
+.custom-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #F1F5F9 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 50px; /* Altura de las filas */
+}
+.custom-table .table-row-cell:hover {
+    -fx-background-color: #F8FAFC;
+}
+.custom-table .table-cell {
+    -fx-text-fill: #475569;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-padding: 0 10 0 10;
+    -fx-border-color: transparent;
+}

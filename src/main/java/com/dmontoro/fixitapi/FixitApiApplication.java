@@ -27,8 +27,7 @@ public class FixitApiApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/Dashboard.fxml"));
-
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
         // El puente mágico: Spring controla los Controladores de JavaFX
         fxmlLoader.setControllerFactory(springContext::getBean);
 
@@ -39,7 +38,7 @@ public class FixitApiApplication extends Application {
         primaryStage.setScene(scene);
 
         // Si en tu diseño prefieres que arranque maximizada como en Uber:
-        // primaryStage.setMaximized(true);
+         primaryStage.setMaximized(true);
 
         primaryStage.show();
     }

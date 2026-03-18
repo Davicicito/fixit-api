@@ -12,19 +12,38 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <BorderPane prefHeight="900.0" prefWidth="1400.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dmontoro.fixitapi.controllers.controllersfxml.DashboardController">
 
     <left>
         <VBox prefWidth="260.0" styleClass="sidebar" BorderPane.alignment="CENTER">
             <children>
-                <Label styleClass="logo-text" text="🔧 FixIt" />
-                <Label styleClass="logo-subtext" text="Panel de Control" />
 
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label styleClass="sidebar-logo-icon" text="🔧" />
+                        <VBox alignment="CENTER_LEFT">
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <Label styleClass="logo-text-fix" text="Fix" />
+                                        <Label styleClass="logo-text-it" text="It" />
+                                    </children>
+                                </HBox>
+                                <Label styleClass="logo-subtext" text="Panel de Control" />
+                            </children>
+                        </VBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="20.0" />
+                    </VBox.margin>
+                </HBox>
                 <VBox spacing="10.0" styleClass="menu-box">
                     <children>
                         <Label styleClass="menu-item-active" text="⊞ Dashboard" />
-                        <Label styleClass="menu-item" text="📄 Gestión de Avisos" />
+                        <Label onMouseClicked="#irAGestionAvisos" styleClass="menu-item" text="📄 Gestión de Avisos" />
                         <Label styleClass="menu-item" text="📦 Inventario" />
                         <Label styleClass="menu-item" text="👥 Técnicos" />
                         <Label styleClass="menu-item" text="🏢 Clientes" />
@@ -40,16 +59,16 @@
                     <children>
                         <HBox styleClass="user-profile-box" spacing="15.0" alignment="CENTER_LEFT">
                             <children>
-                                <Label styleClass="avatar-circle" text="JL" />
+                                <Label fx:id="lblAvatar" styleClass="avatar-circle" text="?" />
                                 <VBox alignment="CENTER_LEFT">
                                     <children>
-                                        <Label styleClass="user-name" text="Jefe Luigi" />
-                                        <Label styleClass="user-role" text="Administrador" />
+                                        <Label fx:id="lblNombreUsuario" styleClass="user-name" text="Cargando..." />
+                                        <Label fx:id="lblRolUsuario" styleClass="user-role" text="..." />
                                     </children>
                                 </VBox>
                             </children>
                         </HBox>
-                        <Label styleClass="logout-btn" text="↳ Cerrar Sesión" />
+                        <Label fx:id="btnCerrarSesion" onMouseClicked="#cerrarSesion" styleClass="logout-btn" text="↳ Cerrar Sesión" />
                     </children>
                 </VBox>
             </children>
@@ -162,41 +181,7 @@
                                             <Label styleClass="link-text" text="Ver todos →" />
                                         </HBox>
 
-                                        <HBox styleClass="list-item" alignment="CENTER_LEFT" spacing="15.0">
-                                            <Label styleClass="list-icon, icon-blue" text="💧" />
-                                            <VBox HBox.hgrow="ALWAYS">
-                                                <Label styleClass="list-title" text="Restaurante El Buen Sabor" />
-                                                <Label styleClass="list-subtitle" text="Técnico: Mario Bros" />
-                                            </VBox>
-                                            <VBox alignment="CENTER_RIGHT" spacing="5.0">
-                                                <Label styleClass="status-pill, status-progreso" text="EN PROGRESO" />
-                                                <Label styleClass="list-time" text="Hace 15 min" />
-                                            </VBox>
-                                        </HBox>
-
-                                        <HBox styleClass="list-item" alignment="CENTER_LEFT" spacing="15.0">
-                                            <Label styleClass="list-icon, icon-orange" text="⚡" />
-                                            <VBox HBox.hgrow="ALWAYS">
-                                                <Label styleClass="list-title" text="Oficinas TechCorp" />
-                                                <Label styleClass="list-subtitle" text="Técnico: Luigi Verde" />
-                                            </VBox>
-                                            <VBox alignment="CENTER_RIGHT" spacing="5.0">
-                                                <Label styleClass="status-pill, status-pendiente" text="PENDIENTE" />
-                                                <Label styleClass="list-time" text="Hace 1 hora" />
-                                            </VBox>
-                                        </HBox>
-
-                                        <HBox styleClass="list-item" alignment="CENTER_LEFT" spacing="15.0">
-                                            <Label styleClass="list-icon, icon-purple" text="⚙️" />
-                                            <VBox HBox.hgrow="ALWAYS">
-                                                <Label styleClass="list-title" text="Hotel Vista Hermosa" />
-                                                <Label styleClass="list-subtitle" text="Técnico: Peach Princess" />
-                                            </VBox>
-                                            <VBox alignment="CENTER_RIGHT" spacing="5.0">
-                                                <Label styleClass="status-pill, status-completado" text="COMPLETADO" />
-                                                <Label styleClass="list-time" text="Hace 2 horas" />
-                                            </VBox>
-                                        </HBox>
+                                        <VBox fx:id="vboxActividadReciente" spacing="0" />
                                     </children>
                                 </VBox>
 
@@ -208,10 +193,10 @@
                                             <yAxis><NumberAxis side="LEFT" /></yAxis>
                                         </LineChart>
                                         <HBox styleClass="growth-box" alignment="CENTER_LEFT" spacing="10.0">
-                                            <Label styleClass="growth-icon" text="📈" />
+                                            <Label fx:id="lblCrecimientoIcon" styleClass="growth-icon" text="📈" />
                                             <VBox>
                                                 <Label styleClass="growth-title" text="Crecimiento" />
-                                                <Label styleClass="growth-value" text="+8.5%" />
+                                                <Label fx:id="lblCrecimientoValor" styleClass="growth-value" text="0.0%" />
                                             </VBox>
                                         </HBox>
                                     </children>
