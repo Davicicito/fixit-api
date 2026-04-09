@@ -17,6 +17,10 @@ public class Aviso {
     private String descripcion;
     private String estado;
 
+    // NUEVO CAMPO AÑADIDO A LA BASE DE DATOS
+    @Column(columnDefinition = "VARCHAR(20) DEFAULT 'MEDIA'")
+    private String prioridad = "MEDIA";
+
     @Column(name = "foto_averia")
     private String fotoAveria;
 
@@ -38,7 +42,6 @@ public class Aviso {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    // Conexión con la tabla intermedia
     @OneToMany(mappedBy = "aviso")
     private List<AvisoMaterial> avisoMateriales;
 }

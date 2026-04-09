@@ -36,14 +36,10 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente clienteDetails) {
-        Optional<Cliente> clienteOptional = clienteService.getClienteById(id);
-        if (clienteOptional.isPresent()) {
-            Cliente cliente = clienteOptional.get();
-            cliente.setNombre(clienteDetails.getNombre());
-            cliente.setDireccion(clienteDetails.getDireccion());
-            cliente.setTelefono(clienteDetails.getTelefono());
-            return ResponseEntity.ok(clienteService.saveCliente(cliente));
-        } else {
+        try {
+            // Delegamos TODA la lógica al Service, como pidió la profesora
+            return ResponseEntity.ok(clienteService.actualizarCliente(id, clienteDetails));
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }

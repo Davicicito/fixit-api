@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/avisos")
-@CrossOrigin // Clave para que tu app móvil y web no tengan bloqueos
+@CrossOrigin
 public class AvisoController {
 
     @Autowired
@@ -41,18 +41,9 @@ public class AvisoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Aviso> updateAviso(@PathVariable Long id, @RequestBody Aviso avisoDetails) {
-        Optional<Aviso> avisoOptional = avisoService.getAvisoById(id);
-        if (avisoOptional.isPresent()) {
-            Aviso aviso = avisoOptional.get();
-            aviso.setDescripcion(avisoDetails.getDescripcion());
-            aviso.setEstado(avisoDetails.getEstado());
-            aviso.setFotoAveria(avisoDetails.getFotoAveria());
-            aviso.setFirmaCliente(avisoDetails.getFirmaCliente());
-            aviso.setTecnico(avisoDetails.getTecnico());
-            aviso.setCliente(avisoDetails.getCliente());
-            aviso.setCategoria(avisoDetails.getCategoria());
-            return ResponseEntity.ok(avisoService.saveAviso(aviso));
-        } else {
+        try {
+            return ResponseEntity.ok(avisoService.actualizarAviso(id, avisoDetails));
+        } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -92,13 +83,15 @@ public class AvisoController {
     // POST http://localhost:8080/avisos/1/materiales
     // Sirve para añadir un material a un aviso concreto indicando su cantidad
     @PostMapping("/{id}/materiales")
-    public ResponseEntity<AvisoMaterial> addMaterialAAviso(@PathVariable Long id, @RequestBody AvisoMaterial avisoMaterial) {
-        // Enlazamos automáticamente el material con el ID del aviso de la URL
-        Aviso aviso = new Aviso();
-        aviso.setId(id);
-        avisoMaterial.setAviso(aviso);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(avisoService.añadirMaterialAAviso(avisoMaterial));
+    public ResponseEntity<?> addMaterialAAviso(@PathVariable Long id, @RequestBody AvisoMaterial avisoMaterial) {
+        try {
+            // Le pasamos la pelota al servicio
+            AvisoMaterial nuevoMaterial = avisoService.añadirMaterialAAviso(id, avisoMaterial);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoMaterial);
+        } catch (RuntimeException e) {
+            // Si el servicio detecta un error (cantidades negativas, no existe el aviso...), devuelve un 400 Bad Request
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     // GET http://localhost:8080/avisos/1/materiales

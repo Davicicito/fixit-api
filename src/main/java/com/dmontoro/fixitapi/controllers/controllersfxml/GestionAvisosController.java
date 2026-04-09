@@ -5,12 +5,15 @@ import com.dmontoro.fixitapi.repositories.AvisoRepository;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -21,7 +24,7 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Controller;
-
+import org.springframework.context.annotation.Scope;
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -29,23 +32,30 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Controller
+@Scope("prototype")
 public class GestionAvisosController implements Initializable {
 
-    // --- MENÚ LATERAL (PERFIL) ---
     @FXML private Label lblAvatar;
     @FXML private Label lblNombreUsuario;
     @FXML private Label lblRolUsuario;
 
-    // --- TARJETAS SUPERIORES (KPIs) ---
     @FXML private Label lblTotalCard;
     @FXML private Label lblPendientesCard;
     @FXML private Label lblProgresoCard;
     @FXML private Label lblCompletadosCard;
 
-    // --- FILTROS ---
+    // --- ELEMENTOS DE FILTRADO ---
     @FXML private TextField txtBuscar;
+    @FXML private Button btnFiltroTodos;
+    @FXML private Button btnFiltroPendiente;
+    @FXML private Button btnFiltroProgreso;
+    @FXML private Button btnFiltroCompletado;
 
-    // --- TABLA Y COLUMNAS ---
+    // --- VARIABLES DE DATOS Y FILTROS ---
+    private ObservableList<Aviso> masterData = FXCollections.observableArrayList();
+    private FilteredList<Aviso> filteredData;
+    private String estadoFiltroActual = "TODOS";
+
     @FXML private TableView<Aviso> tablaAvisos;
     @FXML private TableColumn<Aviso, Long> colId;
     @FXML private TableColumn<Aviso, String> colCliente;
@@ -63,7 +73,6 @@ public class GestionAvisosController implements Initializable {
     @Autowired
     private ConfigurableApplicationContext springContext;
 
-    // Variables para guardar quién ha iniciado sesión y pasarlo entre pantallas
     private String nombreActual = "Administrador";
     private String rolActual = "Jefe de Equipo";
 
@@ -71,15 +80,178 @@ public class GestionAvisosController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         configurarColumnasTabla();
         cargarDatosTablaYKpis();
+
+        // Escuchar lo que el usuario escribe en el buscador en tiempo real
+        if (txtBuscar != null) {
+            txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
+                aplicarFiltros();
+            });
+        }
     }
 
+    // =======================================================
+    // LÓGICA DE BOTONES DE FILTRO
+    // =======================================================
+    @FXML
+    public void filtrarPorTodos() { cambiarEstadoFiltro("TODOS", btnFiltroTodos); }
+
+    @FXML
+    public void filtrarPorPendiente() { cambiarEstadoFiltro("PENDIENTE", btnFiltroPendiente); }
+
+    @FXML
+    public void filtrarPorProgreso() { cambiarEstadoFiltro("EN PROGRESO", btnFiltroProgreso); }
+
+    @FXML
+    public void filtrarPorCompletado() { cambiarEstadoFiltro("COMPLETADO", btnFiltroCompletado); }
+
+    private void cambiarEstadoFiltro(String nuevoEstado, Button botonPulsado) {
+        this.estadoFiltroActual = nuevoEstado;
+
+        // Quitar la clase activa a todos
+        btnFiltroTodos.getStyleClass().removeAll("filter-btn-active", "filter-btn");
+        btnFiltroPendiente.getStyleClass().removeAll("filter-btn-active", "filter-btn");
+        btnFiltroProgreso.getStyleClass().removeAll("filter-btn-active", "filter-btn");
+        btnFiltroCompletado.getStyleClass().removeAll("filter-btn-active", "filter-btn");
+
+        btnFiltroTodos.getStyleClass().add("filter-btn");
+        btnFiltroPendiente.getStyleClass().add("filter-btn");
+        btnFiltroProgreso.getStyleClass().add("filter-btn");
+        btnFiltroCompletado.getStyleClass().add("filter-btn");
+
+        // Poner la clase activa solo al pulsado
+        botonPulsado.getStyleClass().remove("filter-btn");
+        botonPulsado.getStyleClass().add("filter-btn-active");
+
+        aplicarFiltros();
+    }
+
+    private void aplicarFiltros() {
+        if (filteredData == null) return;
+
+        filteredData.setPredicate(aviso -> {
+            // Filtro 1: ¿Coincide con el botón de estado pulsado?
+            boolean coincideEstado = true;
+            if (!estadoFiltroActual.equals("TODOS")) {
+                coincideEstado = aviso.getEstado() != null && aviso.getEstado().equalsIgnoreCase(estadoFiltroActual);
+            }
+
+            // Filtro 2: BÚSQUEDA GLOBAL (Omni-search)
+            boolean coincideTexto = true;
+            String textoBusqueda = txtBuscar.getText();
+
+            if (textoBusqueda != null && !textoBusqueda.trim().isEmpty()) {
+                String filtroLower = textoBusqueda.toLowerCase();
+
+                // Recolectamos absolutamente todos los datos de la fila y los pasamos a minúsculas
+                String id = String.valueOf(aviso.getId());
+                String cliente = aviso.getCliente() != null ? aviso.getCliente().getNombre().toLowerCase() : "";
+                String tecnico = aviso.getTecnico() != null ? aviso.getTecnico().getNombre().toLowerCase() : "";
+                String categoria = aviso.getCategoria() != null ? aviso.getCategoria().getNombre().toLowerCase() : "";
+                String descripcion = aviso.getDescripcion() != null ? aviso.getDescripcion().toLowerCase() : "";
+                String estado = aviso.getEstado() != null ? aviso.getEstado().toLowerCase() : "";
+                String prioridad = aviso.getPrioridad() != null ? aviso.getPrioridad().toLowerCase() : "";
+
+                // Formateamos la fecha a texto para poder buscar, por ejemplo: "04/03"
+                String fecha = "";
+                if (aviso.getFechaCreacion() != null) {
+                    fecha = aviso.getFechaCreacion().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                }
+
+                // Si AL MENOS UNO de los campos contiene lo que hemos escrito, mostramos la fila
+                coincideTexto = id.contains(filtroLower) ||
+                        cliente.contains(filtroLower) ||
+                        tecnico.contains(filtroLower) ||
+                        categoria.contains(filtroLower) ||
+                        descripcion.contains(filtroLower) ||
+                        estado.contains(filtroLower) ||
+                        prioridad.contains(filtroLower) ||
+                        fecha.contains(filtroLower);
+            }
+
+            // Solo mostramos la fila si cumple con el botón pulsado Y con el texto del buscador
+            return coincideEstado && coincideTexto;
+        });
+    }
+
+    // =======================================================
+    // CONFIGURACIÓN DE TABLA Y DATOS
+    // =======================================================
+
     private void configurarColumnasTabla() {
-        // Mapeo básico de columnas a los atributos del modelo Aviso
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colPrioridad.setCellValueFactory(new PropertyValueFactory<>("prioridad"));
 
-        // Mapeo de objetos anidados (Cliente, Técnico, Categoría)
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colEstado.setCellFactory(column -> new javafx.scene.control.TableCell<Aviso, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Label lblEstado = new Label(item.toUpperCase());
+                    lblEstado.getStyleClass().add("pill-estado");
+
+                    if (item.equalsIgnoreCase("PENDIENTE")) {
+                        lblEstado.getStyleClass().add("pill-pendiente");
+                    } else if (item.equalsIgnoreCase("EN PROGRESO")) {
+                        lblEstado.getStyleClass().add("pill-progreso");
+                    } else if (item.equalsIgnoreCase("COMPLETADO")) {
+                        lblEstado.getStyleClass().add("pill-completado");
+                    } else {
+                        lblEstado.getStyleClass().add("pill-default");
+                    }
+
+                    setGraphic(lblEstado);
+                    setText(null);
+                    setAlignment(javafx.geometry.Pos.CENTER);
+                }
+            }
+        });
+
+        colAcciones.setCellValueFactory(cellData -> new SimpleStringProperty(""));
+        colAcciones.setCellFactory(column -> new javafx.scene.control.TableCell<Aviso, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    javafx.scene.control.Button btnVer = new javafx.scene.control.Button("👁 Ver Detalles");
+                    btnVer.getStyleClass().add("btn-accion-tabla");
+
+                    btnVer.setOnAction(event -> {
+                        Aviso avisoSeleccionado = getTableView().getItems().get(getIndex());
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/AvisoDetalleModal.fxml"));
+                            loader.setControllerFactory(springContext::getBean);
+                            Parent root = loader.load();
+
+                            AvisoDetalleModalController modalController = loader.getController();
+                            modalController.cargarDatosAviso(avisoSeleccionado);
+
+                            Stage modalStage = new Stage();
+                            modalStage.setTitle("Detalles del Aviso");
+                            modalStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+                            modalStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
+                            modalStage.setScene(new Scene(root));
+
+                            modalStage.showAndWait();
+                            cargarDatosTablaYKpis();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    setGraphic(btnVer);
+                    setAlignment(javafx.geometry.Pos.CENTER);
+                }
+            }
+        });
+
         colCliente.setCellValueFactory(cellData -> {
             if (cellData.getValue().getCliente() != null) {
                 return new SimpleStringProperty(cellData.getValue().getCliente().getNombre());
@@ -101,7 +273,6 @@ public class GestionAvisosController implements Initializable {
             return new SimpleStringProperty("General");
         });
 
-        // Formateo de la fecha
         colFecha.setCellValueFactory(cellData -> {
             if (cellData.getValue().getFechaCreacion() != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -109,18 +280,27 @@ public class GestionAvisosController implements Initializable {
             }
             return new SimpleStringProperty("-");
         });
-
-        // Valores por defecto para diseño
-        colPrioridad.setCellValueFactory(cellData -> new SimpleStringProperty("MEDIA"));
-        colAcciones.setCellValueFactory(cellData -> new SimpleStringProperty("⋮"));
     }
 
     private void cargarDatosTablaYKpis() {
         List<Aviso> avisos = avisoRepository.findAll();
-        ObservableList<Aviso> listaAvisos = FXCollections.observableArrayList(avisos);
-        tablaAvisos.setItems(listaAvisos);
 
-        // Contadores para las tarjetas
+        // 1. Guardamos los datos en la lista maestra
+        masterData.clear();
+        masterData.addAll(avisos);
+
+        // 2. Si es la primera vez, configuramos el colador
+        if (filteredData == null) {
+            filteredData = new FilteredList<>(masterData, p -> true);
+            SortedList<Aviso> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(tablaAvisos.comparatorProperty());
+            tablaAvisos.setItems(sortedData);
+        }
+
+        // 3. Reaplicamos los filtros por si se ha cerrado la ventana de edición
+        aplicarFiltros();
+
+        // 4. Actualizamos las tarjetas de arriba
         long pendientes = 0;
         long enProgreso = 0;
         long completados = 0;
@@ -137,7 +317,25 @@ public class GestionAvisosController implements Initializable {
         lblCompletadosCard.setText(String.valueOf(completados));
     }
 
-    // --- MÉTODOS DE SESIÓN Y NAVEGACIÓN ---
+    @FXML
+    public void abrirModalCrearAviso() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/AvisoCrearModal.fxml"));
+            loader.setControllerFactory(springContext::getBean); // Clave para la base de datos
+            Parent root = loader.load();
+
+            Stage modalStage = new Stage();
+            modalStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            modalStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
+            modalStage.setScene(new Scene(root));
+            modalStage.showAndWait();
+
+            // Refrescamos la tabla al cerrar
+            cargarDatosTablaYKpis();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal;
@@ -166,12 +364,47 @@ public class GestionAvisosController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Devolvemos los datos del usuario al Dashboard para que no se pierdan
             DashboardController dashboardController = loader.getController();
             dashboardController.setDatosUsuario(nombreActual, rolActual);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.getScene().setRoot(root); // Cambiamos solo el contenido, sin cerrar la ventana
+            stage.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void irAInventario(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Inventario.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            // Le pasamos los datos del usuario al Inventario para que no se pierda el perfil
+            InventarioController inventarioController = loader.getController();
+            inventarioController.setDatosUsuario(nombreActual, rolActual);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void irATecnicos(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Tecnicos.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            // Pasamos los datos del usuario
+            TecnicosController tecnicosController = loader.getController();
+            tecnicosController.setDatosUsuario(nombreActual, rolActual);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
 
         } catch (IOException e) {
             e.printStackTrace();

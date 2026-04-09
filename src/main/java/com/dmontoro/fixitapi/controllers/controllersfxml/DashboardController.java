@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import javafx.scene.layout.StackPane;
@@ -37,6 +38,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 @Controller
+@Scope("prototype")
 public class DashboardController implements Initializable {
 
     @FXML private Label lblPendientes;
@@ -394,6 +396,41 @@ public class DashboardController implements Initializable {
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void irAInventario(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Inventario.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            InventarioController inventarioController = loader.getController();
+            inventarioController.setDatosUsuario(lblNombreUsuario.getText(), lblRolUsuario.getText());
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void irATecnicos(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Tecnicos.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            // En el Dashboard leemos directamente de los Labels
+            TecnicosController tecnicosController = loader.getController();
+            tecnicosController.setDatosUsuario(lblNombreUsuario.getText(), lblRolUsuario.getText());
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

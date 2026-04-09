@@ -64,28 +64,60 @@
 }
 
 /* =======================================
-   MENÚ LATERAL (SIDEBAR) - ITEMS
+   MENÚ LATERAL - CON ICONOS SVG LUCIDE
 ======================================= */
+.menu-box {
+    -fx-padding: 0;
+}
+
+/* Estado NORMAL (Gris) */
 .menu-item {
-    -fx-text-fill: #94A3B8;
-    -fx-font-size: 16px;
     -fx-padding: 12 15 12 15;
     -fx-background-radius: 8;
     -fx-cursor: hand;
+    -fx-background-color: transparent;
+}
+.menu-icon {
+    -fx-fill: transparent;
+    -fx-stroke: #94A3B8; /* Gris apagado */
+    -fx-stroke-width: 2;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+.menu-text {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 15px;
 }
 
+/* Efecto al pasar el ratón (HOVER) */
 .menu-item:hover {
     -fx-background-color: #1E293B;
+}
+.menu-item:hover .menu-icon {
+    -fx-stroke: white;
+}
+.menu-item:hover .menu-text {
     -fx-text-fill: white;
 }
 
+/* Estado ACTIVO (Botón con degradado lila) */
 .menu-item-active {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(to right, #6366F1, #8B5CF6); /* Degradado del diseño */
     -fx-padding: 12 15 12 15;
     -fx-background-radius: 8;
+    -fx-background-color: linear-gradient(to right, #6366F1, #8B5CF6);
+    -fx-cursor: default;
+}
+.menu-icon-active {
+    -fx-fill: transparent;
+    -fx-stroke: white; /* Blanco puro */
+    -fx-stroke-width: 2;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+.menu-text-active {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
 }
 
 /* Perfil y Logout */
@@ -617,3 +649,321 @@
     -fx-padding: 0 10 0 10;
     -fx-border-color: transparent;
 }
+/* --- ESTILOS PARA LA VENTANA MODAL FLOTANTE --- */
+.modal-root {
+    -fx-background-color: white;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    /* Simula una sombra sutil */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 5);
+}
+
+.modal-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1a1a24;
+}
+
+.modal-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #757575;
+}
+
+.modal-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #212121;
+    -fx-background-color: #f5f6fa;
+    -fx-background-radius: 5;
+    -fx-padding: 8;
+}
+
+.modal-combo {
+    -fx-font-size: 14px;
+    -fx-background-color: #f5f6fa;
+    -fx-background-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-border-radius: 5;
+}
+
+/* Botones del Modal */
+.btn-guardar {
+    -fx-background-color: #7c4dff; /* El morado de tu botón principal */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+}
+.btn-guardar:hover {
+    -fx-background-color: #651fff;
+}
+
+.btn-cancelar {
+    -fx-background-color: transparent;
+    -fx-text-fill: #757575;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 15 8 15;
+}
+.btn-cancelar:hover {
+    -fx-text-fill: #d32f2f;
+    -fx-background-color: #ffebee;
+    -fx-background-radius: 8;
+}
+
+
+/* =======================================
+   ESTILOS DE LA TABLA (PÍLDORAS Y BOTONES)
+======================================= */
+.pill-estado {
+    -fx-padding: 4 12 4 12;
+    -fx-background-radius: 20;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+.pill-pendiente {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #c62828;
+}
+
+.pill-progreso {
+    -fx-background-color: #fff8e1;
+    -fx-text-fill: #f57f17;
+}
+
+.pill-completado {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+}
+
+.pill-default {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #616161;
+}
+
+/* Botón transparente de Ver Detalles en la tabla */
+.btn-accion-tabla {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3B82F6; /* Azul de tu diseño */
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.btn-accion-tabla:hover {
+    -fx-text-fill: #1D4ED8;
+    -fx-underline: true; /* Subrayado al pasar el ratón */
+}
+/* =======================================
+   NUEVOS ESTILOS PARA MODAL DE CREACIÓN
+======================================= */
+.btn-close-modal {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+.btn-close-modal:hover {
+    -fx-text-fill: #EF4444; /* Se pone rojo al pasar el ratón */
+}
+
+.btn-crear {
+    -fx-background-color: linear-gradient(to right, #8B5CF6, #6366F1);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+}
+.btn-crear:hover {
+    -fx-background-color: linear-gradient(to right, #7C3AED, #4F46E5);
+}
+
+/* =======================================
+   BOTONES SECUNDARIOS (FOTOS Y FIRMAS)
+======================================= */
+.btn-secundario {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #475569;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+}
+.btn-secundario:hover {
+    -fx-background-color: #E2E8F0;
+    -fx-text-fill: #0F172A;
+}
+.btn-secundario:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* =======================================
+   PANTALLA INVENTARIO - ESTADOS Y BOTONES
+======================================= */
+.pill-stock-ok {
+    -fx-background-color: #DCFCE7;
+    -fx-text-fill: #16A34A;
+}
+
+.pill-stock-bajo {
+    -fx-background-color: #FEE2E2;
+    -fx-text-fill: #EF4444;
+}
+
+/* Botones de acción de la tabla */
+.btn-accion-edit {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3B82F6;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.btn-accion-edit:hover { -fx-text-fill: #1D4ED8; }
+
+.btn-accion-delete {
+    -fx-background-color: transparent;
+    -fx-text-fill: #EF4444;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.btn-accion-delete:hover { -fx-text-fill: #B91C1C; }
+
+/* =======================================
+   REFINAMIENTO VISUAL TABLA INVENTARIO
+======================================= */
+/* Píldora de Categoría */
+.pill-categoria {
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 20;
+    -fx-background-color: transparent;
+    -fx-padding: 3 10 3 10;
+    -fx-font-size: 10px;
+    -fx-text-fill: #475569;
+    -fx-font-weight: bold;
+}
+
+/* Icono azul cuadrado del Material */
+.icon-material-box {
+    -fx-background-color: #EFF6FF;
+    -fx-background-radius: 6;
+    -fx-padding: 4 6 4 6;
+}
+.icon-material-text {
+    -fx-text-fill: #3B82F6;
+    -fx-font-size: 14px;
+}
+
+/* Fila entera roja si el stock es bajo */
+.row-bajo-stock {
+    -fx-background-color: #FEF2F2 !important; /* Fondo rojizo claro */
+}
+.row-bajo-stock:hover {
+    -fx-background-color: #FEE2E2 !important;
+}
+
+/* Texto del stock en rojo intenso */
+.text-rojo-stock {
+    -fx-text-fill: #EF4444 !important;
+}
+
+/* =======================================
+   ICONOS SVG (ESTILO LUCIDE)
+======================================= */
+.icon-lucide {
+    -fx-fill: transparent;
+    -fx-stroke-width: 2;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+
+.icon-lucide-blue {
+    -fx-stroke: #3B82F6; /* Azul base */
+}
+
+/* Efectos hover para los botones de acción */
+.btn-accion-edit .icon-lucide {
+    -fx-stroke: #3B82F6;
+}
+.btn-accion-edit:hover .icon-lucide {
+    -fx-stroke: #1D4ED8; /* Azul más oscuro al pasar ratón */
+}
+
+.btn-accion-delete .icon-lucide {
+    -fx-stroke: #EF4444; /* Rojo base */
+}
+.btn-accion-delete:hover .icon-lucide {
+    -fx-stroke: #B91C1C; /* Rojo oscuro al pasar ratón */
+}
+/* =======================================
+   ICONOS DE MARCA DE AGUA EN TARJETAS KPI
+======================================= */
+.kpi-watermark-icon {
+    -fx-fill: transparent;
+    -fx-stroke: rgba(255, 255, 255, 0.3); /* Blanco al 30% de opacidad */
+    -fx-stroke-width: 2;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+
+/* =======================================
+   BOTONES VERDES (Añadir Material, etc.)
+======================================= */
+.btn-green {
+    -fx-background-color: #10B981; /* Verde esmeralda */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-green:hover {
+    -fx-background-color: #059669; /* Verde más oscuro al pasar el ratón */
+}
+
+/* =======================================
+   PANTALLA TÉCNICOS - TARJETAS Y ESTILOS
+======================================= */
+.tecnico-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #E2E8F0;
+    -fx-padding: 25;
+    /* Sombra muy suave para dar profundidad */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.04), 10, 0, 0, 4);
+}
+
+.avatar-large {
+    -fx-background-radius: 50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-alignment: center;
+    -fx-pref-width: 50px;
+    -fx-pref-height: 50px;
+}
+
+.pill-activo { -fx-background-color: #DCFCE7; -fx-text-fill: #16A34A; -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; }
+.pill-inactivo { -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; }
+
+.text-sm-gray { -fx-text-fill: #64748B; -fx-font-size: 12px; }
+
+/* Botones Outline de la tarjeta */
+.btn-outline-edit {
+    -fx-background-color: transparent; -fx-border-color: #E2E8F0; -fx-border-radius: 8;
+    -fx-text-fill: #0F172A; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 0;
+}
+.btn-outline-edit:hover { -fx-background-color: #F8FAFC; -fx-border-color: #CBD5E1; }
+
+.btn-outline-delete {
+    -fx-background-color: transparent; -fx-border-color: #FEE2E2; -fx-border-radius: 8;
+    -fx-text-fill: #EF4444; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 0;
+}
+.btn-outline-delete:hover { -fx-background-color: #FEF2F2; -fx-border-color: #FECACA; }

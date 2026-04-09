@@ -29,4 +29,17 @@ public class ClienteService {
     public void deleteCliente(Long id) {
         clienteRepository.deleteById(id);
     }
+    public Cliente actualizarCliente(Long id, Cliente clienteDetails) {
+        // 1. Comprobamos si existe
+        Cliente clienteExistente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente con ID " + id + " no encontrado"));
+
+        // 2. Actualizamos los datos (Lógica de negocio en la capa correcta)
+        clienteExistente.setNombre(clienteDetails.getNombre());
+        clienteExistente.setDireccion(clienteDetails.getDireccion());
+        clienteExistente.setTelefono(clienteDetails.getTelefono());
+
+        // 3. Guardamos
+        return clienteRepository.save(clienteExistente);
+    }
 }

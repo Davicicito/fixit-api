@@ -15,6 +15,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
+<?import javafx.scene.shape.SVGPath?>
 <BorderPane prefHeight="900.0" prefWidth="1400.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dmontoro.fixitapi.controllers.controllersfxml.DashboardController">
 
     <left>
@@ -42,17 +43,33 @@
                 </HBox>
                 <VBox spacing="10.0" styleClass="menu-box">
                     <children>
-                        <Label styleClass="menu-item-active" text="⊞ Dashboard" />
-                        <Label onMouseClicked="#irAGestionAvisos" styleClass="menu-item" text="📄 Gestión de Avisos" />
-                        <Label styleClass="menu-item" text="📦 Inventario" />
-                        <Label styleClass="menu-item" text="👥 Técnicos" />
-                        <Label styleClass="menu-item" text="🏢 Clientes" />
-                    </children>
-                    <VBox.margin>
-                        <Insets top="30.0" />
-                    </VBox.margin>
-                </VBox>
+                        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="menu-item-active">
+                            <SVGPath content="M3 4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zm11 0a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1zm0 9a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1zm-11 4a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" styleClass="menu-icon-active" />
+                            <Label styleClass="menu-text-active" text="Dashboard" />
+                        </HBox>
 
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#irAGestionAvisos" spacing="12.0" styleClass="menu-item">
+                            <SVGPath content="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2 M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z M12 11h4 M12 16h4 M8 11h.01 M8 16h.01" styleClass="menu-icon" />
+                            <Label styleClass="menu-text" text="Gestión de Avisos" />
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#irAInventario" spacing="12.0" styleClass="menu-item">
+                            <SVGPath content="M16.5 9.4l-9-5.19 M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z M3.27 6.96L12 12.01l8.73-5.05 M12 22.08V12" styleClass="menu-icon" />
+                            <Label styleClass="menu-text" text="Inventario" />
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#irATecnicos" spacing="12.0" styleClass="menu-item">
+                            <SVGPath content="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75" styleClass="menu-icon" />
+                            <Label styleClass="menu-text" text="Técnicos" />
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="menu-item">
+                            <SVGPath content="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18 M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2 M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2 M10 6h4 M10 10h4 M10 14h4 M10 18h4" styleClass="menu-icon" />
+                            <Label styleClass="menu-text" text="Clientes" />
+                        </HBox>
+                    </children>
+                    <VBox.margin><Insets top="30.0" /></VBox.margin>
+                </VBox>
                 <Region VBox.vgrow="ALWAYS" />
 
                 <VBox spacing="15.0">
