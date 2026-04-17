@@ -16,6 +16,7 @@
 <?import javafx.scene.text.TextFlow?>
 
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.control.Button?>
 <BorderPane prefHeight="900.0" prefWidth="1400.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dmontoro.fixitapi.controllers.controllersfxml.DashboardController">
 
     <left>
@@ -63,7 +64,7 @@
                             <Label styleClass="menu-text" text="Técnicos" />
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="menu-item">
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#irAClientes" spacing="12.0" styleClass="menu-item">
                             <SVGPath content="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18 M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2 M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2 M10 6h4 M10 10h4 M10 14h4 M10 18h4" styleClass="menu-icon" />
                             <Label styleClass="menu-text" text="Clientes" />
                         </HBox>
@@ -172,8 +173,24 @@
                             <children>
                                 <VBox styleClass="chart-card" HBox.hgrow="ALWAYS" prefHeight="350.0">
                                     <children>
-                                        <Label styleClass="chart-title" text="Actividad Semanal" />
-                                        <BarChart fx:id="barChartActividad" VBox.vgrow="ALWAYS" legendSide="BOTTOM">
+                                        <HBox alignment="CENTER" styleClass="week-nav-container">
+                                            <children>
+                                                <Button mnemonicParsing="false" onAction="#semanaAnterior" styleClass="btn-nav-week">
+                                                    <graphic>
+                                                        <SVGPath content="M15 18l-6-6 6-6" styleClass="icon-lucide" />
+                                                    </graphic>
+                                                </Button>
+
+                                                <Label fx:id="lblRangoSemana" styleClass="label-week-range" text="Cargando semana..." />
+
+                                                <Button fx:id="btnSemanaSiguiente" mnemonicParsing="false" onAction="#semanaSiguiente" styleClass="btn-nav-week">
+                                                    <graphic>
+                                                        <SVGPath content="M9 18l6-6-6-6" styleClass="icon-lucide" />
+                                                    </graphic>
+                                                </Button>
+                                            </children>
+                                        </HBox>
+                                        <BarChart fx:id="graficoActividad" VBox.vgrow="ALWAYS" legendSide="BOTTOM">
                                             <xAxis><CategoryAxis side="BOTTOM" /></xAxis>
                                             <yAxis><NumberAxis side="LEFT" /></yAxis>
                                         </BarChart>

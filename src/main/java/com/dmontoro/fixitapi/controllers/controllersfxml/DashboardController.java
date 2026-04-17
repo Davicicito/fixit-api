@@ -10,15 +10,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import javafx.scene.layout.StackPane;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import java.net.URL;
@@ -46,9 +48,13 @@ public class DashboardController implements Initializable {
     @FXML private Label lblCompletados;
     @FXML private Label lblUrgentes;
 
-    @FXML private BarChart<String, Number> barChartActividad;
     @FXML private PieChart pieChartCategoria;
     @FXML private LineChart<String, Number> lineChartTendencia;
+    @FXML private Label lblRangoSemana;
+    @FXML private Button btnSemanaSiguiente;
+
+    // AQUÍ ESTÁ EL GRÁFICO NUEVO
+    @FXML private javafx.scene.chart.BarChart<String, Number> graficoActividad;
 
     @FXML private VBox vboxActividadReciente;
 
@@ -57,6 +63,8 @@ public class DashboardController implements Initializable {
     @FXML private Label lblAvatar;
     @FXML private Label lblNombreUsuario;
     @FXML private Label lblRolUsuario;
+
+    private int semanasAtras = 0;
 
     @Autowired
     private AvisoRepository avisoRepository;
@@ -70,7 +78,10 @@ public class DashboardController implements Initializable {
 
         cargarKpisReales(avisosReales);
         cargarGraficoCircularReal(avisosReales);
-        cargarGraficoBarrasSemanalReal(avisosReales);
+
+        // LLAMAMOS AL MÉTODO NUEVO CON LAS FECHAS CORRECTAS
+        cargarGraficoSemanas();
+
         cargarGraficoLineasMensualReal(avisosReales);
         cargarActividadRecienteReal(avisosReales);
         calcularCrecimientoMensual(avisosReales);
@@ -93,6 +104,20 @@ public class DashboardController implements Initializable {
         lblUrgentes.setText(String.valueOf(avisos.size()));
     }
 
+    @FXML
+    public void semanaAnterior() {
+        semanasAtras++;
+        cargarGraficoSemanas();
+    }
+
+    @FXML
+    public void semanaSiguiente() {
+        if (semanasAtras > 0) {
+            semanasAtras--;
+            cargarGraficoSemanas();
+        }
+    }
+
     private void cargarGraficoCircularReal(List<Aviso> avisos) {
         pieChartCategoria.getData().clear();
 
@@ -103,49 +128,6 @@ public class DashboardController implements Initializable {
         for (Map.Entry<String, Long> entry : conteoPorCategoria.entrySet()) {
             pieChartCategoria.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
         }
-    }
-
-    private void cargarGraficoBarrasSemanalReal(List<Aviso> avisos) {
-        barChartActividad.getData().clear();
-
-        XYChart.Series<String, Number> seriesCompletados = new XYChart.Series<>();
-        seriesCompletados.setName("Completados");
-
-        XYChart.Series<String, Number> seriesNuevos = new XYChart.Series<>();
-        seriesNuevos.setName("Nuevos (Pendientes)");
-
-        int[] completadosPorDia = new int[8];
-        int[] nuevosPorDia = new int[8];
-
-        for (Aviso a : avisos) {
-            if (a.getFechaCreacion() != null) {
-                int diaSemana = a.getFechaCreacion().getDayOfWeek().getValue();
-                if ("COMPLETADO".equalsIgnoreCase(a.getEstado())) {
-                    completadosPorDia[diaSemana]++;
-                } else {
-                    nuevosPorDia[diaSemana]++;
-                }
-            }
-        }
-
-        String[] nombresDias = {"", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"};
-        for (int i = 1; i <= 7; i++) {
-            seriesCompletados.getData().add(new XYChart.Data<>(nombresDias[i], completadosPorDia[i]));
-            seriesNuevos.getData().add(new XYChart.Data<>(nombresDias[i], nuevosPorDia[i]));
-        }
-
-        barChartActividad.getData().addAll(seriesCompletados, seriesNuevos);
-
-        Platform.runLater(() -> {
-            for (XYChart.Series<String, Number> serie : barChartActividad.getData()) {
-                for (XYChart.Data<String, Number> dato : serie.getData()) {
-                    if (dato.getNode() != null && dato.getYValue().intValue() > 0) {
-                        Tooltip tooltip = new Tooltip(serie.getName() + "\n" + dato.getXValue() + ": " + dato.getYValue() + " avisos");
-                        Tooltip.install(dato.getNode(), tooltip);
-                    }
-                }
-            }
-        });
     }
 
     private void cargarGraficoLineasMensualReal(List<Aviso> avisos) {
@@ -184,100 +166,101 @@ public class DashboardController implements Initializable {
     private void cargarActividadRecienteReal(List<Aviso> avisos) {
         vboxActividadReciente.getChildren().clear();
 
+        // 1. FILTRAMOS SOLO LOS DEL DÍA DE HOY y ordenamos del más nuevo al más viejo
         List<Aviso> recientes = avisos.stream()
-                .sorted(Comparator.comparingLong(Aviso::getId).reversed())
+                .filter(a -> a.getFechaCreacion() != null && a.getFechaCreacion().toLocalDate().equals(LocalDate.now()))
+                .sorted(Comparator.comparing(Aviso::getFechaCreacion).reversed())
                 .limit(3)
                 .collect(Collectors.toList());
 
+        // Si hoy no hay avisos, mostramos un mensaje limpio
+        if(recientes.isEmpty()) {
+            Label vacio = new Label("No hay actividad reciente en el día de hoy.");
+            vacio.setStyle("-fx-text-fill: #94A3B8; -fx-padding: 20; -fx-font-style: italic;");
+            vboxActividadReciente.getChildren().add(vacio);
+            return;
+        }
+
+        // 2. DIBUJAMOS CADA TARJETA
         for (Aviso aviso : recientes) {
             HBox row = new HBox(15);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.getStyleClass().add("list-item");
-            row.setPadding(new javafx.geometry.Insets(12, 0, 12, 0)); // Más espacio para respirar
+            row.setPadding(new javafx.geometry.Insets(15, 10, 15, 10));
+            row.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #F1F5F9; -fx-border-radius: 12; -fx-border-width: 1; -fx-margin-bottom: 10;");
 
-            // 1. CONTENEDOR FIJO PARA EL ICONO (Soluciona el aplastamiento)
+            // --- ICONO SVG Y COLOR DE CATEGORÍA ---
             StackPane iconWrapper = new StackPane();
-            iconWrapper.setPrefSize(42, 42); // Medida exacta cuadrada
+            iconWrapper.setPrefSize(42, 42);
             iconWrapper.setMinSize(42, 42);
-            iconWrapper.getStyleClass().add("list-icon-wrapper");
 
-            Label iconLabel = new Label("🔧");
-            iconLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white;");
+            SVGPath iconPath = new SVGPath();
+            iconPath.setStyle("-fx-stroke: white; -fx-fill: transparent; -fx-stroke-width: 2;");
 
-            // Configurar el icono por la Categoría
+            String wrapperClass = "icon-wrapper-purple"; // Por defecto (Ascensores / Otros)
+
             if (aviso.getCategoria() != null) {
                 String cat = aviso.getCategoria().getNombre().toLowerCase();
-                if (cat.contains("elec")) iconLabel.setText("⚡");
-                else if (cat.contains("font")) iconLabel.setText("💧");
-                else iconLabel.setText("⚙️");
+                if (cat.contains("font")) {
+                    wrapperClass = "icon-wrapper-blue";
+                    iconPath.setContent("M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"); // Droplet
+                } else if (cat.contains("elec")) {
+                    wrapperClass = "icon-wrapper-orange";
+                    iconPath.setContent("M13 2L3 14h9l-1 8 10-12h-9l1-8z"); // Zap
+                } else {
+                    wrapperClass = "icon-wrapper-purple";
+                    iconPath.setContent("M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"); // Settings
+                }
+            } else {
+                iconPath.setContent("M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z");
             }
 
-            // ¡LA FORMA PROFESIONAL! Asignar color dinámico y estable
-            String colorFondo = "bg-blue"; // Por defecto
-            if (aviso.getTecnico() != null) {
-                String nombreTecnico = aviso.getTecnico().getNombre();
+            iconWrapper.getStyleClass().add(wrapperClass);
+            iconWrapper.getChildren().add(iconPath);
 
-                // Nuestra paleta de 8 colores del CSS
-                String[] colores = {
-                        "bg-blue", "bg-orange", "bg-purple", "bg-green",
-                        "bg-red", "bg-teal", "bg-pink", "bg-indigo"
-                };
-
-                // Usamos una función matemática (hashCode) para convertir el nombre en un número.
-                // Así, "Juan Pérez" SIEMPRE dará el mismo número y tendrá el mismo color.
-                int indiceColor = Math.abs(nombreTecnico.hashCode()) % colores.length;
-                colorFondo = colores[indiceColor];
-            }
-            iconWrapper.getStyleClass().add(colorFondo);
-            iconWrapper.getChildren().add(iconLabel);
-
-            // 2. Textos Centrales
+            // --- TEXTOS CENTRALES ---
             VBox midBox = new VBox(2);
             HBox.setHgrow(midBox, Priority.ALWAYS);
 
             String nombreCliente = (aviso.getCliente() != null) ? aviso.getCliente().getNombre() : "Cliente Desconocido";
             Label title = new Label(nombreCliente);
-            title.getStyleClass().add("list-title");
+            title.setStyle("-fx-font-weight: bold; -fx-text-fill: #0F172A; -fx-font-size: 14px;");
 
             String nombreTecnico = (aviso.getTecnico() != null) ? aviso.getTecnico().getNombre() : "Sin Asignar";
             Label subtitle = new Label("Técnico: " + nombreTecnico);
-            subtitle.getStyleClass().add("list-subtitle");
+            subtitle.setStyle("-fx-text-fill: #64748B; -fx-font-size: 13px;");
 
             midBox.getChildren().addAll(title, subtitle);
 
-            // 3. Píldora de Estado y Fecha
+            // --- ESTADO Y TIEMPO REAL ---
             VBox rightBox = new VBox(5);
             rightBox.setAlignment(Pos.CENTER_RIGHT);
 
             Label status = new Label(aviso.getEstado());
-            status.getStyleClass().add("status-pill");
             if ("COMPLETADO".equalsIgnoreCase(aviso.getEstado())) {
-                status.getStyleClass().add("status-completado");
+                status.getStyleClass().add("status-pill-green");
             } else if ("PENDIENTE".equalsIgnoreCase(aviso.getEstado())) {
-                status.getStyleClass().add("status-pendiente");
+                status.getStyleClass().add("status-pill-orange");
             } else {
-                status.getStyleClass().add("status-progreso");
+                status.getStyleClass().add("status-pill-blue");
             }
 
-            // Formatear la fecha
-            String tiempoStr = "Desconocido";
-            if (aviso.getFechaCreacion() != null) {
-                LocalDate fecha = aviso.getFechaCreacion();
-                if (fecha.equals(LocalDate.now())) {
-                    tiempoStr = "Hoy";
-                } else if (fecha.equals(LocalDate.now().minusDays(1))) {
-                    tiempoStr = "Ayer";
-                } else {
-                    tiempoStr = fecha.format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
-                }
+            // CALCULAR MINUTOS Y HORAS REALES
+            long minutos = java.time.temporal.ChronoUnit.MINUTES.between(aviso.getFechaCreacion(), java.time.LocalDateTime.now());
+            String tiempoTexto;
+            if (minutos < 60) {
+                tiempoTexto = "Hace " + Math.max(1, minutos) + " min";
+            } else {
+                long horas = minutos / 60;
+                tiempoTexto = "Hace " + horas + (horas == 1 ? " hora" : " horas");
             }
-            Label time = new Label(tiempoStr);
-            time.getStyleClass().add("list-time");
+
+            Label time = new Label(tiempoTexto);
+            time.getStyleClass().add("time-text");
 
             rightBox.getChildren().addAll(status, time);
 
-            // 4. Juntarlo todo
             row.getChildren().addAll(iconWrapper, midBox, rightBox);
+            VBox.setMargin(row, new javafx.geometry.Insets(0, 0, 10, 0)); // Separación entre filas
             vboxActividadReciente.getChildren().add(row);
         }
     }
@@ -287,17 +270,17 @@ public class DashboardController implements Initializable {
         int mesActual = hoy.getMonthValue();
         int anioActual = hoy.getYear();
 
-        // Calculamos cuál fue el mes pasado (teniendo en cuenta si estamos en enero)
         int mesAnterior = (mesActual == 1) ? 12 : mesActual - 1;
         int anioAnterior = (mesActual == 1) ? anioActual - 1 : anioActual;
 
         long totalMesActual = 0;
         long totalMesAnterior = 0;
 
-        // Contamos cuántos avisos hubo este mes y el mes pasado
         for (Aviso a : avisos) {
             if (a.getFechaCreacion() != null) {
-                LocalDate fecha = a.getFechaCreacion();
+                // Extraemos el día exacto de forma segura
+                LocalDate fecha = a.getFechaCreacion().toLocalDate();
+
                 if (fecha.getMonthValue() == mesActual && fecha.getYear() == anioActual) {
                     totalMesActual++;
                 } else if (fecha.getMonthValue() == mesAnterior && fecha.getYear() == anioAnterior) {
@@ -306,43 +289,39 @@ public class DashboardController implements Initializable {
             }
         }
 
-        // Calculamos el porcentaje matemático
         double porcentaje = 0.0;
         if (totalMesAnterior == 0) {
-            if (totalMesActual > 0) porcentaje = 100.0; // Si pasas de 0 a algo, es un 100% de crecimiento
+            if (totalMesActual > 0) porcentaje = 100.0;
         } else {
             porcentaje = ((double) (totalMesActual - totalMesAnterior) / totalMesAnterior) * 100.0;
         }
 
-        // Lo pintamos en pantalla cambiando colores
         if (porcentaje > 0) {
             lblCrecimientoValor.setText(String.format("+%.1f%%", porcentaje));
-            lblCrecimientoValor.setStyle("-fx-text-fill: #10B981;"); // Verde éxito
+            lblCrecimientoValor.setStyle("-fx-text-fill: #10B981;");
             lblCrecimientoIcon.setText("📈");
             lblCrecimientoIcon.setStyle("-fx-text-fill: #10B981;");
         } else if (porcentaje < 0) {
-            lblCrecimientoValor.setText(String.format("%.1f%%", porcentaje)); // El signo menos ya se pone solo
-            lblCrecimientoValor.setStyle("-fx-text-fill: #EF4444;"); // Rojo alerta
+            lblCrecimientoValor.setText(String.format("%.1f%%", porcentaje));
+            lblCrecimientoValor.setStyle("-fx-text-fill: #EF4444;");
             lblCrecimientoIcon.setText("📉");
             lblCrecimientoIcon.setStyle("-fx-text-fill: #EF4444;");
         } else {
             lblCrecimientoValor.setText("0.0%");
-            lblCrecimientoValor.setStyle("-fx-text-fill: #6B7280;"); // Gris neutral
+            lblCrecimientoValor.setStyle("-fx-text-fill: #6B7280;");
             lblCrecimientoIcon.setText("➖");
             lblCrecimientoIcon.setStyle("-fx-text-fill: #6B7280;");
         }
     }
-    // Este método lo llamaremos desde el Login justo antes de cambiar de pantalla
+
     public void setDatosUsuario(String nombreReal, String rolReal) {
-        // Ponemos la primera letra en mayúscula por si entra en minúsculas
         String nombreFormateado = nombreReal.substring(0, 1).toUpperCase() + nombreReal.substring(1);
 
         lblNombreUsuario.setText(nombreFormateado);
         lblRolUsuario.setText(rolReal);
 
-        // Lógica para extraer las iniciales
         String iniciales = "";
-        String[] partes = nombreFormateado.trim().split("[ ._]"); // Separa por espacios, puntos o barras bajas
+        String[] partes = nombreFormateado.trim().split("[ ._]");
         if (partes.length >= 2) {
             iniciales = partes[0].substring(0, 1) + partes[1].substring(0, 1);
         } else if (nombreFormateado.length() >= 2) {
@@ -353,31 +332,20 @@ public class DashboardController implements Initializable {
 
         lblAvatar.setText(iniciales.toUpperCase());
     }
+
     @FXML
     public void cerrarSesion(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
-            // Importante inyectar el contexto de Spring si lo estás usando en LoginController
-            // loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
-
-            // Obtenemos la ventana actual
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // Pequeño truco para que Windows reajuste bien la ventana al quitar el maximizado
             stage.hide();
-
-            // Le quitamos el maximizado y bloqueamos el redimensionamiento
             stage.setMaximized(false);
             stage.setResizable(false);
-
-            // Volvemos al tamaño original del Login
             stage.setScene(new Scene(root, 1200, 800));
             stage.setTitle("FixIt - Acceso Administrativo");
-
             stage.centerOnScreen();
             stage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -389,50 +357,129 @@ public class DashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/GestionAvisos.fxml"));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
-
-            // Le pasamos los datos del usuario a la nueva pantalla
             GestionAvisosController gestionController = loader.getController();
             gestionController.setDatosUsuario(lblNombreUsuario.getText(), lblRolUsuario.getText());
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     public void irAInventario(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Inventario.fxml"));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
-
             InventarioController inventarioController = loader.getController();
             inventarioController.setDatosUsuario(lblNombreUsuario.getText(), lblRolUsuario.getText());
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     public void irATecnicos(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Tecnicos.fxml"));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
-
-            // En el Dashboard leemos directamente de los Labels
             TecnicosController tecnicosController = loader.getController();
             tecnicosController.setDatosUsuario(lblNombreUsuario.getText(), lblRolUsuario.getText());
-
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void irAClientes(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Clientes.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+            ClientesController controller = loader.getController();
+            controller.setDatosUsuario(lblNombreUsuario.getText(), lblRolUsuario.getText());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ESTE ES EL MÉTODO QUE CARGA EL GRÁFICO NUEVO DE LAS SEMANAS
+    private void cargarGraficoSemanas() {
+        LocalDate hoy = LocalDate.now().minusWeeks(semanasAtras);
+        LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
+        LocalDate domingo = hoy.with(java.time.DayOfWeek.SUNDAY);
+
+        java.time.format.DateTimeFormatter formateador = java.time.format.DateTimeFormatter.ofPattern("dd MMM");
+        lblRangoSemana.setText(lunes.format(formateador) + " - " + domingo.format(formateador));
+
+        btnSemanaSiguiente.setDisable(semanasAtras == 0);
+
+        graficoActividad.getData().clear();
+        javafx.scene.chart.XYChart.Series<String, Number> completados = new javafx.scene.chart.XYChart.Series<>();
+        completados.setName("Completados");
+        javafx.scene.chart.XYChart.Series<String, Number> nuevos = new javafx.scene.chart.XYChart.Series<>();
+        nuevos.setName("Nuevos (Pendientes)");
+
+        List<Aviso> todosLosAvisos = avisoRepository.findAll();
+        String[] diasSemana = {"Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"};
+
+        for (int i = 0; i < 7; i++) {
+            LocalDate diaEvaluado = lunes.plusDays(i);
+            int countCompletados = 0;
+            int countNuevos = 0;
+
+            for (Aviso aviso : todosLosAvisos) {
+                if (aviso.getFechaCreacion() != null) {
+                    LocalDate fechaDelAviso = aviso.getFechaCreacion().toLocalDate();
+
+                    if (fechaDelAviso.equals(diaEvaluado)) {
+                        if ("COMPLETADO".equalsIgnoreCase(aviso.getEstado())) {
+                            countCompletados++;
+                        } else {
+                            countNuevos++;
+                        }
+                    }
+                }
+            }
+
+            completados.getData().add(new javafx.scene.chart.XYChart.Data<>(diasSemana[i], countCompletados));
+            nuevos.getData().add(new javafx.scene.chart.XYChart.Data<>(diasSemana[i], countNuevos));
+        }
+
+        graficoActividad.getData().addAll(completados, nuevos);
+
+        // --- 1. ARREGLO DEL BUG VISUAL ---
+        // Desactivamos las animaciones por defecto de JavaFX que vuelven loco al gráfico al cambiar de semana
+        graficoActividad.setAnimated(false);
+
+        // --- 2. RESTAURAR LOS TOOLTIPS (Bocadillos) CON ESTILO ---
+        Platform.runLater(() -> {
+            for (XYChart.Series<String, Number> serie : graficoActividad.getData()) {
+                for (XYChart.Data<String, Number> dato : serie.getData()) {
+                    if (dato.getNode() != null) {
+
+                        // Solo le ponemos el cartelito si hay 1 o más avisos (para no saturar si está a 0)
+                        if (dato.getYValue().intValue() > 0) {
+                            Tooltip tooltip = new Tooltip(dato.getXValue() + "\n" + serie.getName() + ": " + dato.getYValue());
+                            tooltip.getStyleClass().add("chart-tooltip"); // Lo conectamos con el CSS nuevo
+                            Tooltip.install(dato.getNode(), tooltip);
+
+                            // BONUS PROFESIONAL: Que la barra cambie un poco de opacidad al pasar el ratón
+                            dato.getNode().setOnMouseEntered(e -> dato.getNode().setStyle("-fx-opacity: 0.7; -fx-cursor: hand;"));
+                            dato.getNode().setOnMouseExited(e -> dato.getNode().setStyle("-fx-opacity: 1.0;"));
+                        }
+
+                    }
+                }
+            }
+        });
     }
 }

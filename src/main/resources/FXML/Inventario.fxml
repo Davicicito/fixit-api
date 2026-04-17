@@ -58,7 +58,7 @@
                             <Label styleClass="menu-text" text="Técnicos" />
                         </HBox>
 
-                        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="menu-item">
+                        <HBox alignment="CENTER_LEFT" onMouseClicked="#irAClientes" spacing="12.0" styleClass="menu-item">
                             <SVGPath content="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18 M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2 M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2 M10 6h4 M10 10h4 M10 14h4 M10 18h4" styleClass="menu-icon" />
                             <Label styleClass="menu-text" text="Clientes" />
                         </HBox>

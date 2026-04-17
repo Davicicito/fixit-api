@@ -2,6 +2,8 @@ package com.dmontoro.fixitapi.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -28,7 +30,7 @@ public class Aviso {
     private String firmaCliente;
 
     @Column(name = "fecha_creacion")
-    private LocalDate fechaCreacion = LocalDate.now();
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "tecnico_id")

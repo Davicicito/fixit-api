@@ -25,8 +25,18 @@ public class Cliente {
 
     private String telefono;
 
+    // --- NUEVOS CAMPOS PARA EL DISEÑO ---
+    private String email;
+
+    private String tipo = "EMPRESA"; // Puede ser EMPRESA o PARTICULAR
+
+    @Column(length = 500) // Le damos más espacio por si escribes notas largas
+    private String notas;
+    // ------------------------------------
+
     // Relación 1:N: Un cliente puede solicitar muchos avisos
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    // AÑADIDO: fetch = FetchType.EAGER para que se cuenten solos en la tarjeta
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Aviso> avisos;
 }

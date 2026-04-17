@@ -438,6 +438,24 @@ public class InventarioController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    public void irAClientes(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Clientes.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            // Pasamos los datos del usuario a la nueva pantalla
+            ClientesController controller = loader.getController();
+            controller.setDatosUsuario(nombreActual, rolActual);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     public void cerrarSesion(MouseEvent event) {

@@ -1,6 +1,8 @@
 package com.dmontoro.fixitapi.controllers.controllersfxml;
 
+import com.dmontoro.fixitapi.models.Aviso;
 import com.dmontoro.fixitapi.models.Tecnico;
+import com.dmontoro.fixitapi.repositories.AvisoRepository;
 import com.dmontoro.fixitapi.repositories.TecnicoRepository;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,18 +35,15 @@ import java.util.ResourceBundle;
 @Scope("prototype")
 public class TecnicosController implements Initializable {
 
-    // --- PERFIL Y MENÚ LATERAL ---
     @FXML private Label lblAvatar;
     @FXML private Label lblNombreUsuario;
     @FXML private Label lblRolUsuario;
 
-    // --- TARJETAS KPI SUPERIORES ---
     @FXML private Label lblTotalCard;
     @FXML private Label lblActivosCard;
     @FXML private Label lblTrabajosCard;
     @FXML private Label lblCalificacionCard;
 
-    // --- BUSCADOR Y CONTENEDOR DE TARJETAS ---
     @FXML private TextField txtBuscar;
     @FXML private FlowPane flowPaneTecnicos;
 
@@ -54,7 +53,9 @@ public class TecnicosController implements Initializable {
     @Autowired
     private ConfigurableApplicationContext springContext;
 
-    // Variables internas para mantener la sesión
+    @Autowired
+    private AvisoRepository avisoRepository;
+
     private String nombreActual = "Administrador";
     private String rolActual = "Jefe de Equipo";
 
@@ -62,7 +63,6 @@ public class TecnicosController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         cargarDatos();
 
-        // Buscador en tiempo real
         if (txtBuscar != null) {
             txtBuscar.textProperty().addListener((obs, old, newValue) -> {
                 cargarDatos();
@@ -74,6 +74,8 @@ public class TecnicosController implements Initializable {
         flowPaneTecnicos.getChildren().clear();
 
         List<Tecnico> tecnicos = tecnicoRepository.findAll();
+        List<Aviso> todosLosAvisos = avisoRepository.findAll(); // <-- Traemos todos los avisos
+
         String filtro = txtBuscar.getText() != null ? txtBuscar.getText().toLowerCase() : "";
 
         int totalActivos = 0;
@@ -82,18 +84,19 @@ public class TecnicosController implements Initializable {
         int totalTrabajosGlobales = 0;
 
         for (Tecnico t : tecnicos) {
-            // No mostramos a los Administradores (como el Jefe) en la lista de técnicos
             if ("ADMIN".equalsIgnoreCase(t.getRol())) continue;
 
             totalTecnicosReales++;
             if (t.getActivo() != null && t.getActivo()) totalActivos++;
             sumaCalificaciones += t.getCalificacion() != null ? t.getCalificacion() : 0.0;
 
-            // Contamos los trabajos reales si la lista de avisos no es nula
-            int trabajosTecnico = (t.getAvisos() != null) ? t.getAvisos().size() : 0;
+            // LA MAGIA INFALIBLE: Contamos cuántos avisos tienen a este técnico asignado
+            int trabajosTecnico = (int) todosLosAvisos.stream()
+                    .filter(a -> a.getTecnico() != null && a.getTecnico().getId().equals(t.getId()))
+                    .count();
+
             totalTrabajosGlobales += trabajosTecnico;
 
-            // Filtro del buscador
             boolean coincideNombre = t.getNombre() != null && t.getNombre().toLowerCase().contains(filtro);
             boolean coincideEspecialidad = t.getEspecialidad() != null && t.getEspecialidad().toLowerCase().contains(filtro);
 
@@ -101,12 +104,10 @@ public class TecnicosController implements Initializable {
                 continue;
             }
 
-            // Crear y añadir la tarjeta a la pantalla
             VBox card = crearTarjetaTecnico(t, trabajosTecnico);
             flowPaneTecnicos.getChildren().add(card);
         }
 
-        // Actualizar las tarjetas de arriba
         lblTotalCard.setText(String.valueOf(totalTecnicosReales));
         lblActivosCard.setText(String.valueOf(totalActivos));
         lblTrabajosCard.setText(String.valueOf(totalTrabajosGlobales));
@@ -114,27 +115,23 @@ public class TecnicosController implements Initializable {
         double media = totalTecnicosReales > 0 ? (sumaCalificaciones / totalTecnicosReales) : 0;
         lblCalificacionCard.setText(String.format("%.1f", media));
     }
+
     @FXML
     public void abrirModalCrearTecnico() {
-        // De momento solo ponemos un mensaje en la consola para que no explote.
-        // En el siguiente paso meteremos aquí el código para abrir la ventana modal real.
-        System.out.println("¡Botón de crear técnico pulsado!");
+        abrirModalTecnico(null); // Le pasamos null para decirle que es uno NUEVO
     }
 
-    // ==========================================
-    // CREADOR DE TARJETAS VISUALES
-    // ==========================================
     private VBox crearTarjetaTecnico(Tecnico t, int trabajos) {
         VBox card = new VBox(15);
         card.getStyleClass().add("tecnico-card");
         card.setPrefWidth(350);
 
-        // 1. CABECERA (Avatar + Nombre + Estado)
+        // 1. CABECERA
         HBox header = new HBox(15);
         header.setAlignment(Pos.CENTER_LEFT);
 
         Label avatar = new Label(extraerIniciales(t.getNombre()));
-        avatar.getStyleClass().addAll("avatar-large", "bg-purple");
+        avatar.getStyleClass().add("avatar-squircle");
 
         VBox nombreBox = new VBox(5);
         Label nombre = new Label(t.getNombre());
@@ -146,7 +143,7 @@ public class TecnicosController implements Initializable {
         nombreBox.getChildren().addAll(nombre, estado);
         header.getChildren().addAll(avatar, nombreBox);
 
-        // 2. CONTACTO (Email y Teléfono)
+        // 2. CONTACTO
         VBox contacto = new VBox(8);
 
         HBox emailBox = new HBox(8); emailBox.setAlignment(Pos.CENTER_LEFT);
@@ -179,12 +176,20 @@ public class TecnicosController implements Initializable {
         }
         especialidadesBox.getChildren().addAll(espTitulo, pillsBox);
 
+        // --- ZONA INFERIOR CON SEPARADOR ---
+        VBox separador = new VBox(15);
+        separador.getStyleClass().add("card-divider");
         // 4. ESTADÍSTICAS
         HBox statsBox = new HBox();
+        statsBox.setPadding(new javafx.geometry.Insets(0, 0, 15, 0));
 
         VBox trabajosBox = new VBox(2); HBox.setHgrow(trabajosBox, Priority.ALWAYS);
         Label trTitulo = new Label("Trabajos"); trTitulo.getStyleClass().add("text-sm-gray");
-        Label trNum = new Label(String.valueOf(trabajos)); trNum.setStyle("-fx-font-weight: bold; -fx-font-size: 16px;");
+
+        Label trNum = new Label(String.valueOf(trabajos));
+        trNum.setStyle("-fx-font-weight: bold; -fx-font-size: 22px; -fx-text-fill: #0F172A;");
+
+        // Asegúrate de que trNum se añade correctamente a la caja
         trabajosBox.getChildren().addAll(trTitulo, trNum);
 
         VBox caliBox = new VBox(2);
@@ -195,26 +200,64 @@ public class TecnicosController implements Initializable {
 
         statsBox.getChildren().addAll(trabajosBox, caliBox);
 
-        // 5. BOTONES ACCIÓN
+        // 5. BOTONES ACCIÓN CON PÍLDORAS
         HBox accionesBox = new HBox(15);
 
         Button btnEdit = new Button(" Editar");
-        SVGPath editIcon = new SVGPath(); editIcon.setContent("M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"); editIcon.getStyleClass().add("icon-lucide");
+        SVGPath editIcon = new SVGPath();
+        editIcon.setContent("M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7 M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z");
+        editIcon.getStyleClass().add("icon-lucide");
+        editIcon.setStyle("-fx-stroke: #0F172A;");
         btnEdit.setGraphic(editIcon);
-        btnEdit.getStyleClass().add("btn-outline-edit");
+        btnEdit.getStyleClass().add("btn-pill-edit");
         btnEdit.setMaxWidth(Double.MAX_VALUE); HBox.setHgrow(btnEdit, Priority.ALWAYS);
 
+        // ACCIÓN DE EDITAR (Abre el modal con los datos del técnico)
+        btnEdit.setOnAction(e -> abrirModalTecnico(t));
+
         Button btnDelete = new Button(" Eliminar");
-        SVGPath deleteIcon = new SVGPath(); deleteIcon.setContent("M3 6h18 M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6 M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2 M10 11v6 M14 11v6"); deleteIcon.getStyleClass().add("icon-lucide");
+        SVGPath deleteIcon = new SVGPath();
+        deleteIcon.setContent("M3 6h18 M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6 M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2 M10 11v6 M14 11v6");
+        deleteIcon.getStyleClass().add("icon-lucide");
+        deleteIcon.setStyle("-fx-stroke: #EF4444;");
         btnDelete.setGraphic(deleteIcon);
-        btnDelete.getStyleClass().add("btn-outline-delete");
+        btnDelete.getStyleClass().add("btn-pill-delete");
         btnDelete.setMaxWidth(Double.MAX_VALUE); HBox.setHgrow(btnDelete, Priority.ALWAYS);
+
+        // ACCIÓN DE ELIMINAR (Con confirmación)
+        btnDelete.setOnAction(e -> {
+            javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Eliminar Técnico");
+            confirm.setHeaderText("¿Estás seguro de eliminar a " + t.getNombre() + "?");
+            confirm.setContentText("Si tiene trabajos asignados, puede que no te deje eliminarlo por seguridad.");
+
+            confirm.showAndWait().ifPresent(response -> {
+                if (response == javafx.scene.control.ButtonType.OK) {
+                    try {
+                        tecnicoRepository.delete(t);
+                        cargarDatos();
+                    } catch (Exception ex) {
+                        javafx.scene.control.Alert error = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                        error.setTitle("No se puede eliminar");
+                        error.setHeaderText("Técnico con historial");
+                        error.setContentText("No puedes borrar a este técnico porque tiene avisos asignados. En su lugar, edítalo y ponlo como 'INACTIVO'.");
+                        error.showAndWait();
+                    }
+                }
+            });
+        });
 
         accionesBox.getChildren().addAll(btnEdit, btnDelete);
 
-        card.getChildren().addAll(header, contacto, especialidadesBox, statsBox, accionesBox);
+        // 1. Metemos las estadísticas y los botones DENTRO de la zona del separador
+        separador.getChildren().addAll(statsBox, accionesBox);
+
+        // 2. Y a la tarjeta principal solo le pasamos sus 4 bloques principales
+        card.getChildren().addAll(header, contacto, especialidadesBox, separador);
+
         return card;
     }
+
 
     private String extraerIniciales(String nombre) {
         if (nombre == null || nombre.isEmpty()) return "??";
@@ -224,9 +267,6 @@ public class TecnicosController implements Initializable {
         return nombre.toUpperCase();
     }
 
-    // ==========================================
-    // SISTEMA DE NAVEGACIÓN Y SESIÓN
-    // ==========================================
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal;
         this.rolActual = rolReal;
@@ -236,20 +276,9 @@ public class TecnicosController implements Initializable {
         if (lblAvatar != null) lblAvatar.setText(extraerIniciales(nombreReal));
     }
 
-    @FXML
-    public void irADashboard(MouseEvent event) {
-        navegarAPantalla(event, "/FXML/Dashboard.fxml");
-    }
-
-    @FXML
-    public void irAGestionAvisos(MouseEvent event) {
-        navegarAPantalla(event, "/FXML/GestionAvisos.fxml");
-    }
-
-    @FXML
-    public void irAInventario(MouseEvent event) {
-        navegarAPantalla(event, "/FXML/Inventario.fxml");
-    }
+    @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
+    @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
+    @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
 
     private void navegarAPantalla(MouseEvent event, String ruta) {
         try {
@@ -257,18 +286,52 @@ public class TecnicosController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Detectamos qué controlador se ha cargado para pasarle los datos
             Object controller = loader.getController();
-            if (controller instanceof DashboardController) {
-                ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
-            } else if (controller instanceof GestionAvisosController) {
-                ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
-            } else if (controller instanceof InventarioController) {
-                ((InventarioController) controller).setDatosUsuario(nombreActual, rolActual);
-            }
+            if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof InventarioController) ((InventarioController) controller).setDatosUsuario(nombreActual, rolActual);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void abrirModalTecnico(Tecnico t) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/TecnicoModal.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            TecnicoModalController controller = loader.getController();
+            controller.cargarDatosTecnico(t);
+
+            Stage modalStage = new Stage();
+            modalStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            modalStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
+            modalStage.setScene(new Scene(root));
+            modalStage.showAndWait();
+
+            // Refrescamos los datos al cerrar
+            cargarDatos();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    public void irAClientes(MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Clientes.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+            Parent root = loader.load();
+
+            // Pasamos los datos del usuario a la nueva pantalla
+            ClientesController controller = loader.getController();
+            controller.setDatosUsuario(nombreActual, rolActual);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.getScene().setRoot(root);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -949,21 +949,285 @@
     -fx-pref-width: 50px;
     -fx-pref-height: 50px;
 }
+/* --- NUEVO: Avatar Cuadrado Redondeado con Degradado --- */
+.avatar-squircle {
+    -fx-background-color: linear-gradient(to bottom right, #3B82F6, #A855F7); /* Degradado Azul a Morado */
+    -fx-background-radius: 14; /* Bordes redondeados estilo app móvil */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+    -fx-alignment: center;
+    -fx-pref-width: 55px;
+    -fx-pref-height: 55px;
+    -fx-min-width: 55px; /* Evita que se aplaste */
+    -fx-min-height: 55px;
+}
 
 .pill-activo { -fx-background-color: #DCFCE7; -fx-text-fill: #16A34A; -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; }
 .pill-inactivo { -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; }
 
 .text-sm-gray { -fx-text-fill: #64748B; -fx-font-size: 12px; }
 
-/* Botones Outline de la tarjeta */
-.btn-outline-edit {
-    -fx-background-color: transparent; -fx-border-color: #E2E8F0; -fx-border-radius: 8;
-    -fx-text-fill: #0F172A; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 0;
+/* --- NUEVO: Separador de la tarjeta --- */
+.card-divider {
+    -fx-border-color: #F1F5F9;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 15 0 0 0;
 }
-.btn-outline-edit:hover { -fx-background-color: #F8FAFC; -fx-border-color: #CBD5E1; }
 
-.btn-outline-delete {
-    -fx-background-color: transparent; -fx-border-color: #FEE2E2; -fx-border-radius: 8;
-    -fx-text-fill: #EF4444; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 0;
+/* --- NUEVO: Botones estilo píldora (Outline) --- */
+.btn-pill-edit {
+    -fx-background-color: transparent;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 20;
+    -fx-text-fill: #0F172A;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 0;
 }
-.btn-outline-delete:hover { -fx-background-color: #FEF2F2; -fx-border-color: #FECACA; }
+.btn-pill-edit:hover {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #CBD5E1;
+}
+
+.btn-pill-delete {
+    -fx-background-color: transparent;
+    -fx-border-color: #FECACA;
+    -fx-border-radius: 20;
+    -fx-text-fill: #EF4444;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 0;
+}
+.btn-pill-delete:hover {
+    -fx-background-color: #FEF2F2;
+    -fx-border-color: #FCA5A5;
+}
+
+/* =======================================
+   PÍLDORAS SELECCIONABLES (Modal Técnicos)
+======================================= */
+.pill-especialidad {
+    -fx-background-color: transparent;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 20;
+    -fx-text-fill: #475569;
+    -fx-padding: 8 18 8 18;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+/* Cuando haces clic en la píldora para activarla */
+.pill-especialidad:selected {
+    -fx-background-color: #EFF6FF;
+    -fx-border-color: #3B82F6;
+    -fx-text-fill: #1D4ED8;
+}
+
+/* =======================================
+   PANTALLA CLIENTES - DEGRADADOS Y TARJETAS
+======================================= */
+/* Degradados de las tarjetas KPI */
+.bg-gradient-magenta {
+    -fx-background-color: linear-gradient(to right, #D946EF, #A855F7);
+}
+.bg-gradient-orange {
+    -fx-background-color: linear-gradient(to right, #F97316, #EF4444);
+}
+
+/* =======================================
+   BOTÓN AÑADIR CLIENTE (Con Degradado)
+======================================= */
+.btn-orange {
+    /* AQUÍ ESTÁ LA MAGIA: El degradado naranja a rojo-naranja de tu diseño */
+    -fx-background-color: linear-gradient(to right, #F97316, #EF4444);
+
+    /* Mantenemos el resto de estilos para que funcione como un botón */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+/* Opcional: Un pequeño cambio de color al pasar el ratón por encima (hover) */
+.btn-orange:hover {
+    -fx-background-color: linear-gradient(to right, #FB923C, #F87171); /* Un degradado más claro */
+}
+
+/* Squircle Naranja del Cliente */
+.avatar-squircle-orange {
+    -fx-background-color: linear-gradient(to bottom right, #F97316, #EF4444);
+    -fx-background-radius: 14;
+    -fx-alignment: center;
+    -fx-pref-width: 55px; -fx-pref-height: 55px;
+    -fx-min-width: 55px;  -fx-min-height: 55px;
+}
+
+/* Píldora de Empresa */
+.pill-empresa {
+    -fx-background-color: #E0E7FF;
+    -fx-text-fill: #4338CA;
+    -fx-padding: 3 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Notas del cliente */
+.nota-divider {
+    -fx-border-color: #F1F5F9;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12 0 0 0;
+}
+.text-nota {
+    -fx-text-fill: #64748B;
+    -fx-font-style: italic;
+    -fx-font-size: 13px;
+}
+
+/* =======================================
+   MODAL CLIENTES - DEGRADADOS Y TOGGLES
+======================================= */
+/* El botón de Crear Cliente con el degradado Naranja -> Magenta */
+.btn-gradient-orange-pink {
+    -fx-background-color: linear-gradient(to right, #EA580C, #DB2777);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-gradient-orange-pink:hover {
+    -fx-background-color: linear-gradient(to right, #F97316, #EC4899);
+}
+
+/* Botones de Tipo de Cliente (Empresa / Particular) */
+.toggle-tipo-cliente {
+    -fx-background-color: white;
+    -fx-border-color: #CBD5E1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #475569;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 0;
+    -fx-cursor: hand;
+}
+/* Cuando está pulsado (Azul eléctrico) */
+.toggle-tipo-cliente:selected {
+    -fx-background-color: #2563EB;
+    -fx-border-color: #2563EB;
+    -fx-text-fill: white;
+}
+
+/* =======================================
+   NAVEGADOR DE SEMANAS (DASHBOARD)
+======================================= */
+.week-nav-container {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 20;
+    -fx-padding: 4 8;
+}
+
+.btn-nav-week {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 5;
+    -fx-background-radius: 50;
+}
+
+.btn-nav-week:hover {
+    -fx-background-color: #FFF7ED; /* Fondo súper sutil naranja */
+}
+
+/* Si la flecha está bloqueada  */
+.btn-nav-week:disabled {
+    -fx-opacity: 0.2;
+    -fx-cursor: default;
+}
+
+.btn-nav-week .icon-lucide {
+    -fx-stroke: #94A3B8; /* Color gris por defecto */
+    -fx-stroke-width: 2.5;
+    -fx-fill: transparent;
+}
+
+/* Se vuelve naranja intenso al pasar el ratón */
+.btn-nav-week:hover .icon-lucide {
+    -fx-stroke: #EA580C;
+}
+
+.label-week-range {
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-text-fill: #0F172A;
+    -fx-padding: 0 15;
+}
+/* =======================================
+   TOOLTIPS DEL GRÁFICO (Bocadillos)
+======================================= */
+.chart-tooltip {
+    -fx-background-color: white;
+    -fx-text-fill: #0F172A;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 12;
+    -fx-background-radius: 8;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+    /* Sombra elegante como en tu diseño */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+}
+
+/* =======================================
+   ACTIVIDAD RECIENTE (Nuevo Diseño)
+======================================= */
+/* Fondos de los iconos (Squircles) */
+.icon-wrapper-blue {
+    -fx-background-color: linear-gradient(to bottom right, #3B82F6, #2563EB);
+    -fx-background-radius: 12;
+}
+.icon-wrapper-orange {
+    -fx-background-color: linear-gradient(to bottom right, #F97316, #EA580C);
+    -fx-background-radius: 12;
+}
+.icon-wrapper-purple {
+    -fx-background-color: linear-gradient(to bottom right, #D946EF, #A855F7);
+    -fx-background-radius: 12;
+}
+
+/* Píldoras de Estado (Colores Pastel) */
+.status-pill-blue {
+    -fx-background-color: #DBEAFE;
+    -fx-text-fill: #1D4ED8;
+    -fx-padding: 3 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+.status-pill-orange {
+    -fx-background-color: #FFEDD5;
+    -fx-text-fill: #C2410C;
+    -fx-padding: 3 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+.status-pill-green {
+    -fx-background-color: #DCFCE7;
+    -fx-text-fill: #15803D;
+    -fx-padding: 3 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.time-text {
+    -fx-text-fill: #94A3B8;
+    -fx-font-size: 12px;
+}
