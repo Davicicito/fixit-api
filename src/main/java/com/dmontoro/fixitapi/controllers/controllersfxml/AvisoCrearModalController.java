@@ -79,23 +79,58 @@ public class AvisoCrearModalController implements Initializable {
 
     @FXML
     public void crearAviso() {
-        // Creamos un aviso vacío y lo rellenamos con lo que hay en la pantalla
+        // 1. OBTENER TODOS LOS DATOS DE LA PANTALLA
+        Cliente clienteSeleccionado = comboCliente.getValue();
+        Tecnico tecnicoSeleccionado = comboTecnico.getValue();
+        Categoria categoriaSeleccionada = comboCategoria.getValue();
+        String prioridadSeleccionada = comboPrioridad.getValue();
+        String descripcion = txtDescripcion.getText();
+
+        // 2. PRIMER MURO: VALIDACIÓN DE CAMPOS OBLIGATORIOS (Que no falte nada básico)
+        if (clienteSeleccionado == null || categoriaSeleccionada == null ||
+                prioridadSeleccionada == null || descripcion == null || descripcion.trim().isEmpty()) {
+
+            javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+            alerta.setTitle("Campos Incompletos");
+            alerta.setHeaderText("Faltan datos obligatorios");
+            alerta.setContentText("Por favor, debes seleccionar al menos un Cliente, una Categoría, la Prioridad y escribir la Descripción de la avería.");
+            alerta.showAndWait();
+
+            return; // Cortamos el método aquí, no le dejamos avanzar
+        }
+
+        // 3. SEGUNDO MURO: VALIDACIÓN DE ESPECIALIDAD DEL TÉCNICO (Solo si ha elegido uno)
+        if (tecnicoSeleccionado != null) {
+            String especialidadesTecnico = tecnicoSeleccionado.getEspecialidad();
+            String nombreCategoria = categoriaSeleccionada.getNombre();
+
+            if (especialidadesTecnico == null || !especialidadesTecnico.toLowerCase().contains(nombreCategoria.toLowerCase())) {
+                // ¡Tarjeta roja!
+                javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                alerta.setTitle("Técnico no cualificado");
+                alerta.setHeaderText("Especialidad incorrecta");
+                alerta.setContentText("El técnico " + tecnicoSeleccionado.getNombre() +
+                        " no es especialista en " + nombreCategoria + ".\n\n" +
+                        "Sus especialidades son: " + (especialidadesTecnico != null ? especialidadesTecnico : "Ninguna") + ".");
+                alerta.showAndWait();
+
+                return; // Cortamos el método aquí, no se guarda.
+            }
+        }
+
+        // 4. GUARDAR EN BASE DE DATOS (Si ha pasado todas las pruebas)
         Aviso nuevoAviso = new Aviso();
+        nuevoAviso.setCliente(clienteSeleccionado);
+        nuevoAviso.setTecnico(tecnicoSeleccionado); // Si es null, se guardará sin problema (Sin Asignar)
+        nuevoAviso.setCategoria(categoriaSeleccionada);
+        nuevoAviso.setPrioridad(prioridadSeleccionada);
+        nuevoAviso.setDescripcion(descripcion.trim());
 
-        nuevoAviso.setCliente(comboCliente.getValue());
-        nuevoAviso.setTecnico(comboTecnico.getValue());
-        nuevoAviso.setCategoria(comboCategoria.getValue());
-        nuevoAviso.setPrioridad(comboPrioridad.getValue());
-        nuevoAviso.setDescripcion(txtDescripcion.getText());
-        // Recuerda que el Estado se pone en "PENDIENTE" automáticamente en tu Service
-
-        // Guardamos en la base de datos
         avisoService.saveAviso(nuevoAviso);
 
-        // Cerramos la ventana
+        // 5. CERRAMOS LA VENTANA
         cerrarModal();
     }
-
     @FXML
     public void cerrarModal() {
         Stage stage = (Stage) txtDescripcion.getScene().getWindow();

@@ -264,6 +264,9 @@ public class ClientesController implements Initializable {
         if (lblAvatar != null) lblAvatar.setText(nombreReal.substring(0, 2).toUpperCase());
     }
 
+    // =======================================================
+    // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
+    // =======================================================
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
     @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
@@ -274,11 +277,20 @@ public class ClientesController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
+
+            // EL ANTÍDOTO: Comprobamos a qué pantalla vamos y le enchufamos la mochila con tus datos
             Object controller = loader.getController();
-            // Lógica para pasar datos al controlador destino (Omitida por brevedad, igual que en Técnicos)
+            if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof InventarioController) ((InventarioController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof TecnicosController) ((TecnicosController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof ClientesController) ((ClientesController) controller).setDatosUsuario(nombreActual, rolActual);
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML public void cerrarSesion(MouseEvent event) { /* Igual que en las otras */ }

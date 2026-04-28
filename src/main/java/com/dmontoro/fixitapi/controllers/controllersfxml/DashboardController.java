@@ -58,11 +58,13 @@ public class DashboardController implements Initializable {
 
     @FXML private VBox vboxActividadReciente;
 
-    @FXML private Label lblCrecimientoIcon;
+    @FXML private SVGPath lblCrecimientoIcon;
     @FXML private Label lblCrecimientoValor;
     @FXML private Label lblAvatar;
     @FXML private Label lblNombreUsuario;
     @FXML private Label lblRolUsuario;
+
+
 
     private int semanasAtras = 0;
 
@@ -128,6 +130,45 @@ public class DashboardController implements Initializable {
         for (Map.Entry<String, Long> entry : conteoPorCategoria.entrySet()) {
             pieChartCategoria.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
         }
+
+        // --- LA MAGIA: COLORES EXACTOS Y BOCADILLOS BLANCOS ---
+        Platform.runLater(() -> {
+            int index = 0; // Necesario para encontrar la leyenda correcta
+            for (PieChart.Data dato : pieChartCategoria.getData()) {
+                Node sliceNode = dato.getNode();
+                if (sliceNode != null) {
+                    String catNombre = dato.getName().toLowerCase();
+                    String colorHex = "";
+
+                    // 1. Decidimos el color por el NOMBRE exacto de la categoría
+                    if (catNombre.contains("font")) colorHex = "#3B82F6"; // Azul
+                    else if (catNombre.contains("elec")) colorHex = "#F59E0B"; // Naranja
+                    else if (catNombre.contains("ascen")) colorHex = "#A855F7"; // Morado
+
+                    if (!colorHex.isEmpty()) {
+                        // Pintamos el "quesito" del gráfico
+                        sliceNode.setStyle(String.format("-fx-pie-color: %s;", colorHex));
+
+                        // Buscamos el cuadradito de la leyenda de abajo y lo pintamos también
+                        Node leyenda = pieChartCategoria.lookup(".default-color" + index + ".chart-legend-item-symbol");
+                        if (leyenda != null) {
+                            leyenda.setStyle(String.format("-fx-background-color: %s;", colorHex));
+                        }
+                    }
+
+                    // 2. Creación del Bocadillo (Tooltip)
+                    int total = (int) dato.getPieValue();
+                    Tooltip tooltip = new Tooltip(dato.getName() + " : " + total);
+                    tooltip.getStyleClass().add("chart-tooltip");
+                    Tooltip.install(sliceNode, tooltip);
+
+                    // 3. Efecto Hover (Usamos setOpacity para no borrar el color del setStyle)
+                    sliceNode.setOnMouseEntered(e -> sliceNode.setOpacity(0.8));
+                    sliceNode.setOnMouseExited(e -> sliceNode.setOpacity(1.0));
+                }
+                index++;
+            }
+        });
     }
 
     private void cargarGraficoLineasMensualReal(List<Aviso> avisos) {
@@ -140,29 +181,52 @@ public class DashboardController implements Initializable {
 
         for (Aviso a : avisos) {
             if (a.getFechaCreacion() != null) {
-                int mes = a.getFechaCreacion().getMonthValue();
-                avisosPorMes[mes]++;
+                // Solo contamos los avisos de ESTE año para que el gráfico sea real
+                if (a.getFechaCreacion().getYear() == LocalDate.now().getYear()) {
+                    int mes = a.getFechaCreacion().getMonthValue();
+                    avisosPorMes[mes]++;
+                }
             }
         }
 
         String[] nombresMeses = {"", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
 
-        for (int i = 1; i <= 3; i++) {
+        // Dibuja la línea desde Enero hasta el mes en el que estemos ahora mismo
+        int mesActual = LocalDate.now().getMonthValue();
+        for (int i = 1; i <= mesActual; i++) {
             seriesTendencia.getData().add(new XYChart.Data<>(nombresMeses[i], avisosPorMes[i]));
         }
 
         lineChartTendencia.getData().add(seriesTendencia);
 
+        // --- LOS BOCADILLOS Y ANIMACIONES DEL RATÓN ---
         Platform.runLater(() -> {
             for (XYChart.Data<String, Number> dato : seriesTendencia.getData()) {
-                if (dato.getNode() != null && dato.getYValue().intValue() > 0) {
-                    Tooltip tooltip = new Tooltip("Mes de " + dato.getXValue() + "\nTotal: " + dato.getYValue() + " avisos");
-                    Tooltip.install(dato.getNode(), tooltip);
+                Node nodoPunto = dato.getNode();
+                if (nodoPunto != null) {
+
+                    // Creamos el bocadillo clavado a tu diseño ("Feb \n avisos : 289")
+                    int total = dato.getYValue().intValue();
+                    Tooltip tooltip = new Tooltip(dato.getXValue() + "\navisos : " + total);
+                    tooltip.getStyleClass().add("chart-tooltip"); // Usa tu CSS blanco con sombra
+                    Tooltip.install(nodoPunto, tooltip);
+
+                    // Efecto Premium: El punto "vibra" o se hace grande al pasar el ratón
+                    nodoPunto.setOnMouseEntered(e -> {
+                        nodoPunto.setStyle("-fx-cursor: hand;");
+                        nodoPunto.setScaleX(1.5); // Lo hace un 50% más grande
+                        nodoPunto.setScaleY(1.5);
+                    });
+
+                    nodoPunto.setOnMouseExited(e -> {
+                        nodoPunto.setStyle("");
+                        nodoPunto.setScaleX(1.0); // Vuelve a la normalidad
+                        nodoPunto.setScaleY(1.0);
+                    });
                 }
             }
         });
     }
-
     private void cargarActividadRecienteReal(List<Aviso> avisos) {
         vboxActividadReciente.getChildren().clear();
 
@@ -296,24 +360,27 @@ public class DashboardController implements Initializable {
             porcentaje = ((double) (totalMesActual - totalMesAnterior) / totalMesAnterior) * 100.0;
         }
 
+        // --- APLICAMOS LOS NUEVOS SVG MODERNOS ---
         if (porcentaje > 0) {
+            // Sube (Verde)
             lblCrecimientoValor.setText(String.format("+%.1f%%", porcentaje));
             lblCrecimientoValor.setStyle("-fx-text-fill: #10B981;");
-            lblCrecimientoIcon.setText("📈");
-            lblCrecimientoIcon.setStyle("-fx-text-fill: #10B981;");
+            lblCrecimientoIcon.setContent("M22 7L13.5 15.5 8.5 10.5 2 17 M16 7h6v6");
+            lblCrecimientoIcon.setStyle("-fx-stroke: #10B981; -fx-fill: transparent; -fx-stroke-width: 2.5;");
         } else if (porcentaje < 0) {
+            // Baja (Rojo)
             lblCrecimientoValor.setText(String.format("%.1f%%", porcentaje));
             lblCrecimientoValor.setStyle("-fx-text-fill: #EF4444;");
-            lblCrecimientoIcon.setText("📉");
-            lblCrecimientoIcon.setStyle("-fx-text-fill: #EF4444;");
+            lblCrecimientoIcon.setContent("M22 17L13.5 8.5 8.5 13.5 2 7 M16 17h6v-6");
+            lblCrecimientoIcon.setStyle("-fx-stroke: #EF4444; -fx-fill: transparent; -fx-stroke-width: 2.5;");
         } else {
+            // Se mantiene (Gris)
             lblCrecimientoValor.setText("0.0%");
             lblCrecimientoValor.setStyle("-fx-text-fill: #6B7280;");
-            lblCrecimientoIcon.setText("➖");
-            lblCrecimientoIcon.setStyle("-fx-text-fill: #6B7280;");
+            lblCrecimientoIcon.setContent("M5 12h14");
+            lblCrecimientoIcon.setStyle("-fx-stroke: #6B7280; -fx-fill: transparent; -fx-stroke-width: 2.5;");
         }
     }
-
     public void setDatosUsuario(String nombreReal, String rolReal) {
         String nombreFormateado = nombreReal.substring(0, 1).toUpperCase() + nombreReal.substring(1);
 

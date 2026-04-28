@@ -356,10 +356,6 @@
 .default-color0.chart-series-line { -fx-stroke: #8B5CF6; -fx-stroke-width: 3px; }
 .default-color0.chart-line-symbol { -fx-background-color: #8B5CF6, white; }
 
-/* Gráfico Circular (Donut simulado) */
-.default-color0.chart-pie { -fx-pie-color: #3B82F6; } /* Fontanería Azul */
-.default-color1.chart-pie { -fx-pie-color: #F59E0B; } /* Electricidad Naranja */
-.default-color2.chart-pie { -fx-pie-color: #A855F7; } /* Ascensores Morado */
 
 /* Quitar los bordes feos de las leyendas */
 .chart-legend { -fx-background-color: transparent; }
@@ -1230,4 +1226,67 @@
 .time-text {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 12px;
+}
+/* =======================================
+   NUEVOS ICONOS KPI (Diseño Squircle Moderno)
+======================================= */
+.kpi-squircle-orange {
+    -fx-background-color: linear-gradient(to bottom right, #FF6B00, #FF2A00);
+    -fx-background-radius: 14;
+    -fx-min-width: 48px; -fx-min-height: 48px;
+    -fx-pref-width: 48px; -fx-pref-height: 48px;
+    -fx-max-width: 48px; -fx-max-height: 48px; /* ESTO EVITA QUE SE ESTIRE */
+}
+.kpi-squircle-blue {
+    -fx-background-color: linear-gradient(to bottom right, #00C6FF, #0072FF);
+    -fx-background-radius: 14;
+    -fx-min-width: 48px; -fx-min-height: 48px;
+    -fx-pref-width: 48px; -fx-pref-height: 48px;
+    -fx-max-width: 48px; -fx-max-height: 48px;
+}
+.kpi-squircle-green {
+    -fx-background-color: linear-gradient(to bottom right, #22C55E, #059669);
+    -fx-background-radius: 14;
+    -fx-min-width: 48px; -fx-min-height: 48px;
+    -fx-pref-width: 48px; -fx-pref-height: 48px;
+    -fx-max-width: 48px; -fx-max-height: 48px;
+}
+.kpi-squircle-purple {
+    -fx-background-color: linear-gradient(to bottom right, #E100FF, #7F00FF);
+    -fx-background-radius: 14;
+    -fx-min-width: 48px; -fx-min-height: 48px;
+    -fx-pref-width: 48px; -fx-pref-height: 48px;
+    -fx-max-width: 48px; -fx-max-height: 48px;
+}
+/* Las líneas finas y elegantes de los iconos blancos */
+.icon-kpi-white {
+    -fx-stroke: white;
+    -fx-fill: transparent;
+    -fx-stroke-width: 2.2; /* Ni muy gordo ni muy fino */
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+
+/* El icono de la flecha de Crecimiento (Solo morado, sin fondo) */
+.icon-crecimiento-purple {
+    -fx-stroke: #9333EA; /* Morado intenso */
+    -fx-fill: transparent;
+    -fx-stroke-width: 2.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+/* =======================================
+   ICONO DE FILTRO (EMBUDO)
+======================================= */
+.filter-icon {
+    -fx-stroke-width: 2;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-fill: transparent;
+}
+.filter-btn .filter-icon {
+    -fx-stroke: #475569; /* Gris oscuro cuando no está seleccionado */
+}
+.filter-btn-active .filter-icon {
+    -fx-stroke: white; /* Blanco cuando está activo */
 }

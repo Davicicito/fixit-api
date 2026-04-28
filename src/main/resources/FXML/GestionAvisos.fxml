@@ -153,10 +153,26 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                             <children>
-                                <Button fx:id="btnFiltroTodos" onAction="#filtrarPorTodos" styleClass="filter-btn-active" text="  Todos  " />
-                                <Button fx:id="btnFiltroPendiente" onAction="#filtrarPorPendiente" styleClass="filter-btn" text="  PENDIENTE  " />
-                                <Button fx:id="btnFiltroProgreso" onAction="#filtrarPorProgreso" styleClass="filter-btn" text="  EN PROGRESO  " />
-                                <Button fx:id="btnFiltroCompletado" onAction="#filtrarPorCompletado" styleClass="filter-btn" text="  COMPLETADO  " />
+                                <Button fx:id="btnFiltroTodos" onAction="#filtrarPorTodos" styleClass="filter-btn-active" text=" Todos">
+                                    <graphic>
+                                        <SVGPath content="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" styleClass="filter-icon" />
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btnFiltroPendiente" onAction="#filtrarPorPendiente" styleClass="filter-btn" text=" PENDIENTE">
+                                    <graphic>
+                                        <SVGPath content="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" styleClass="filter-icon" />
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btnFiltroProgreso" onAction="#filtrarPorProgreso" styleClass="filter-btn" text=" EN PROGRESO">
+                                    <graphic>
+                                        <SVGPath content="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" styleClass="filter-icon" />
+                                    </graphic>
+                                </Button>
+                                <Button fx:id="btnFiltroCompletado" onAction="#filtrarPorCompletado" styleClass="filter-btn" text=" COMPLETADO">
+                                    <graphic>
+                                        <SVGPath content="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" styleClass="filter-icon" />
+                                    </graphic>
+                                </Button>
                             </children>
                         </HBox>
                     </children>

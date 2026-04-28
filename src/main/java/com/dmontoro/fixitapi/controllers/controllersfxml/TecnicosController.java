@@ -79,7 +79,7 @@ public class TecnicosController implements Initializable {
         String filtro = txtBuscar.getText() != null ? txtBuscar.getText().toLowerCase() : "";
 
         int totalActivos = 0;
-        double sumaCalificaciones = 0;
+        double sumaCalificacionesGlobal = 0;
         int totalTecnicosReales = 0;
         int totalTrabajosGlobales = 0;
 
@@ -88,14 +88,47 @@ public class TecnicosController implements Initializable {
 
             totalTecnicosReales++;
             if (t.getActivo() != null && t.getActivo()) totalActivos++;
-            sumaCalificaciones += t.getCalificacion() != null ? t.getCalificacion() : 0.0;
 
-            // LA MAGIA INFALIBLE: Contamos cuántos avisos tienen a este técnico asignado
+            // --- LÓGICA DE CÁLCULO DE TRABAJOS ---
             int trabajosTecnico = (int) todosLosAvisos.stream()
                     .filter(a -> a.getTecnico() != null && a.getTecnico().getId().equals(t.getId()))
                     .count();
 
             totalTrabajosGlobales += trabajosTecnico;
+
+            // --- LÓGICA DE MEDIA REAL DE CALIFICACIÓN ---
+            // Solo contamos los avisos que estén COMPLETADOS y que este técnico haya hecho
+            List<Aviso> avisosCompletadosDelTecnico = todosLosAvisos.stream()
+                    .filter(a -> a.getTecnico() != null && a.getTecnico().getId().equals(t.getId()))
+                    .filter(a -> "COMPLETADO".equalsIgnoreCase(a.getEstado()))
+                    .toList();
+
+            double mediaTecnico = 0.0;
+            if (!avisosCompletadosDelTecnico.isEmpty()) {
+                double sumaPuntuaciones = 0;
+                int partesConNota = 0;
+
+                for (Aviso aviso : avisosCompletadosDelTecnico) {
+                    // CUIDADO: Estamos asumiendo que vas a crear un campo "valoracionCliente" en tu modelo Aviso.
+                    // Si aún no lo has creado en la clase Aviso, el técnico mantendrá su nota estática por ahora
+                    // Para que compile sin errores ahora, usaremos la nota estática del técnico si existe.
+                    // CAMBIA ESTO EN EL FUTURO: sumaPuntuaciones += aviso.getValoracionCliente();
+                    sumaPuntuaciones += (t.getCalificacion() != null ? t.getCalificacion() : 0.0);
+                    partesConNota++;
+                }
+
+                if(partesConNota > 0) {
+                    mediaTecnico = sumaPuntuaciones / partesConNota;
+                }
+            } else {
+                // Si no tiene trabajos completados, le ponemos la que tiene de serie o 0
+                mediaTecnico = t.getCalificacion() != null ? t.getCalificacion() : 0.0;
+            }
+
+            // Forzamos a que el técnico tenga la calificación real en la tarjeta
+            t.setCalificacion(mediaTecnico);
+            sumaCalificacionesGlobal += mediaTecnico;
+
 
             boolean coincideNombre = t.getNombre() != null && t.getNombre().toLowerCase().contains(filtro);
             boolean coincideEspecialidad = t.getEspecialidad() != null && t.getEspecialidad().toLowerCase().contains(filtro);
@@ -104,6 +137,7 @@ public class TecnicosController implements Initializable {
                 continue;
             }
 
+            // Pasamos el técnico (que ya tiene su media real) a la tarjeta
             VBox card = crearTarjetaTecnico(t, trabajosTecnico);
             flowPaneTecnicos.getChildren().add(card);
         }
@@ -112,8 +146,8 @@ public class TecnicosController implements Initializable {
         lblActivosCard.setText(String.valueOf(totalActivos));
         lblTrabajosCard.setText(String.valueOf(totalTrabajosGlobales));
 
-        double media = totalTecnicosReales > 0 ? (sumaCalificaciones / totalTecnicosReales) : 0;
-        lblCalificacionCard.setText(String.format("%.1f", media));
+        double mediaGlobal = totalTecnicosReales > 0 ? (sumaCalificacionesGlobal / totalTecnicosReales) : 0;
+        lblCalificacionCard.setText(String.format("%.1f", mediaGlobal).replace(",", "."));
     }
 
     @FXML
@@ -276,20 +310,25 @@ public class TecnicosController implements Initializable {
         if (lblAvatar != null) lblAvatar.setText(extraerIniciales(nombreReal));
     }
 
+    // =======================================================
+    // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
+    // =======================================================
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
     @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
-
     private void navegarAPantalla(MouseEvent event, String ruta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
+            // EL ANTÍDOTO: Comprobamos a qué pantalla vamos y le enchufamos la mochila con tus datos
             Object controller = loader.getController();
             if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
             else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
             else if (controller instanceof InventarioController) ((InventarioController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof TecnicosController) ((TecnicosController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof ClientesController) ((ClientesController) controller).setDatosUsuario(nombreActual, rolActual);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);

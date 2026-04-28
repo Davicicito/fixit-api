@@ -371,27 +371,25 @@ public class InventarioController implements Initializable {
         lblAvatar.setText(nombreReal.substring(0, 2).toUpperCase());
     }
 
-    @FXML
-    public void irAGestionAvisos(MouseEvent event) {
-        navegarAPantalla(event, "/FXML/GestionAvisos.fxml");
-    }
+    // =======================================================
+    // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
+    // =======================================================
+    @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
+    @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
 
-    @FXML
-    public void irADashboard(MouseEvent event) {
-        navegarAPantalla(event, "/FXML/Dashboard.fxml");
-    }
-
-    private void navegarAPantalla(MouseEvent event, String rutaFXML) {
+    private void navegarAPantalla(MouseEvent event, String ruta) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Pasamos los datos del usuario para no perderlos
+            // EL ANTÍDOTO: Comprobamos a qué pantalla vamos y le enchufamos la mochila con tus datos
             Object controller = loader.getController();
-            if (controller instanceof GestionAvisosController) {
-                ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
-            }
+            if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof InventarioController) ((InventarioController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof TecnicosController) ((TecnicosController) controller).setDatosUsuario(nombreActual, rolActual);
+            else if (controller instanceof ClientesController) ((ClientesController) controller).setDatosUsuario(nombreActual, rolActual);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.getScene().setRoot(root);

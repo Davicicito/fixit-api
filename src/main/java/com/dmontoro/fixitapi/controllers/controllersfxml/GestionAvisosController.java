@@ -266,11 +266,82 @@ public class GestionAvisosController implements Initializable {
             return new SimpleStringProperty("Sin Asignar");
         });
 
+        // --- COLUMNA CATEGORÍA (Con iconos SVG de colores) ---
         colCategoria.setCellValueFactory(cellData -> {
             if (cellData.getValue().getCategoria() != null) {
                 return new SimpleStringProperty(cellData.getValue().getCategoria().getNombre());
             }
             return new SimpleStringProperty("General");
+        });
+
+        colCategoria.setCellFactory(column -> new javafx.scene.control.TableCell<Aviso, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(8);
+                    box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                    javafx.scene.shape.SVGPath icon = new javafx.scene.shape.SVGPath();
+                    icon.setStyle("-fx-fill: transparent; -fx-stroke-width: 2; -fx-stroke-line-cap: round;");
+
+                    String catLower = item.toLowerCase();
+                    if (catLower.contains("font")) {
+                        icon.setContent("M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z");
+                        icon.setStyle(icon.getStyle() + "-fx-stroke: #3B82F6;"); // Azul
+                    } else if (catLower.contains("elec")) {
+                        icon.setContent("M13 2L3 14h9l-1 8 10-12h-9l1-8z");
+                        icon.setStyle(icon.getStyle() + "-fx-stroke: #F59E0B;"); // Naranja
+                    } else {
+                        icon.setContent("M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6z");
+                        icon.setStyle(icon.getStyle() + "-fx-stroke: #A855F7;"); // Morado
+                    }
+
+                    Label textLbl = new Label(item);
+                    textLbl.setStyle("-fx-text-fill: #475569;");
+
+                    box.getChildren().addAll(icon, textLbl);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
+        });
+
+        // --- COLUMNA PRIORIDAD (Con punto de color) ---
+        colPrioridad.setCellFactory(column -> new javafx.scene.control.TableCell<Aviso, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    javafx.scene.layout.HBox box = new javafx.scene.layout.HBox(8);
+                    box.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                    // Creamos el punto redondo
+                    javafx.scene.shape.Circle dot = new javafx.scene.shape.Circle(4);
+                    String prioLower = item.toLowerCase();
+
+                    if (prioLower.contains("alta") || prioLower.contains("urgente")) {
+                        dot.setFill(javafx.scene.paint.Color.web("#EF4444")); // Rojo
+                    } else if (prioLower.contains("media")) {
+                        dot.setFill(javafx.scene.paint.Color.web("#F59E0B")); // Naranja
+                    } else {
+                        dot.setFill(javafx.scene.paint.Color.web("#10B981")); // Verde
+                    }
+
+                    Label textLbl = new Label(item.toUpperCase());
+                    textLbl.setStyle("-fx-text-fill: #475569; -fx-font-weight: bold; -fx-font-size: 12px;");
+
+                    box.getChildren().addAll(dot, textLbl);
+                    setGraphic(box);
+                    setText(null);
+                }
+            }
         });
 
         colFecha.setCellValueFactory(cellData -> {

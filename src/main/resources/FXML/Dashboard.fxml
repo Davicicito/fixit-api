@@ -14,9 +14,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
-
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.StackPane?>
+
 <BorderPane prefHeight="900.0" prefWidth="1400.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dmontoro.fixitapi.controllers.controllersfxml.DashboardController">
 
     <left>
@@ -121,7 +122,9 @@
                                                 <Label styleClass="kpi-footer" text="Actualizado ahora" />
                                             </children>
                                         </VBox>
-                                        <Label styleClass="kpi-icon, icon-orange" text="🕒" />
+                                        <StackPane styleClass="kpi-squircle-orange">
+                                            <SVGPath content="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 6v6l4 2" styleClass="icon-kpi-white" />
+                                        </StackPane>
                                     </children>
                                 </HBox>
 
@@ -135,7 +138,9 @@
                                                 <Label styleClass="kpi-footer" text="Técnicos activos" />
                                             </children>
                                         </VBox>
-                                        <Label styleClass="kpi-icon, icon-blue" text="📈" />
+                                        <StackPane styleClass="kpi-squircle-blue">
+                                            <SVGPath content="M22 7L13.5 15.5 8.5 10.5 2 17 M16 7h6v6" styleClass="icon-kpi-white" />
+                                        </StackPane>
                                     </children>
                                 </HBox>
 
@@ -149,7 +154,9 @@
                                                 <Label styleClass="kpi-footer" text="Trabajos cerrados" />
                                             </children>
                                         </VBox>
-                                        <Label styleClass="kpi-icon, icon-green" text="📋" />
+                                        <StackPane styleClass="kpi-squircle-green">
+                                            <SVGPath content="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2 M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z M9 14l2 2 4-4" styleClass="icon-kpi-white" />
+                                        </StackPane>
                                     </children>
                                 </HBox>
 
@@ -163,7 +170,9 @@
                                                 <Label styleClass="kpi-footer" text="Avisos históricos" />
                                             </children>
                                         </VBox>
-                                        <Label styleClass="kpi-icon, icon-purple" text="❗" />
+                                        <StackPane styleClass="kpi-squircle-purple">
+                                            <SVGPath content="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 8v4 M12 16h.01" styleClass="icon-kpi-white" />
+                                        </StackPane>
                                     </children>
                                 </HBox>
                             </children>
@@ -212,7 +221,7 @@
                                     <children>
                                         <HBox alignment="CENTER_LEFT">
                                             <Label styleClass="chart-title" text="Actividad Reciente" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-                                            <Label styleClass="link-text" text="Ver todos →" />
+                                            <Label text="Ver todos →" onMouseClicked="#irAGestionAvisos" styleClass="link-text" />
                                         </HBox>
 
                                         <VBox fx:id="vboxActividadReciente" spacing="0" />
@@ -227,7 +236,7 @@
                                             <yAxis><NumberAxis side="LEFT" /></yAxis>
                                         </LineChart>
                                         <HBox styleClass="growth-box" alignment="CENTER_LEFT" spacing="10.0">
-                                            <Label fx:id="lblCrecimientoIcon" styleClass="growth-icon" text="📈" />
+                                            <SVGPath fx:id="lblCrecimientoIcon" content="M22 7L13.5 15.5 8.5 10.5 2 17 M16 7h6v6" styleClass="icon-crecimiento-purple" />
                                             <VBox>
                                                 <Label styleClass="growth-title" text="Crecimiento" />
                                                 <Label fx:id="lblCrecimientoValor" styleClass="growth-value" text="0.0%" />

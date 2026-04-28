@@ -81,42 +81,64 @@ public class LoginController implements Initializable {
 
     @FXML
     public void iniciarSesion(ActionEvent event) {
+        String email = txtEmail.getText().trim();
+        String password = txtPassword.getText();
+
+        // 1. ¿Ha escrito algo?
+        if (email.isEmpty() || password.isEmpty()) {
+            mostrarError("Campos vacíos", "Por favor, introduce tu correo y contraseña.");
+            return;
+        }
+
+        // 2. Buscamos a la persona en la base de datos
+        // Usamos Técnico porque en tu BD todos (incluso el ADMIN) están en esa tabla
+        com.dmontoro.fixitapi.models.Tecnico usuarioLogueado = tecnicoRepository.findAll().stream()
+                .filter(t -> t.getEmail() != null && t.getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .orElse(null);
+
+        // 3. ¿Existe y la contraseña es correcta?
+        if (usuarioLogueado == null || !password.equals(usuarioLogueado.getPassword())) {
+            mostrarError("Credenciales incorrectas", "El correo o la contraseña no son válidos.");
+            return;
+        }
+
+        // 4. EL PORTERO: ¿Es el Jefe (ADMIN)?
+        if (!"ADMIN".equalsIgnoreCase(usuarioLogueado.getRol())) {
+            mostrarError("Acceso Denegado", "Esta aplicación de escritorio es solo para Administradores. Los técnicos deben acceder a través de la App móvil.");
+            return;
+        }
+
+        // 5. SI HA LLEGADO AQUÍ... ¡PUEDE PASAR!
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Dashboard.fxml"));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // --- NUEVO: PASAR DATOS AL DASHBOARD ---
-            // Recuperamos el controlador del Dashboard que se acaba de crear
+            // Pasamos los datos REALES de la base de datos al Dashboard
             DashboardController dashboardController = loader.getController();
-
-            // Cogemos el email que ha escrito (ej: david.montoro@fixit.com)
-            String email = txtEmail.getText().trim();
-            String nombreUsuario = "Administrador"; // Por defecto por si entra vacío
-
-            if (!email.isEmpty()) {
-                // Cortamos todo lo que haya después del @
-                nombreUsuario = email.split("@")[0];
-                // Cambiamos los puntos por espacios (david.montoro -> david montoro)
-                nombreUsuario = nombreUsuario.replace(".", " ");
-            }
-
-            // Le enviamos los datos reales a la pantalla
-            dashboardController.setDatosUsuario(nombreUsuario, "Jefe de Equipo");
-            // ---------------------------------------
+            dashboardController.setDatosUsuario(usuarioLogueado.getNombre(), "Administrador General");
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.hide();
 
             stage.setScene(new Scene(root, 1400, 900));
             stage.setTitle("FixIt - Panel de Control Administrativo");
-
             stage.setResizable(true);
             stage.setMaximized(true);
-
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
+            mostrarError("Error del sistema", "No se pudo cargar la pantalla principal.");
         }
+    }
+
+    // Método auxiliar para mostrar los mensajes de error con una ventana bonita
+    private void mostrarError(String titulo, String mensaje) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+        alert.setTitle("Error de inicio de sesión");
+        alert.setHeaderText(titulo);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }}

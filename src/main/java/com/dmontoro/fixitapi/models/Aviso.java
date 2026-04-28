@@ -32,6 +32,9 @@ public class Aviso {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
+    @Column(name = "valoracion_cliente")
+    private Integer valoracionCliente; // Del 1 al 5
+
     @ManyToOne
     @JoinColumn(name = "tecnico_id")
     private Tecnico tecnico;
