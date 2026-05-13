@@ -69,7 +69,6 @@ public class ClienteModalController implements Initializable {
 
     @FXML
     public void guardarCliente() {
-        // Validaciones básicas de campos con asterisco
         if (txtNombre.getText().isEmpty() || txtEmail.getText().isEmpty() || txtTelefono.getText().isEmpty() || txtDireccion.getText().isEmpty()) {
             mostrarError("Por favor, rellena todos los campos obligatorios marcados con asterisco (*).");
             return;

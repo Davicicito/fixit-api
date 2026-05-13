@@ -22,5 +22,5 @@ public class AvisoMaterial {
     @JoinColumn(name = "material_id")
     private Material material;
 
-    private Integer cantidad; // Atributo específico de la relación
+    private Integer cantidad;
 }

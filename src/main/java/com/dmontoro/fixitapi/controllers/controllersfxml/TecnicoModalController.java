@@ -28,7 +28,6 @@ public class TecnicoModalController implements Initializable {
     @FXML private TextField txtTelefono;
     @FXML private PasswordField txtPassword;
 
-    // Aquí es donde meteremos las píldoras
     @FXML private FlowPane flowEspecialidades;
 
     @FXML private ComboBox<String> comboEstado;
@@ -43,7 +42,6 @@ public class TecnicoModalController implements Initializable {
 
     private Tecnico tecnicoActual;
 
-    // Guardamos la lista de botones para luego saber cuáles ha clicado
     private List<ToggleButton> botonesEspecialidad = new ArrayList<>();
 
     @Override
@@ -55,7 +53,6 @@ public class TecnicoModalController implements Initializable {
     public void cargarDatosTecnico(Tecnico t) {
         this.tecnicoActual = t;
 
-        // Limpiamos los colores anteriores del botón
         btnGuardar.getStyleClass().removeAll("btn-primary", "btn-green");
 
         if (t == null) {
@@ -75,7 +72,6 @@ public class TecnicoModalController implements Initializable {
             comboEstado.setValue(t.getActivo() != null && t.getActivo() ? "ACTIVO" : "INACTIVO");
         }
 
-        // --- MAGIA: CREAR LAS PÍLDORAS DE ESPECIALIDADES ---
         flowEspecialidades.getChildren().clear();
         botonesEspecialidad.clear();
 
@@ -86,7 +82,7 @@ public class TecnicoModalController implements Initializable {
             ToggleButton pill = new ToggleButton(c.getNombre().toUpperCase());
             pill.getStyleClass().add("pill-especialidad");
 
-            // Si el técnico ya tenía esta especialidad, la dejamos clicada (en azul)
+            // Si el técnico ya tenía esta especialidad, la dejamos clicada
             if (especialidadesActuales.contains(c.getNombre().toUpperCase())) {
                 pill.setSelected(true);
             }
@@ -118,7 +114,7 @@ public class TecnicoModalController implements Initializable {
             tecnicoActual.setEmail(txtEmail.getText().trim());
             tecnicoActual.setTelefono(txtTelefono.getText().trim());
 
-            // Recogemos todos los botones que estén clicados y los juntamos con comas
+            // Recogemos todos los botones que estén clicados
             String especialidadesSeleccionadas = botonesEspecialidad.stream()
                     .filter(ToggleButton::isSelected)
                     .map(ToggleButton::getText)

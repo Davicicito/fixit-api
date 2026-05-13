@@ -10,40 +10,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RestController // Indica que esta clase responderá a peticiones HTTP devolviendo JSON
-@RequestMapping("/tecnicos") // La ruta base será localhost:8080/tecnicos
-@CrossOrigin // VITAL: Permite que tu frontend (móvil o web) se conecte sin bloqueos de seguridad CORS
+@RestController
+@RequestMapping("/tecnicos")
+@CrossOrigin
 public class TecnicoController {
 
     @Autowired
     private TecnicoService tecnicoService;
 
-    // 1. Obtener todos los técnicos (READ ALL)
+    // 1. Obtener todos los técnicos
     @GetMapping
     public ResponseEntity<List<Tecnico>> getAllTecnicos() {
         List<Tecnico> tecnicos = tecnicoService.getAllTecnicos();
         return new ResponseEntity<>(tecnicos, HttpStatus.OK); // Devuelve 200 OK
     }
 
-    // 2. Obtener un técnico por ID (READ BY ID)
+    // 2. Obtener un técnico por ID
     @GetMapping("/{id}")
     public ResponseEntity<Tecnico> getTecnicoById(@PathVariable Long id) {
         Optional<Tecnico> tecnico = tecnicoService.getTecnicoById(id);
         if (tecnico.isPresent()) {
-            return ResponseEntity.ok(tecnico.get()); // Devuelve 200 OK con los datos
+            return ResponseEntity.ok(tecnico.get());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Devuelve 404 si no existe
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    // 3. Crear un nuevo técnico (CREATE)
+    // 3. Crear un nuevo técnico
     @PostMapping
     public ResponseEntity<Tecnico> createTecnico(@RequestBody Tecnico tecnico) {
         Tecnico nuevoTecnico = tecnicoService.saveTecnico(tecnico);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTecnico); // Devuelve 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTecnico);
     }
 
-    // 4. Actualizar un técnico (UPDATE)
+    // 4. Actualizar un técnico
     @PutMapping("/{id}")
     public ResponseEntity<Tecnico> updateTecnico(@PathVariable Long id, @RequestBody Tecnico tecnicoDetails) {
         Optional<Tecnico> tecnicoOptional = tecnicoService.getTecnicoById(id);
@@ -59,21 +59,21 @@ public class TecnicoController {
             tecnicoExistente.setRol(tecnicoDetails.getRol());
 
             Tecnico tecnicoActualizado = tecnicoService.saveTecnico(tecnicoExistente);
-            return ResponseEntity.ok(tecnicoActualizado); // Devuelve 200 OK
+            return ResponseEntity.ok(tecnicoActualizado);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Devuelve 404 si no existe el ID
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    // 5. Eliminar un técnico (DELETE)
+    // 5. Eliminar un técnico
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTecnico(@PathVariable Long id) {
         Optional<Tecnico> tecnico = tecnicoService.getTecnicoById(id);
         if (tecnico.isPresent()) {
             tecnicoService.deleteTecnico(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // Devuelve 204 No Content
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Devuelve 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

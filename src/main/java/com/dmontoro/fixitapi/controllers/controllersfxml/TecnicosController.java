@@ -74,7 +74,7 @@ public class TecnicosController implements Initializable {
         flowPaneTecnicos.getChildren().clear();
 
         List<Tecnico> tecnicos = tecnicoRepository.findAll();
-        List<Aviso> todosLosAvisos = avisoRepository.findAll(); // <-- Traemos todos los avisos
+        List<Aviso> todosLosAvisos = avisoRepository.findAll();
 
         String filtro = txtBuscar.getText() != null ? txtBuscar.getText().toLowerCase() : "";
 
@@ -89,46 +89,46 @@ public class TecnicosController implements Initializable {
             totalTecnicosReales++;
             if (t.getActivo() != null && t.getActivo()) totalActivos++;
 
-            // --- LÓGICA DE CÁLCULO DE TRABAJOS ---
+            // LÓGICA DE CÁLCULO DE TRABAJOS
             int trabajosTecnico = (int) todosLosAvisos.stream()
                     .filter(a -> a.getTecnico() != null && a.getTecnico().getId().equals(t.getId()))
                     .count();
 
             totalTrabajosGlobales += trabajosTecnico;
 
-            // --- LÓGICA DE MEDIA REAL DE CALIFICACIÓN ---
-            // Solo contamos los avisos que estén COMPLETADOS y que este técnico haya hecho
+            // LÓGICA DE MEDIA REAL DE CALIFICACIÓN
             List<Aviso> avisosCompletadosDelTecnico = todosLosAvisos.stream()
                     .filter(a -> a.getTecnico() != null && a.getTecnico().getId().equals(t.getId()))
                     .filter(a -> "COMPLETADO".equalsIgnoreCase(a.getEstado()))
                     .toList();
 
             double mediaTecnico = 0.0;
-            if (!avisosCompletadosDelTecnico.isEmpty()) {
-                double sumaPuntuaciones = 0;
-                int partesConNota = 0;
+            double sumaPuntuaciones = 0;
+            int partesConNota = 0;
 
+            if (!avisosCompletadosDelTecnico.isEmpty()) {
                 for (Aviso aviso : avisosCompletadosDelTecnico) {
-                    // CUIDADO: Estamos asumiendo que vas a crear un campo "valoracionCliente" en tu modelo Aviso.
-                    // Si aún no lo has creado en la clase Aviso, el técnico mantendrá su nota estática por ahora
-                    // Para que compile sin errores ahora, usaremos la nota estática del técnico si existe.
-                    // CAMBIA ESTO EN EL FUTURO: sumaPuntuaciones += aviso.getValoracionCliente();
-                    sumaPuntuaciones += (t.getCalificacion() != null ? t.getCalificacion() : 0.0);
-                    partesConNota++;
+                    if (aviso.getValoracionCliente() != null && aviso.getValoracionCliente() > 0) {
+                        sumaPuntuaciones += aviso.getValoracionCliente();
+                        partesConNota++;
+                    }
                 }
 
                 if(partesConNota > 0) {
                     mediaTecnico = sumaPuntuaciones / partesConNota;
+                } else {
+                    // Si completo trabajos pero antes de poner las estrellas, se queda como estaba
+                    mediaTecnico = t.getCalificacion() != null ? t.getCalificacion() : 0.0;
                 }
             } else {
                 // Si no tiene trabajos completados, le ponemos la que tiene de serie o 0
                 mediaTecnico = t.getCalificacion() != null ? t.getCalificacion() : 0.0;
             }
 
-            // Forzamos a que el técnico tenga la calificación real en la tarjeta
             t.setCalificacion(mediaTecnico);
-            sumaCalificacionesGlobal += mediaTecnico;
+            tecnicoRepository.save(t);
 
+            sumaCalificacionesGlobal += mediaTecnico;
 
             boolean coincideNombre = t.getNombre() != null && t.getNombre().toLowerCase().contains(filtro);
             boolean coincideEspecialidad = t.getEspecialidad() != null && t.getEspecialidad().toLowerCase().contains(filtro);
@@ -137,7 +137,7 @@ public class TecnicosController implements Initializable {
                 continue;
             }
 
-            // Pasamos el técnico (que ya tiene su media real) a la tarjeta
+            // Pasamos el técnico a la tarjeta
             VBox card = crearTarjetaTecnico(t, trabajosTecnico);
             flowPaneTecnicos.getChildren().add(card);
         }
@@ -149,10 +149,9 @@ public class TecnicosController implements Initializable {
         double mediaGlobal = totalTecnicosReales > 0 ? (sumaCalificacionesGlobal / totalTecnicosReales) : 0;
         lblCalificacionCard.setText(String.format("%.1f", mediaGlobal).replace(",", "."));
     }
-
     @FXML
     public void abrirModalCrearTecnico() {
-        abrirModalTecnico(null); // Le pasamos null para decirle que es uno NUEVO
+        abrirModalTecnico(null);
     }
 
     private VBox crearTarjetaTecnico(Tecnico t, int trabajos) {
@@ -210,7 +209,6 @@ public class TecnicosController implements Initializable {
         }
         especialidadesBox.getChildren().addAll(espTitulo, pillsBox);
 
-        // --- ZONA INFERIOR CON SEPARADOR ---
         VBox separador = new VBox(15);
         separador.getStyleClass().add("card-divider");
         // 4. ESTADÍSTICAS
@@ -234,7 +232,7 @@ public class TecnicosController implements Initializable {
 
         statsBox.getChildren().addAll(trabajosBox, caliBox);
 
-        // 5. BOTONES ACCIÓN CON PÍLDORAS
+        // 5. BOTONES ACCIÓN
         HBox accionesBox = new HBox(15);
 
         Button btnEdit = new Button(" Editar");
@@ -246,7 +244,7 @@ public class TecnicosController implements Initializable {
         btnEdit.getStyleClass().add("btn-pill-edit");
         btnEdit.setMaxWidth(Double.MAX_VALUE); HBox.setHgrow(btnEdit, Priority.ALWAYS);
 
-        // ACCIÓN DE EDITAR (Abre el modal con los datos del técnico)
+        // ACCIÓN DE EDITAR
         btnEdit.setOnAction(e -> abrirModalTecnico(t));
 
         Button btnDelete = new Button(" Eliminar");
@@ -258,7 +256,7 @@ public class TecnicosController implements Initializable {
         btnDelete.getStyleClass().add("btn-pill-delete");
         btnDelete.setMaxWidth(Double.MAX_VALUE); HBox.setHgrow(btnDelete, Priority.ALWAYS);
 
-        // ACCIÓN DE ELIMINAR (Con confirmación)
+        // ACCIÓN DE ELIMINAR
         btnDelete.setOnAction(e -> {
             javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Eliminar Técnico");
@@ -283,10 +281,8 @@ public class TecnicosController implements Initializable {
 
         accionesBox.getChildren().addAll(btnEdit, btnDelete);
 
-        // 1. Metemos las estadísticas y los botones DENTRO de la zona del separador
         separador.getChildren().addAll(statsBox, accionesBox);
 
-        // 2. Y a la tarjeta principal solo le pasamos sus 4 bloques principales
         card.getChildren().addAll(header, contacto, especialidadesBox, separador);
 
         return card;
@@ -310,9 +306,7 @@ public class TecnicosController implements Initializable {
         if (lblAvatar != null) lblAvatar.setText(extraerIniciales(nombreReal));
     }
 
-    // =======================================================
     // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
-    // =======================================================
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
     @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
@@ -322,7 +316,6 @@ public class TecnicosController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // EL ANTÍDOTO: Comprobamos a qué pantalla vamos y le enchufamos la mochila con tus datos
             Object controller = loader.getController();
             if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
             else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
@@ -351,7 +344,6 @@ public class TecnicosController implements Initializable {
             modalStage.setScene(new Scene(root));
             modalStage.showAndWait();
 
-            // Refrescamos los datos al cerrar
             cargarDatos();
         } catch (Exception e) {
             e.printStackTrace();
@@ -364,7 +356,6 @@ public class TecnicosController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Pasamos los datos del usuario a la nueva pantalla
             ClientesController controller = loader.getController();
             controller.setDatosUsuario(nombreActual, rolActual);
 

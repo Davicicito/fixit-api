@@ -43,7 +43,7 @@ public class AvisoCrearModalController implements Initializable {
     }
 
     private void cargarDesplegables() {
-        // 1. Cargar Prioridades (Fijas)
+        // 1. Cargar Prioridades
         comboPrioridad.setItems(FXCollections.observableArrayList("ALTA", "MEDIA", "BAJA"));
         comboPrioridad.setValue("MEDIA");
 
@@ -54,13 +54,12 @@ public class AvisoCrearModalController implements Initializable {
             @Override public Cliente fromString(String s) { return null; }
         });
 
-        // 3. Cargar Técnicos desde MySQL (¡FILTRANDO AL JEFE!)
+        // 3. Cargar Técnicos desde MySQL
         List<Tecnico> todosLosUsuarios = tecnicoRepository.findAll();
 
-        // Usamos Java Streams para quedarnos SOLO con los que tienen el rol de Técnico
+        // Usamos Java Streams para quedarnos con los que tienen el rol de Técnico
         List<Tecnico> soloTecnicos = todosLosUsuarios.stream()
                 .filter(t -> t.getRol() != null && !t.getRol().equalsIgnoreCase("Administrador"))
-                // Nota: Si en tu BD el jefe se llama "Jefe", cambia "Administrador" por "Jefe"
                 .collect(Collectors.toList());
 
         comboTecnico.setItems(FXCollections.observableArrayList(soloTecnicos));
@@ -86,7 +85,7 @@ public class AvisoCrearModalController implements Initializable {
         String prioridadSeleccionada = comboPrioridad.getValue();
         String descripcion = txtDescripcion.getText();
 
-        // 2. PRIMER MURO: VALIDACIÓN DE CAMPOS OBLIGATORIOS (Que no falte nada básico)
+        // 2. VALIDACIÓN DE CAMPOS OBLIGATORIOS
         if (clienteSeleccionado == null || categoriaSeleccionada == null ||
                 prioridadSeleccionada == null || descripcion == null || descripcion.trim().isEmpty()) {
 
@@ -99,13 +98,12 @@ public class AvisoCrearModalController implements Initializable {
             return; // Cortamos el método aquí, no le dejamos avanzar
         }
 
-        // 3. SEGUNDO MURO: VALIDACIÓN DE ESPECIALIDAD DEL TÉCNICO (Solo si ha elegido uno)
+        // 3. VALIDACIÓN DE ESPECIALIDAD DEL TÉCNICO
         if (tecnicoSeleccionado != null) {
             String especialidadesTecnico = tecnicoSeleccionado.getEspecialidad();
             String nombreCategoria = categoriaSeleccionada.getNombre();
 
             if (especialidadesTecnico == null || !especialidadesTecnico.toLowerCase().contains(nombreCategoria.toLowerCase())) {
-                // ¡Tarjeta roja!
                 javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
                 alerta.setTitle("Técnico no cualificado");
                 alerta.setHeaderText("Especialidad incorrecta");
@@ -118,10 +116,10 @@ public class AvisoCrearModalController implements Initializable {
             }
         }
 
-        // 4. GUARDAR EN BASE DE DATOS (Si ha pasado todas las pruebas)
+        // 4. GUARDAR EN BASE DE DATOS
         Aviso nuevoAviso = new Aviso();
         nuevoAviso.setCliente(clienteSeleccionado);
-        nuevoAviso.setTecnico(tecnicoSeleccionado); // Si es null, se guardará sin problema (Sin Asignar)
+        nuevoAviso.setTecnico(tecnicoSeleccionado);
         nuevoAviso.setCategoria(categoriaSeleccionada);
         nuevoAviso.setPrioridad(prioridadSeleccionada);
         nuevoAviso.setDescripcion(descripcion.trim());

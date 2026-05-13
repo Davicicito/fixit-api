@@ -58,7 +58,7 @@ public class AvisoController {
     }
 
     // ==========================================
-    // 2. CONSULTAS AVANZADAS (LOS JOIN DEL PDF)
+    // 2. CONSULTAS AVANZADAS
     // ==========================================
 
     @GetMapping("/tecnico/{tecnicoId}")
@@ -85,11 +85,10 @@ public class AvisoController {
     @PostMapping("/{id}/materiales")
     public ResponseEntity<?> addMaterialAAviso(@PathVariable Long id, @RequestBody AvisoMaterial avisoMaterial) {
         try {
-            // Le pasamos la pelota al servicio
+            // Le pasamos al servicio
             AvisoMaterial nuevoMaterial = avisoService.añadirMaterialAAviso(id, avisoMaterial);
             return ResponseEntity.status(HttpStatus.CREATED).body(nuevoMaterial);
         } catch (RuntimeException e) {
-            // Si el servicio detecta un error (cantidades negativas, no existe el aviso...), devuelve un 400 Bad Request
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -99,5 +98,22 @@ public class AvisoController {
     @GetMapping("/{id}/materiales")
     public ResponseEntity<List<AvisoMaterial>> getMaterialesDeUnAviso(@PathVariable Long id) {
         return ResponseEntity.ok(avisoService.getMaterialesDeUnAviso(id));
+    }
+    // ==========================================
+    // 4. FINALIZAR TRABAJO DESDE LA APP MÓVIL
+    // ==========================================
+
+    @PostMapping("/{id}/finalizar")
+    public ResponseEntity<?> finalizarAvisoDesdeApp(
+            @PathVariable Long id,
+            @RequestBody com.dmontoro.fixitapi.dto.FinalizarAvisoRequest peticion) {
+        try {
+            avisoService.finalizarTrabajo(id, peticion);
+            // Mandamos un mapa/objeto para que Retrofit no se líe con el String
+            return ResponseEntity.ok().body(java.util.Collections.singletonMap("mensaje", "OK"));
+        } catch (RuntimeException e) {
+            e.printStackTrace(); // Esto hará que el error salga en la consola de IntelliJ
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

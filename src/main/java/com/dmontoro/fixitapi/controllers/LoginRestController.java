@@ -30,7 +30,7 @@ public class LoginRestController {
                 .findFirst();
 
         if (tecnicoOpt.isPresent()) {
-            // Si existe y la contraseña está bien, devolvemos el técnico entero al móvil (Código 200 OK)
+            // Si existe y la contraseña está bien, devolvemos el técnico entero al móvil
             return ResponseEntity.ok(tecnicoOpt.get());
         } else {
             // Si falla, devolvemos un error 401 (No autorizado)

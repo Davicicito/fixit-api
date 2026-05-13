@@ -34,7 +34,7 @@ public class ClienteService {
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente con ID " + id + " no encontrado"));
 
-        // 2. Actualizamos los datos (Lógica de negocio en la capa correcta)
+        // 2. Actualizamos los datos
         clienteExistente.setNombre(clienteDetails.getNombre());
         clienteExistente.setDireccion(clienteDetails.getDireccion());
         clienteExistente.setTelefono(clienteDetails.getTelefono());

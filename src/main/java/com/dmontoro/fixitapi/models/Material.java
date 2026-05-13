@@ -18,7 +18,6 @@ public class Material {
 
     private Double precio;
 
-    // --- NUEVOS CAMPOS AÑADIDOS ---
     private Integer stock;
 
     @Column(name = "stock_minimo")
@@ -30,7 +29,6 @@ public class Material {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
-    // ------------------------------
 
     // Evitamos bucles infinitos en el JSON al pedir materiales
     @JsonIgnore

@@ -42,20 +42,17 @@ public class LoginController implements Initializable {
     @Autowired private TecnicoRepository tecnicoRepository;
     @Autowired private ClienteRepository clienteRepository;
 
-    // Inyectamos el contexto de Spring para poder pasárselo al Dashboard luego
     @Autowired private ConfigurableApplicationContext springContext;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1. ANIMACIÓN DE LA LLAVE (Magia visual)
         RotateTransition rt = new RotateTransition(Duration.seconds(4), iconoLlave);
-        rt.setByAngle(360); // Que dé una vuelta completa
-        rt.setCycleCount(Animation.INDEFINITE); // Que no pare nunca
-        rt.setInterpolator(Interpolator.LINEAR); // Velocidad constante (sin acelerar ni frenar)
+        rt.setByAngle(360);
+        rt.setCycleCount(Animation.INDEFINITE);
+        rt.setInterpolator(Interpolator.LINEAR);
         rt.play();
 
 
-        // 2. CARGAR DATOS REALES DE LA BASE DE DATOS
         try {
             long totalAvisos = avisoRepository.count();
             lblTotalAvisos.setText(String.valueOf(totalAvisos));
@@ -84,38 +81,32 @@ public class LoginController implements Initializable {
         String email = txtEmail.getText().trim();
         String password = txtPassword.getText();
 
-        // 1. ¿Ha escrito algo?
         if (email.isEmpty() || password.isEmpty()) {
             mostrarError("Campos vacíos", "Por favor, introduce tu correo y contraseña.");
             return;
         }
 
-        // 2. Buscamos a la persona en la base de datos
-        // Usamos Técnico porque en tu BD todos (incluso el ADMIN) están en esa tabla
+        // Buscamos a la persona en la base de datos
         com.dmontoro.fixitapi.models.Tecnico usuarioLogueado = tecnicoRepository.findAll().stream()
                 .filter(t -> t.getEmail() != null && t.getEmail().equalsIgnoreCase(email))
                 .findFirst()
                 .orElse(null);
 
-        // 3. ¿Existe y la contraseña es correcta?
         if (usuarioLogueado == null || !password.equals(usuarioLogueado.getPassword())) {
             mostrarError("Credenciales incorrectas", "El correo o la contraseña no son válidos.");
             return;
         }
 
-        // 4. EL PORTERO: ¿Es el Jefe (ADMIN)?
         if (!"ADMIN".equalsIgnoreCase(usuarioLogueado.getRol())) {
             mostrarError("Acceso Denegado", "Esta aplicación de escritorio es solo para Administradores. Los técnicos deben acceder a través de la App móvil.");
             return;
         }
 
-        // 5. SI HA LLEGADO AQUÍ... ¡PUEDE PASAR!
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Dashboard.fxml"));
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Pasamos los datos REALES de la base de datos al Dashboard
             DashboardController dashboardController = loader.getController();
             dashboardController.setDatosUsuario(usuarioLogueado.getNombre(), "Administrador General");
 

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
-@CrossOrigin // Clave para que el PC y el móvil se puedan conectar
+@CrossOrigin
 public class ClienteController {
 
     @Autowired
@@ -37,7 +37,6 @@ public class ClienteController {
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody Cliente clienteDetails) {
         try {
-            // Delegamos TODA la lógica al Service, como pidió la profesora
             return ResponseEntity.ok(clienteService.actualizarCliente(id, clienteDetails));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -53,7 +53,6 @@ public class DashboardController implements Initializable {
     @FXML private Label lblRangoSemana;
     @FXML private Button btnSemanaSiguiente;
 
-    // AQUÍ ESTÁ EL GRÁFICO NUEVO
     @FXML private javafx.scene.chart.BarChart<String, Number> graficoActividad;
 
     @FXML private VBox vboxActividadReciente;
@@ -81,7 +80,6 @@ public class DashboardController implements Initializable {
         cargarKpisReales(avisosReales);
         cargarGraficoCircularReal(avisosReales);
 
-        // LLAMAMOS AL MÉTODO NUEVO CON LAS FECHAS CORRECTAS
         cargarGraficoSemanas();
 
         cargarGraficoLineasMensualReal(avisosReales);
@@ -131,16 +129,14 @@ public class DashboardController implements Initializable {
             pieChartCategoria.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
         }
 
-        // --- LA MAGIA: COLORES EXACTOS Y BOCADILLOS BLANCOS ---
         Platform.runLater(() -> {
-            int index = 0; // Necesario para encontrar la leyenda correcta
+            int index = 0;
             for (PieChart.Data dato : pieChartCategoria.getData()) {
                 Node sliceNode = dato.getNode();
                 if (sliceNode != null) {
                     String catNombre = dato.getName().toLowerCase();
                     String colorHex = "";
 
-                    // 1. Decidimos el color por el NOMBRE exacto de la categoría
                     if (catNombre.contains("font")) colorHex = "#3B82F6"; // Azul
                     else if (catNombre.contains("elec")) colorHex = "#F59E0B"; // Naranja
                     else if (catNombre.contains("ascen")) colorHex = "#A855F7"; // Morado
@@ -156,13 +152,11 @@ public class DashboardController implements Initializable {
                         }
                     }
 
-                    // 2. Creación del Bocadillo (Tooltip)
                     int total = (int) dato.getPieValue();
                     Tooltip tooltip = new Tooltip(dato.getName() + " : " + total);
                     tooltip.getStyleClass().add("chart-tooltip");
                     Tooltip.install(sliceNode, tooltip);
 
-                    // 3. Efecto Hover (Usamos setOpacity para no borrar el color del setStyle)
                     sliceNode.setOnMouseEntered(e -> sliceNode.setOpacity(0.8));
                     sliceNode.setOnMouseExited(e -> sliceNode.setOpacity(1.0));
                 }
@@ -181,7 +175,7 @@ public class DashboardController implements Initializable {
 
         for (Aviso a : avisos) {
             if (a.getFechaCreacion() != null) {
-                // Solo contamos los avisos de ESTE año para que el gráfico sea real
+                // Solo contamos los avisos de este año para que el gráfico sea real
                 if (a.getFechaCreacion().getYear() == LocalDate.now().getYear()) {
                     int mes = a.getFechaCreacion().getMonthValue();
                     avisosPorMes[mes]++;
@@ -191,7 +185,6 @@ public class DashboardController implements Initializable {
 
         String[] nombresMeses = {"", "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"};
 
-        // Dibuja la línea desde Enero hasta el mes en el que estemos ahora mismo
         int mesActual = LocalDate.now().getMonthValue();
         for (int i = 1; i <= mesActual; i++) {
             seriesTendencia.getData().add(new XYChart.Data<>(nombresMeses[i], avisosPorMes[i]));
@@ -199,28 +192,26 @@ public class DashboardController implements Initializable {
 
         lineChartTendencia.getData().add(seriesTendencia);
 
-        // --- LOS BOCADILLOS Y ANIMACIONES DEL RATÓN ---
         Platform.runLater(() -> {
             for (XYChart.Data<String, Number> dato : seriesTendencia.getData()) {
                 Node nodoPunto = dato.getNode();
                 if (nodoPunto != null) {
 
-                    // Creamos el bocadillo clavado a tu diseño ("Feb \n avisos : 289")
+
                     int total = dato.getYValue().intValue();
                     Tooltip tooltip = new Tooltip(dato.getXValue() + "\navisos : " + total);
-                    tooltip.getStyleClass().add("chart-tooltip"); // Usa tu CSS blanco con sombra
+                    tooltip.getStyleClass().add("chart-tooltip");
                     Tooltip.install(nodoPunto, tooltip);
 
-                    // Efecto Premium: El punto "vibra" o se hace grande al pasar el ratón
                     nodoPunto.setOnMouseEntered(e -> {
                         nodoPunto.setStyle("-fx-cursor: hand;");
-                        nodoPunto.setScaleX(1.5); // Lo hace un 50% más grande
+                        nodoPunto.setScaleX(1.5);
                         nodoPunto.setScaleY(1.5);
                     });
 
                     nodoPunto.setOnMouseExited(e -> {
                         nodoPunto.setStyle("");
-                        nodoPunto.setScaleX(1.0); // Vuelve a la normalidad
+                        nodoPunto.setScaleX(1.0);
                         nodoPunto.setScaleY(1.0);
                     });
                 }
@@ -252,7 +243,6 @@ public class DashboardController implements Initializable {
             row.setPadding(new javafx.geometry.Insets(15, 10, 15, 10));
             row.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #F1F5F9; -fx-border-radius: 12; -fx-border-width: 1; -fx-margin-bottom: 10;");
 
-            // --- ICONO SVG Y COLOR DE CATEGORÍA ---
             StackPane iconWrapper = new StackPane();
             iconWrapper.setPrefSize(42, 42);
             iconWrapper.setMinSize(42, 42);
@@ -260,7 +250,7 @@ public class DashboardController implements Initializable {
             SVGPath iconPath = new SVGPath();
             iconPath.setStyle("-fx-stroke: white; -fx-fill: transparent; -fx-stroke-width: 2;");
 
-            String wrapperClass = "icon-wrapper-purple"; // Por defecto (Ascensores / Otros)
+            String wrapperClass = "icon-wrapper-purple";
 
             if (aviso.getCategoria() != null) {
                 String cat = aviso.getCategoria().getNombre().toLowerCase();
@@ -281,7 +271,7 @@ public class DashboardController implements Initializable {
             iconWrapper.getStyleClass().add(wrapperClass);
             iconWrapper.getChildren().add(iconPath);
 
-            // --- TEXTOS CENTRALES ---
+            // TEXTOS CENTRALES
             VBox midBox = new VBox(2);
             HBox.setHgrow(midBox, Priority.ALWAYS);
 
@@ -295,7 +285,7 @@ public class DashboardController implements Initializable {
 
             midBox.getChildren().addAll(title, subtitle);
 
-            // --- ESTADO Y TIEMPO REAL ---
+            // ESTADO Y TIEMPO REAL
             VBox rightBox = new VBox(5);
             rightBox.setAlignment(Pos.CENTER_RIGHT);
 
@@ -324,7 +314,7 @@ public class DashboardController implements Initializable {
             rightBox.getChildren().addAll(status, time);
 
             row.getChildren().addAll(iconWrapper, midBox, rightBox);
-            VBox.setMargin(row, new javafx.geometry.Insets(0, 0, 10, 0)); // Separación entre filas
+            VBox.setMargin(row, new javafx.geometry.Insets(0, 0, 10, 0));
             vboxActividadReciente.getChildren().add(row);
         }
     }
@@ -342,7 +332,7 @@ public class DashboardController implements Initializable {
 
         for (Aviso a : avisos) {
             if (a.getFechaCreacion() != null) {
-                // Extraemos el día exacto de forma segura
+                // Extraemos el día exacto
                 LocalDate fecha = a.getFechaCreacion().toLocalDate();
 
                 if (fecha.getMonthValue() == mesActual && fecha.getYear() == anioActual) {
@@ -360,21 +350,17 @@ public class DashboardController implements Initializable {
             porcentaje = ((double) (totalMesActual - totalMesAnterior) / totalMesAnterior) * 100.0;
         }
 
-        // --- APLICAMOS LOS NUEVOS SVG MODERNOS ---
         if (porcentaje > 0) {
-            // Sube (Verde)
             lblCrecimientoValor.setText(String.format("+%.1f%%", porcentaje));
             lblCrecimientoValor.setStyle("-fx-text-fill: #10B981;");
             lblCrecimientoIcon.setContent("M22 7L13.5 15.5 8.5 10.5 2 17 M16 7h6v6");
             lblCrecimientoIcon.setStyle("-fx-stroke: #10B981; -fx-fill: transparent; -fx-stroke-width: 2.5;");
         } else if (porcentaje < 0) {
-            // Baja (Rojo)
             lblCrecimientoValor.setText(String.format("%.1f%%", porcentaje));
             lblCrecimientoValor.setStyle("-fx-text-fill: #EF4444;");
             lblCrecimientoIcon.setContent("M22 17L13.5 8.5 8.5 13.5 2 7 M16 17h6v-6");
             lblCrecimientoIcon.setStyle("-fx-stroke: #EF4444; -fx-fill: transparent; -fx-stroke-width: 2.5;");
         } else {
-            // Se mantiene (Gris)
             lblCrecimientoValor.setText("0.0%");
             lblCrecimientoValor.setStyle("-fx-text-fill: #6B7280;");
             lblCrecimientoIcon.setContent("M5 12h14");
@@ -478,7 +464,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // ESTE ES EL MÉTODO QUE CARGA EL GRÁFICO NUEVO DE LAS SEMANAS
     private void cargarGraficoSemanas() {
         LocalDate hoy = LocalDate.now().minusWeeks(semanasAtras);
         LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);
@@ -523,23 +508,19 @@ public class DashboardController implements Initializable {
 
         graficoActividad.getData().addAll(completados, nuevos);
 
-        // --- 1. ARREGLO DEL BUG VISUAL ---
-        // Desactivamos las animaciones por defecto de JavaFX que vuelven loco al gráfico al cambiar de semana
         graficoActividad.setAnimated(false);
 
-        // --- 2. RESTAURAR LOS TOOLTIPS (Bocadillos) CON ESTILO ---
         Platform.runLater(() -> {
             for (XYChart.Series<String, Number> serie : graficoActividad.getData()) {
                 for (XYChart.Data<String, Number> dato : serie.getData()) {
                     if (dato.getNode() != null) {
 
-                        // Solo le ponemos el cartelito si hay 1 o más avisos (para no saturar si está a 0)
                         if (dato.getYValue().intValue() > 0) {
                             Tooltip tooltip = new Tooltip(dato.getXValue() + "\n" + serie.getName() + ": " + dato.getYValue());
-                            tooltip.getStyleClass().add("chart-tooltip"); // Lo conectamos con el CSS nuevo
+                            tooltip.getStyleClass().add("chart-tooltip");
                             Tooltip.install(dato.getNode(), tooltip);
 
-                            // BONUS PROFESIONAL: Que la barra cambie un poco de opacidad al pasar el ratón
+
                             dato.getNode().setOnMouseEntered(e -> dato.getNode().setStyle("-fx-opacity: 0.7; -fx-cursor: hand;"));
                             dato.getNode().setOnMouseExited(e -> dato.getNode().setStyle("-fx-opacity: 1.0;"));
                         }

@@ -81,7 +81,6 @@ public class InventarioController implements Initializable {
         configurarColumnasTabla();
         cargarDatosTablaYKpis();
 
-        // Buscador Global en tiempo real
         if (txtBuscar != null) {
             txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> {
                 if (filteredData != null) {
@@ -100,7 +99,7 @@ public class InventarioController implements Initializable {
     }
 
     private void configurarColumnasTabla() {
-        // 1. COLUMNA MATERIAL (Con Icono SVG Lucide "Package")
+        // 1. COLUMNA MATERIAL
         colMaterial.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colMaterial.setCellFactory(column -> new javafx.scene.control.TableCell<Material, String>() {
             @Override
@@ -110,7 +109,7 @@ public class InventarioController implements Initializable {
                     setGraphic(null);
                     setText(null);
                 } else {
-                    // Creamos el SVG del paquete (Cubo)
+                    // Creamos el SVG del paquete
                     SVGPath svgIcon = new SVGPath();
                     svgIcon.setContent("M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12");
                     svgIcon.getStyleClass().addAll("icon-lucide", "icon-lucide-blue");
@@ -129,7 +128,7 @@ public class InventarioController implements Initializable {
             }
         });
 
-        // 2. COLUMNA CATEGORÍA (Píldora con borde)
+        // 2. COLUMNA CATEGORÍA
         colCategoria.setCellValueFactory(cellData -> {
             if (cellData.getValue().getCategoria() != null) {
                 return new SimpleStringProperty(cellData.getValue().getCategoria().getNombre());
@@ -150,7 +149,7 @@ public class InventarioController implements Initializable {
             }
         });
 
-        // 3. COLUMNA STOCK (Negro normal o Rojo si es <= Stock Mínimo)
+        // 3. COLUMNA STOCK
         colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
         colStock.setCellFactory(column -> new javafx.scene.control.TableCell<Material, Integer>() {
             @Override
@@ -163,7 +162,6 @@ public class InventarioController implements Initializable {
                     Label lbl = new Label(String.valueOf(item));
                     lbl.setStyle("-fx-font-weight: bold;");
 
-                    // Aquí aplicamos tu regla (pero dinámicamente usando la BD)
                     if (mat != null) {
                         int min = mat.getStockMinimo() != null ? mat.getStockMinimo() : 0;
                         if (item <= min) {
@@ -178,7 +176,7 @@ public class InventarioController implements Initializable {
         colStockMin.setCellValueFactory(new PropertyValueFactory<>("stockMinimo"));
         colUnidad.setCellValueFactory(new PropertyValueFactory<>("unidad"));
 
-        // Precio formateado
+        // Precio
         colPrecio.setCellValueFactory(cellData -> {
             Double precio = cellData.getValue().getPrecio();
             return new SimpleStringProperty(precio != null ? String.format("€%.2f", precio) : "€0.00");
@@ -194,7 +192,7 @@ public class InventarioController implements Initializable {
             return new SimpleStringProperty("€0.00");
         });
 
-        // 4. COLUMNA ESTADO (Píldora OK o Bajo Stock)
+        // 4. COLUMNA ESTADO
         colEstado.setCellValueFactory(cellData -> new SimpleStringProperty(""));
         colEstado.setCellFactory(column -> new javafx.scene.control.TableCell<Material, String>() {
             @Override
@@ -223,7 +221,7 @@ public class InventarioController implements Initializable {
             }
         });
 
-        // BOTONES DE ACCIÓN (Editar y Borrar)
+        // BOTONES DE ACCIÓN
         colAcciones.setCellValueFactory(cellData -> new SimpleStringProperty(""));
         colAcciones.setCellFactory(column -> new javafx.scene.control.TableCell<Material, String>() {
             @Override
@@ -232,7 +230,7 @@ public class InventarioController implements Initializable {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    // Botón Editar (Lápiz)
+                    // Botón Editar
                     Button btnEdit = new Button();
                     SVGPath svgEdit = new SVGPath();
                     svgEdit.setContent("M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z");
@@ -240,7 +238,6 @@ public class InventarioController implements Initializable {
                     btnEdit.setGraphic(svgEdit);
                     btnEdit.getStyleClass().add("btn-accion-edit");
 
-                    // ACCIÓN DEL BOTÓN EDITAR
                     btnEdit.setOnAction(event -> {
                         Material material = getTableView().getItems().get(getIndex());
                         try {
@@ -257,14 +254,13 @@ public class InventarioController implements Initializable {
                             modalStage.setScene(new Scene(root));
                             modalStage.showAndWait();
 
-                            // Refrescar al cerrar
                             cargarDatosTablaYKpis();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     });
 
-                    // Botón Borrar (Papelera)
+                    // Botón Borrar
                     Button btnDelete = new Button();
                     SVGPath svgDelete = new SVGPath();
                     svgDelete.setContent("M3 6h18 M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6 M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2 M10 11v6 M14 11v6");
@@ -272,11 +268,9 @@ public class InventarioController implements Initializable {
                     btnDelete.setGraphic(svgDelete);
                     btnDelete.getStyleClass().add("btn-accion-delete");
 
-                    // ACCIÓN DEL BOTÓN BORRAR
                     btnDelete.setOnAction(event -> {
                         Material material = getTableView().getItems().get(getIndex());
 
-                        // 1. Preguntamos por seguridad
                         javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
                         confirm.setTitle("Eliminar Material");
                         confirm.setHeaderText("¿Eliminar " + material.getNombre() + "?");
@@ -289,7 +283,6 @@ public class InventarioController implements Initializable {
                                     materialRepository.delete(material);
                                     cargarDatosTablaYKpis();
                                 } catch (Exception e) {
-                                    // 3. ¡Control de Errores Profesional! Si falla (ej. FK Constraint)
                                     javafx.scene.control.Alert error = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
                                     error.setTitle("No se puede eliminar");
                                     error.setHeaderText("Material en uso");
@@ -307,12 +300,10 @@ public class InventarioController implements Initializable {
             }
         });
 
-        // 5. EL TOQUE MAESTRO: Colorear la fila entera si hay poco stock
         tablaMateriales.setRowFactory(tv -> new javafx.scene.control.TableRow<Material>() {
             @Override
             protected void updateItem(Material item, boolean empty) {
                 super.updateItem(item, empty);
-                // Limpiamos los estilos de la fila para que no se queden atascados
                 getStyleClass().remove("row-bajo-stock");
 
                 if (item != null && !empty) {
@@ -338,7 +329,6 @@ public class InventarioController implements Initializable {
             tablaMateriales.setItems(sortedData);
         }
 
-        // Calcular KPIs Superiores
         long totalMateriales = materiales.size();
         long stockBajo = 0;
         long stockOk = 0;
@@ -361,8 +351,6 @@ public class InventarioController implements Initializable {
         lblValorTotalCard.setText(String.format("€%.2f", Math.floor(valorTotal)));
     }
 
-    // --- NAVEGACIÓN ---
-
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal;
         this.rolActual = rolReal;
@@ -371,9 +359,7 @@ public class InventarioController implements Initializable {
         lblAvatar.setText(nombreReal.substring(0, 2).toUpperCase());
     }
 
-    // =======================================================
     // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
-    // =======================================================
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
 
@@ -383,7 +369,6 @@ public class InventarioController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // EL ANTÍDOTO: Comprobamos a qué pantalla vamos y le enchufamos la mochila con tus datos
             Object controller = loader.getController();
             if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
             else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
@@ -401,18 +386,15 @@ public class InventarioController implements Initializable {
     public void abrirModalCrearMaterial() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/MaterialCrearModal.fxml"));
-            loader.setControllerFactory(springContext::getBean); // Inyectamos Spring Boot
+            loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
             Stage modalStage = new Stage();
             modalStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            modalStage.initStyle(javafx.stage.StageStyle.UNDECORATED); // Sin bordes de Windows
+            modalStage.initStyle(javafx.stage.StageStyle.UNDECORATED);
             modalStage.setScene(new Scene(root));
-
-            // Espera hasta que se cierre la ventana
             modalStage.showAndWait();
 
-            // Refrescamos la tabla y las tarjetas KPI
             cargarDatosTablaYKpis();
         } catch (Exception e) {
             e.printStackTrace();
@@ -425,7 +407,6 @@ public class InventarioController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Pasamos los datos del usuario
             TecnicosController tecnicosController = loader.getController();
             tecnicosController.setDatosUsuario(nombreActual, rolActual);
 
@@ -443,7 +424,6 @@ public class InventarioController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // Pasamos los datos del usuario a la nueva pantalla
             ClientesController controller = loader.getController();
             controller.setDatosUsuario(nombreActual, rolActual);
 

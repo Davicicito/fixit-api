@@ -15,7 +15,7 @@ public class AvisoService {
     @Autowired
     private AvisoRepository avisoRepository;
 
-    // Métodos CRUD básicos (usando los que Spring crea solos)
+    // Métodos CRUD básicos
     public List<Aviso> getAllAvisos() {
         return avisoRepository.findAll();
     }
@@ -25,19 +25,16 @@ public class AvisoService {
     }
 
     public Aviso saveAviso(Aviso aviso) {
-        // LÓGICA DE NEGOCIO: Si no tiene estado, por defecto es PENDIENTE
         if (aviso.getEstado() == null || aviso.getEstado().trim().isEmpty()) {
             aviso.setEstado("PENDIENTE");
         }
 
-        // Aquí en un futuro se añadirían las validaciones de si el técnico o cliente existen
         return avisoRepository.save(aviso);
     }
     public void deleteAviso(Long id) {
         avisoRepository.deleteById(id);
     }
 
-    // --- MÉTODOS "PRO" USANDO TUS CONSULTAS JOIN ---
 
     public List<Aviso> getAvisosPorTecnico(Long tecnicoId) {
         return avisoRepository.findAvisosDetalladosPorTecnico(tecnicoId);
@@ -51,32 +48,22 @@ public class AvisoService {
         return avisoRepository.findAvisosPendientesPorCategoria(categoria);
     }
 
-    // inyectamos el repositorio de la tabla intermedia aquí
     @Autowired
     private com.dmontoro.fixitapi.repositories.AvisoMaterialRepository avisoMaterialRepository;
 
     // Método para añadir un material a un aviso indicando la CANTIDAD
     public AvisoMaterial añadirMaterialAAviso(Long idAviso, AvisoMaterial avisoMaterial) {
-        // VALIDACIÓN 1: ¿Existe el aviso?
         Aviso aviso = avisoRepository.findById(idAviso)
                 .orElseThrow(() -> new RuntimeException("Error: El aviso indicado no existe."));
 
-        // VALIDACIÓN 2: ¿Existe el material que intentan añadir?
         if (avisoMaterial.getMaterial() == null || avisoMaterial.getMaterial().getId() == null) {
             throw new RuntimeException("Error: Debes especificar un material válido.");
         }
 
-        // Comprobamos en la base de datos si el material base existe realmente
-        /* Nota: Asumiendo que inyectaste MaterialRepository en este Service */
-        // materialRepository.findById(avisoMaterial.getMaterial().getId())
-        //        .orElseThrow(() -> new RuntimeException("Error: El material no existe en el catálogo."));
-
-        // VALIDACIÓN 3: ¿La cantidad es lógica?
         if (avisoMaterial.getCantidad() <= 0) {
             throw new RuntimeException("Error: La cantidad del material debe ser mayor que cero.");
         }
 
-        // Si todo es correcto, asignamos y guardamos
         avisoMaterial.setAviso(aviso);
         return avisoMaterialRepository.save(avisoMaterial);
     }
@@ -92,7 +79,7 @@ public class AvisoService {
 
         avisoExistente.setDescripcion(avisoDetails.getDescripcion());
         avisoExistente.setEstado(avisoDetails.getEstado());
-        avisoExistente.setPrioridad(avisoDetails.getPrioridad()); // AÑADIDO AQUI
+        avisoExistente.setPrioridad(avisoDetails.getPrioridad());
         avisoExistente.setFotoAveria(avisoDetails.getFotoAveria());
         avisoExistente.setFirmaCliente(avisoDetails.getFirmaCliente());
         avisoExistente.setTecnico(avisoDetails.getTecnico());
@@ -100,5 +87,52 @@ public class AvisoService {
         avisoExistente.setCategoria(avisoDetails.getCategoria());
 
         return avisoRepository.save(avisoExistente);
+    }
+    @Autowired
+    private com.dmontoro.fixitapi.repositories.MaterialRepository materialRepository;
+
+    @org.springframework.transaction.annotation.Transactional
+    public void finalizarTrabajo(Long id, com.dmontoro.fixitapi.dto.FinalizarAvisoRequest peticion) {
+
+        // 1. Buscamos el aviso
+        Aviso aviso = avisoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Aviso con ID " + id + " no encontrado"));
+
+        // 2. Actualizamos los datos básicos
+        aviso.setEstado(peticion.getEstado());
+        aviso.setFotoAveria(peticion.getFotoBase64());
+        aviso.setFirmaCliente(peticion.getFirmaBase64());
+
+        // GUARDAMOS LA NOTA DEL CLIENTE
+        aviso.setValoracionCliente(peticion.getValoracionCliente());
+
+        if (peticion.getObservaciones() != null && !peticion.getObservaciones().isEmpty()) {
+            String descActual = aviso.getDescripcion() != null ? aviso.getDescripcion() : "";
+            aviso.setDescripcion(descActual + "\n\n--- OBSERVACIONES EXTRA ---\n" + peticion.getObservaciones());
+        }
+
+        avisoRepository.save(aviso);
+
+        // 3. PROCESAMOS LOS MATERIALES Y RESTAMOS STOCK
+        if (peticion.getMaterialesUsados() != null) {
+            for (com.dmontoro.fixitapi.dto.MaterialGastado gastado : peticion.getMaterialesUsados()) {
+
+                // Buscamos el material en la base de datos
+                com.dmontoro.fixitapi.models.Material materialBD = materialRepository.findById(gastado.getIdMaterial())
+                        .orElseThrow(() -> new RuntimeException("Material no encontrado"));
+
+
+                double nuevoStock = materialBD.getStock() - gastado.getCantidad();
+                materialBD.setStock((int) nuevoStock); // Lo guardamos en la base de datos de inventario
+                materialRepository.save(materialBD);
+
+                // Creamos el registro en la tabla intermedia (AvisoMaterial) para tener el historial
+                AvisoMaterial relacion = new AvisoMaterial();
+                relacion.setAviso(aviso);
+                relacion.setMaterial(materialBD);
+                relacion.setCantidad((int) gastado.getCantidad());
+                avisoMaterialRepository.save(relacion);
+            }
+        }
     }
 }

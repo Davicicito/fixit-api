@@ -32,13 +32,11 @@ public class Tecnico {
     @Column(nullable = false)
     private String rol; // ADMIN o TECNICO
 
-    // --- NUEVOS CAMPOS AÑADIDOS ---
     private String telefono;
 
-    private Boolean activo = true; // Por defecto un técnico está activo
+    private Boolean activo = true;
 
     private Double calificacion = 0.0;
-    // ------------------------------
 
     @OneToMany(mappedBy = "tecnico", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore

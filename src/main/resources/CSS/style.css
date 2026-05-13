@@ -1,27 +1,37 @@
-/* =======================================
-   ESTRUCTURA GENERAL Y SCROLL
-======================================= */
+/**
+ * Pone un color oscuro elegante para el fondo del menú lateral.
+ */
 .sidebar {
     -fx-background-color: #0F172A;
 }
 
+/**
+ * Pone un color claro y limpio para toda la zona principal de la pantalla.
+ */
 .main-content {
     -fx-background-color: #F8FAFC;
 }
 
+/**
+ * Quita el fondo gris por defecto que mete JavaFX a los paneles con scroll.
+ */
 .scroll-pane-custom {
     -fx-background-color: transparent;
-    -fx-background: #F8FAFC; /* Quita el gris feo por defecto de JavaFX */
+    -fx-background: #F8FAFC;
     -fx-padding: 0;
     -fx-border-color: transparent;
 }
+
+/**
+ * Vuelve completamente transparente el interior del panel que hace el scroll.
+ */
 .scroll-pane-custom > .viewport {
     -fx-background-color: transparent;
 }
 
-/* =======================================
-   MENÚ LATERAL (SIDEBAR) - LOGO
-======================================= */
+/**
+ * Aplica un degradado entre tonos morados al fondo del icono del logo en el menú.
+ */
 .sidebar-logo-icon {
     -fx-background-color: linear-gradient(to bottom right, #6366F1, #8B5CF6);
     -fx-text-fill: white;
@@ -30,109 +40,155 @@
     -fx-background-radius: 12;
 }
 
-/* =======================================
-   LOGOS Y TÍTULOS (LOGIN)
-======================================= */
-
+/**
+ * Texto grande y blanco para la palabra "Fix" del logo en la pantalla de acceso.
+ */
 .login-logo-text-fix {
     -fx-text-fill: white;
     -fx-font-size: 32px;
     -fx-font-weight: 900;
 }
 
+/**
+ * Texto grande y naranja para la palabra "It" del logo en la pantalla de acceso.
+ */
 .login-logo-text-it {
-    -fx-text-fill: #F59E0B; /* Amarillo/Ámbar de la marca */
+    -fx-text-fill: #F59E0B;
     -fx-font-size: 32px;
     -fx-font-weight: 900;
 }
+
+/**
+ * Texto blanco y grueso para la primera palabra del logo en el interior de la app.
+ */
 .logo-text-fix {
     -fx-text-fill: white;
     -fx-font-size: 28px;
     -fx-font-weight: 900;
 }
 
+/**
+ * Texto naranja y grueso para la segunda palabra del logo en el interior de la app.
+ */
 .logo-text-it {
-    -fx-text-fill: #F59E0B; /* Amarillo/Ámbar de la marca */
+    -fx-text-fill: #F59E0B;
     -fx-font-size: 28px;
     -fx-font-weight: 900;
 }
 
+/**
+ * Texto pequeño y grisáceo que va debajo del logo principal.
+ */
 .logo-subtext {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 13px;
     -fx-padding: 0;
 }
 
-/* =======================================
-   MENÚ LATERAL - CON ICONOS SVG LUCIDE
-======================================= */
+/**
+ * Elimina los márgenes internos del contenedor que agrupa los botones del menú.
+ */
 .menu-box {
     -fx-padding: 0;
 }
 
-/* Estado NORMAL (Gris) */
+/**
+ * Estructura y bordes redondeados para los botones inactivos del menú lateral.
+ */
 .menu-item {
     -fx-padding: 12 15 12 15;
     -fx-background-radius: 8;
     -fx-cursor: hand;
     -fx-background-color: transparent;
 }
+
+/**
+ * Dibuja los iconos del menú inactivo con un trazo fino y color gris.
+ */
 .menu-icon {
     -fx-fill: transparent;
-    -fx-stroke: #94A3B8; /* Gris apagado */
+    -fx-stroke: #94A3B8;
     -fx-stroke-width: 2;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: round;
 }
+
+/**
+ * Pone el texto de los botones del menú en gris cuando no están seleccionados.
+ */
 .menu-text {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 15px;
 }
 
-/* Efecto al pasar el ratón (HOVER) */
+/**
+ * Oscurece ligeramente el fondo de un botón del menú cuando le pasas el ratón por encima.
+ */
 .menu-item:hover {
     -fx-background-color: #1E293B;
 }
+
+/**
+ * Ilumina de blanco el icono del menú cuando pasas el ratón por encima.
+ */
 .menu-item:hover .menu-icon {
     -fx-stroke: white;
 }
+
+/**
+ * Ilumina de blanco el texto del menú cuando pasas el ratón por encima.
+ */
 .menu-item:hover .menu-text {
     -fx-text-fill: white;
 }
 
-/* Estado ACTIVO (Botón con degradado lila) */
+/**
+ * Resalta el botón de la pantalla en la que estás actualmente con un fondo degradado morado.
+ */
 .menu-item-active {
     -fx-padding: 12 15 12 15;
     -fx-background-radius: 8;
     -fx-background-color: linear-gradient(to right, #6366F1, #8B5CF6);
     -fx-cursor: default;
 }
+
+/**
+ * Dibuja el icono en blanco puro para indicar que es la sección activa.
+ */
 .menu-icon-active {
     -fx-fill: transparent;
-    -fx-stroke: white; /* Blanco puro */
+    -fx-stroke: white;
     -fx-stroke-width: 2;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: round;
 }
+
+/**
+ * Pone en blanco y negrita el texto del apartado en el que estás actualmente.
+ */
 .menu-text-active {
     -fx-text-fill: white;
     -fx-font-size: 15px;
     -fx-font-weight: bold;
 }
 
-/* Perfil y Logout */
+/**
+ * Crea una caja oscura abajo del menú para meter los datos del usuario conectado.
+ */
 .user-profile-box {
     -fx-background-color: #1E293B;
     -fx-padding: 15;
     -fx-background-radius: 12;
 }
 
+/**
+ * Dibuja un círculo perfecto de color naranja para meter las iniciales del jefe.
+ */
 .avatar-circle {
     -fx-background-color: #F59E0B;
     -fx-text-fill: #0F172A;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
-    /* El truco para que no se aplaste NUNCA */
     -fx-min-width: 45px;
     -fx-min-height: 45px;
     -fx-pref-width: 45px;
@@ -141,73 +197,104 @@
     -fx-background-radius: 50%;
 }
 
+/**
+ * Pone blanco y destacado el nombre del usuario en la parte inferior izquierda.
+ */
 .user-name {
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
 
+/**
+ * Texto pequeñito y gris para indicar el cargo debajo del nombre del usuario.
+ */
 .user-role {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 12px;
 }
 
+/**
+ * Estilo de texto gris para el enlace de cerrar sesión.
+ */
 .logout-btn {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 14px;
     -fx-cursor: hand;
     -fx-padding: 0 0 0 10;
 }
+
+/**
+ * Hace que el texto de cerrar sesión brille en blanco al poner el ratón encima.
+ */
 .logout-btn:hover {
     -fx-text-fill: white;
 }
 
-/* =======================================
-   CONTENIDO CENTRAL
-======================================= */
+/**
+ * Texto principal grande y muy grueso que corona cada pantalla.
+ */
 .header-title {
     -fx-font-size: 32px;
     -fx-font-weight: 900;
     -fx-text-fill: #0F172A;
 }
 
+/**
+ * Texto explicativo de tono grisáceo que va justo debajo del título principal.
+ */
 .header-subtitle {
     -fx-font-size: 15px;
     -fx-text-fill: #64748B;
 }
 
-/* =======================================
-   TARJETAS SUPERIORES (KPI)
-======================================= */
+/**
+ * Crea las cajas blancas con sombra suave que se usan para las estadísticas de arriba.
+ */
 .kpi-card {
     -fx-background-radius: 12;
     -fx-padding: 25;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0, 0, 4);
     -fx-cursor: hand;
 }
+
+/**
+ * Eleva un poco la tarjeta y marca más la sombra cuando le pasas el ratón.
+ */
 .kpi-card:hover {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 8);
     -fx-translate-y: -3px;
 }
 
+/**
+ * Pone el título de la tarjeta de estadística en gris y negrita.
+ */
 .kpi-title {
     -fx-font-size: 14px;
     -fx-text-fill: #475569;
     -fx-font-weight: bold;
 }
 
+/**
+ * Hace que el número de la estadística sea gigante y destaque sobre todo lo demás.
+ */
 .kpi-number {
     -fx-font-size: 38px;
     -fx-font-weight: 900;
     -fx-text-fill: #0F172A;
 }
 
+/**
+ * Formatea el textito de la parte baja de la tarjeta de estadística en gris.
+ */
 .kpi-footer {
     -fx-font-size: 13px;
     -fx-text-fill: #64748B;
 }
 
-/* Iconos de las tarjetas */
+/**
+ * Da forma cuadrada con esquinas suaves a los iconos de colores de las tarjetas.
+ */
 .kpi-icon {
     -fx-font-size: 24px;
     -fx-text-fill: white;
@@ -217,22 +304,49 @@
     -fx-max-height: 50px;
 }
 
+/**
+ * Pinta un fondo casi blanco tirando a naranja para el cuerpo de la tarjeta.
+ */
 .card-orange { -fx-background-color: #FFF7ED; }
+
+/**
+ * Pinta el fondo del icono de la tarjeta en un naranja intenso.
+ */
 .icon-orange { -fx-background-color: #EA580C; }
 
+/**
+ * Pinta un fondo casi blanco tirando a azul para el cuerpo de la tarjeta.
+ */
 .card-blue { -fx-background-color: #EFF6FF; }
+
+/**
+ * Pinta el fondo del icono de la tarjeta en un azul intenso.
+ */
 .icon-blue { -fx-background-color: #3B82F6; }
 
+/**
+ * Pinta un fondo casi blanco tirando a verde para el cuerpo de la tarjeta.
+ */
 .card-green { -fx-background-color: #F0FDF4; }
+
+/**
+ * Pinta el fondo del icono de la tarjeta en un verde intenso.
+ */
 .icon-green { -fx-background-color: #10B981; }
 
+/**
+ * Pinta un fondo casi blanco tirando a morado para el cuerpo de la tarjeta.
+ */
 .card-purple { -fx-background-color: #FAF5FF; }
+
+/**
+ * Pinta el fondo del icono de la tarjeta en un morado intenso.
+ */
 .icon-purple { -fx-background-color: #D946EF; }
 
-
-/* =======================================
-   GRÁFICOS Y PANELES BLANCOS
-======================================= */
+/**
+ * Crea una base blanca con bordes curvos y una pequeña sombra para incrustar gráficos.
+ */
 .chart-card {
     -fx-background-color: white;
     -fx-background-radius: 12;
@@ -240,21 +354,27 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0, 0, 4);
 }
 
+/**
+ * Título oscuro y grueso para la zona superior del panel de los gráficos.
+ */
 .chart-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: #0F172A;
 }
 
+/**
+ * Convierte cualquier texto en un enlace azul típico de internet que puedes clicar.
+ */
 .link-text {
     -fx-text-fill: #3B82F6;
     -fx-font-size: 13px;
     -fx-cursor: hand;
 }
 
-/* =======================================
-   LISTA DE ACTIVIDAD RECIENTE
-======================================= */
+/**
+ * Dibuja una fina línea gris en la parte baja de cada fila para separar los avisos recientes.
+ */
 .list-item {
     -fx-padding: 10 0 10 0;
     -fx-border-color: #E2E8F0;
@@ -262,6 +382,9 @@
     -fx-border-style: solid;
 }
 
+/**
+ * Establece el formato general de los pequeños iconos que acompañan al texto de actividad.
+ */
 .list-icon {
     -fx-font-size: 18px;
     -fx-text-fill: white;
@@ -269,45 +392,68 @@
     -fx-background-radius: 10;
 }
 
+/**
+ * Pone el asunto de la actividad reciente destacado en negrita negra.
+ */
 .list-title {
     -fx-font-size: 15px;
     -fx-font-weight: bold;
     -fx-text-fill: #0F172A;
 }
 
+/**
+ * Texto gris de apoyo debajo del asunto principal de la actividad.
+ */
 .list-subtitle {
     -fx-font-size: 13px;
     -fx-text-fill: #64748B;
 }
 
+/**
+ * Coloca la hora de la actividad en tamaño reducido y un tono más claro.
+ */
 .list-time {
     -fx-font-size: 12px;
     -fx-text-fill: #94A3B8;
 }
 
-/* Píldoras de estado */
+/**
+ * Plantilla base redondeada para hacer etiquetas pequeñas que marcan el estado.
+ */
 .status-pill {
     -fx-font-size: 11px;
     -fx-font-weight: bold;
     -fx-padding: 4 10 4 10;
     -fx-background-radius: 20;
 }
+
+/**
+ * Tiñe la píldora de azul claro con texto azul fuerte para cosas que están sucediendo.
+ */
 .status-progreso {
     -fx-background-color: #DBEAFE;
     -fx-text-fill: #1D4ED8;
 }
+
+/**
+ * Tiñe la píldora de naranja suave con texto fuerte para lo que espera a ser hecho.
+ */
 .status-pendiente {
     -fx-background-color: #FFEDD5;
     -fx-text-fill: #C2410C;
 }
+
+/**
+ * Tiñe la píldora de un verde muy suave con texto verde oscuro para lo ya terminado.
+ */
 .status-completado {
     -fx-background-color: #DCFCE7;
     -fx-text-fill: #15803D;
 }
 
-/* =======================================
-   CAJA CRECIMIENTO (TENDENCIA MENSUAL)
-======================================= */
+/**
+ * Crea el recuadro lila claro donde se enseña si las cosas van a mejor o a peor.
+ */
 .growth-box {
     -fx-background-color: #FAF5FF;
     -fx-border-color: #E9D5FF;
@@ -316,85 +462,150 @@
     -fx-background-radius: 8;
     -fx-padding: 15;
 }
+
+/**
+ * Tiñe el icono de la caja de subidas y bajadas en color lila fuerte.
+ */
 .growth-icon {
     -fx-font-size: 20px;
     -fx-text-fill: #9333EA;
 }
+
+/**
+ * Estilo de texto modesto y gris para decir de qué trata el dato de crecimiento.
+ */
 .growth-title {
     -fx-font-size: 12px;
     -fx-text-fill: #6B7280;
 }
+
+/**
+ * Da tamaño y protagonismo al porcentaje de crecimiento para que salte a la vista.
+ */
 .growth-value {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: #9333EA;
 }
 
-/* =======================================
-   LIMPIEZA DE GRÁFICOS JAVAFX
-======================================= */
+/**
+ * Borra el molesto fondo que traen las gráficas de JavaFX por defecto.
+ */
 .chart-plot-background {
     -fx-background-color: transparent;
 }
+
+/**
+ * Oculta las líneas verticales de la cuadrícula trasera de la gráfica.
+ */
 .chart-vertical-grid-lines {
     -fx-stroke: transparent;
 }
+
+/**
+ * Convierte las líneas horizontales de la gráfica en trazados punteados grises.
+ */
 .chart-horizontal-grid-lines {
     -fx-stroke: #E2E8F0;
     -fx-stroke-dash-array: 5 5;
 }
 
-/* =======================================
-   COLORES DE LOS GRÁFICOS JAVAFX
-======================================= */
-/* Gráfico de barras: Serie 1 (Completados - Verde) */
+/**
+ * Colorea de verde esmeralda todas las barras que representen el primer bloque de datos.
+ */
 .default-color0.chart-bar { -fx-bar-fill: #10B981; }
-/* Gráfico de barras: Serie 2 (Nuevos - Azul) */
+
+/**
+ * Colorea de azul cielo todas las barras que representen el segundo bloque de datos.
+ */
 .default-color1.chart-bar { -fx-bar-fill: #3B82F6; }
 
-/* Gráfico de líneas (Morado) */
+/**
+ * Colorea de lila y engorda la línea cuando usamos un gráfico de evolución en JavaFX.
+ */
 .default-color0.chart-series-line { -fx-stroke: #8B5CF6; -fx-stroke-width: 3px; }
+
+/**
+ * Pinta los puntitos de la línea del gráfico de color lila con un toque blanco.
+ */
 .default-color0.chart-line-symbol { -fx-background-color: #8B5CF6, white; }
 
-
-/* Quitar los bordes feos de las leyendas */
+/**
+ * Limpia el fondo gris cutre de la cajita que te chiva el nombre de cada línea del gráfico.
+ */
 .chart-legend { -fx-background-color: transparent; }
 
-/* =======================================
-   NUEVOS ICONOS DE ACTIVIDAD RECIENTE
-======================================= */
+/**
+ * Suaviza las esquinas de los fondos cuadraditos que envuelven los iconos de actividad.
+ */
 .list-icon-wrapper {
     -fx-background-radius: 12;
 }
 
-/* Colores dinámicos para los técnicos */
+/**
+ * Pintura plana azul para diferenciar elementos o usuarios.
+ */
 .bg-blue   { -fx-background-color: #3B82F6; }
+
+/**
+ * Pintura plana naranja para diferenciar elementos o usuarios.
+ */
 .bg-orange { -fx-background-color: #F59E0B; }
+
+/**
+ * Pintura plana magenta/morada para diferenciar elementos o usuarios.
+ */
 .bg-purple { -fx-background-color: #D946EF; }
+
+/**
+ * Pintura plana verde esmeralda para diferenciar elementos o usuarios.
+ */
 .bg-green  { -fx-background-color: #10B981; }
+
+/**
+ * Pintura plana roja para diferenciar elementos o usuarios.
+ */
 .bg-red    { -fx-background-color: #EF4444; }
+
+/**
+ * Pintura plana turquesa para diferenciar elementos o usuarios.
+ */
 .bg-teal   { -fx-background-color: #14B8A6; }
+
+/**
+ * Pintura plana rosa chicle para diferenciar elementos o usuarios.
+ */
 .bg-pink   { -fx-background-color: #EC4899; }
+
+/**
+ * Pintura plana índigo oscuro para diferenciar elementos o usuarios.
+ */
 .bg-indigo { -fx-background-color: #6366F1; }
 
-/* =======================================
-   PANTALLA DE LOGIN (ADMIN)
-======================================= */
+/**
+ * Llena toda la pantalla de inicio de sesión con un fondo degradado muy oscuro y formal.
+ */
 .login-root {
-    /* Degradado oscuro elegante para el fondo global */
     -fx-background-color: linear-gradient(to bottom right, #0F172A, #1E1B4B);
 }
 
+/**
+ * Pone un tope de anchura a la parte donde explicas qué hace la app en el login.
+ */
 .login-left-side {
     -fx-max-width: 600px;
 }
 
+/**
+ * Genera una sutil separación visual con un fondo medio transparente para la caja donde metes la clave.
+ */
 .login-right-side {
-    /* Un ligero fondo translúcido a la derecha para dar contraste */
     -fx-background-color: rgba(255, 255, 255, 0.03);
 }
 
-/* Logos y Títulos (Izquierda) */
+/**
+ * Da vida al icono en el lado de la bienvenida con bordes curvos y un gradiente lila.
+ */
 .login-logo-icon {
     -fx-background-color: linear-gradient(to bottom right, #6366F1, #8B5CF6);
     -fx-text-fill: white;
@@ -403,83 +614,132 @@
     -fx-background-radius: 12;
 }
 
+/**
+ * Letras gruesas y blancas para resaltar el nombre de tu programa en la pantalla de bienvenida.
+ */
 .login-logo-text {
     -fx-text-fill: white;
     -fx-font-size: 32px;
     -fx-font-weight: 900;
 }
 
+/**
+ * Etiqueta chiquita y gris para el eslogan del logo.
+ */
 .login-logo-subtext {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 14px;
 }
 
+/**
+ * El título gigante en color blanco que te recibe al abrir la app.
+ */
 .login-title-white {
     -fx-text-fill: white;
     -fx-font-size: 36px;
     -fx-font-weight: bold;
 }
 
+/**
+ * Colorea de un azul celeste brillante una palabra del título para que destaque.
+ */
 .login-title-blue {
-    -fx-text-fill: #60A5FA; /* Azul claro */
+    -fx-text-fill: #60A5FA;
     -fx-font-size: 36px;
     -fx-font-weight: 900;
 }
 
+/**
+ * Da formato y color apagado al párrafo que explica qué vas a encontrar dentro.
+ */
 .login-description {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 16px;
     -fx-padding: 10 0 20 0;
 }
 
-/* Tarjetas de Estadísticas (Izquierda) */
+/**
+ * Crea cajas semitransparentes que flotan sobre el fondo oscuro para mostrar datos rápidos.
+ */
 .login-stat-card {
-    -fx-background-color: rgba(30, 41, 59, 0.6); /* Gris azulado oscuro translúcido */
+    -fx-background-color: rgba(30, 41, 59, 0.6);
     -fx-background-radius: 12;
     -fx-border-color: rgba(255, 255, 255, 0.05);
     -fx-border-radius: 12;
     -fx-padding: 20;
     -fx-pref-width: 200px;
 }
+
+/**
+ * Fija un buen tamaño para que los iconos dentro de las estadísticas luzcan bien.
+ */
 .stat-icon { -fx-font-size: 20px; }
+
+/**
+ * Haz que las cifras de las estadísticas en el panel izquierdo sean contundentes y blancas.
+ */
 .stat-number { -fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold; }
+
+/**
+ * Ponle un color disimulado a la palabra que acompaña al número de la estadística.
+ */
 .stat-label { -fx-text-fill: #94A3B8; -fx-font-size: 13px; }
 
-/* Tarjeta Blanca de Login (Derecha) */
+/**
+ * Levanta una caja blanca con una sombra pesada donde el usuario meterá sus credenciales.
+ */
 .login-card {
     -fx-background-color: white;
     -fx-background-radius: 20;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 30, 0, 0, 10);
 }
 
+/**
+ * Cambia a rojo brillante el icono de seguridad del panel derecho.
+ */
 .login-shield-icon {
-    -fx-text-fill: #EF4444; /* Escudo rojo */
+    -fx-text-fill: #EF4444;
     -fx-font-size: 30px;
 }
 
+/**
+ * Cabecera potente en negro para dar la bienvenida justo donde se loguean.
+ */
 .login-form-title {
     -fx-text-fill: #0F172A;
     -fx-font-size: 20px;
     -fx-font-weight: 900;
 }
 
+/**
+ * Mensaje de ánimo justo antes de los campos de texto del login.
+ */
 .login-form-subtitle {
     -fx-text-fill: #64748B;
     -fx-font-size: 13px;
 }
 
+/**
+ * Traza una raya separadora colorida entre la cabecera y el formulario de usuario.
+ */
 .login-divider {
     -fx-background-color: linear-gradient(to right, #3B82F6, #EC4899);
     -fx-pref-height: 3px;
     -fx-background-radius: 2;
 }
 
+/**
+ * Estiliza los cartelitos descriptivos como "Email" o "Contraseña".
+ */
 .login-input-label {
     -fx-text-fill: #475569;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
 }
 
+/**
+ * Moldea una caja de texto con fondo gris muy claro y bordes para que parezca moderna.
+ */
 .login-input {
     -fx-background-color: #F8FAFC;
     -fx-border-color: #E2E8F0;
@@ -488,14 +748,28 @@
     -fx-padding: 12 15 12 15;
     -fx-font-size: 14px;
 }
+
+/**
+ * Cuando el usuario hace clic dentro, la caja de texto se pone blanca y el borde se ilumina azul.
+ */
 .login-input:focused {
     -fx-border-color: #3B82F6;
     -fx-background-color: white;
 }
 
+/**
+ * Asigna un tono oscuro básico al texto de la casilla del "Recordarme".
+ */
 .login-checkbox { -fx-text-fill: #475569; }
+
+/**
+ * Hace que el botón de recuperar clave luzca como un enlace clásico de internet azul y clicable.
+ */
 .login-link { -fx-text-fill: #3B82F6; -fx-cursor: hand; -fx-font-weight: bold; }
 
+/**
+ * El súper botón llamativo que envía los datos del login, con transición del azul al rosa.
+ */
 .login-btn {
     -fx-background-color: linear-gradient(to right, #3B82F6, #EC4899);
     -fx-text-fill: white;
@@ -505,12 +779,22 @@
     -fx-background-radius: 10;
     -fx-cursor: hand;
 }
+
+/**
+ * Rebaja el tono de los colores del botón para que sientas que le has pasado el dedo por encima.
+ */
 .login-btn:hover {
     -fx-background-color: linear-gradient(to right, #2563EB, #DB2777);
 }
 
+/**
+ * Textito gris inofensivo de relleno en el fondo de la pantalla de acceso.
+ */
 .login-info-label { -fx-text-fill: #94A3B8; -fx-font-size: 12px; }
 
+/**
+ * Fabrica un rectángulo azul clarito para chivar errores o notificaciones útiles sin molestar.
+ */
 .login-alert-box {
     -fx-background-color: #EFF6FF;
     -fx-border-color: #BFDBFE;
@@ -518,14 +802,20 @@
     -fx-background-radius: 8;
     -fx-padding: 15;
 }
+
+/**
+ * Letras fuertes y marinas para el título del cuadro de alerta.
+ */
 .alert-title { -fx-text-fill: #1E3A8A; -fx-font-size: 12px; -fx-font-weight: bold; }
+
+/**
+ * Párrafo con letra azulada normalita para leer el contenido del aviso.
+ */
 .alert-text { -fx-text-fill: #3B82F6; -fx-font-size: 11px; }
 
-/* =======================================
-   PANTALLA: GESTIÓN DE AVISOS
-======================================= */
-
-/* Botón principal (Azul brillante) */
+/**
+ * Moldea el típico botón llamativo azul-lila redondeado para llamar a la acción.
+ */
 .btn-primary {
     -fx-background-color: linear-gradient(to right, #6366F1, #8B5CF6);
     -fx-text-fill: white;
@@ -535,36 +825,71 @@
     -fx-background-radius: 8;
     -fx-cursor: hand;
 }
+
+/**
+ * Oscurece los colores del botón primario para hacer notar que está bajo el ratón.
+ */
 .btn-primary:hover {
     -fx-background-color: linear-gradient(to right, #4F46E5, #7C3AED);
 }
 
-/* Tarjetas KPI de Color Sólido */
+/**
+ * Tarjeta gorda con sombra y esquinas dobladas, lista para rellenarse con colores vibrantes.
+ */
 .kpi-solid-card {
     -fx-background-radius: 12;
     -fx-padding: 20;
     -fx-min-height: 100px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
 }
+
+/**
+ * Letra clarita que asoma lo justo para titular las tarjetas sólidas llenas de color.
+ */
 .kpi-solid-title {
     -fx-font-size: 14px;
     -fx-text-fill: rgba(255, 255, 255, 0.9);
 }
+
+/**
+ * El numerazo salvaje en blanco que revienta la jerarquía visual de la tarjeta sólida.
+ */
 .kpi-solid-number {
     -fx-font-size: 36px;
     -fx-font-weight: 900;
     -fx-text-fill: white;
 }
 
+/**
+ * Un buen manguerazo de pintura azul con degradado para fondo de tarjeta.
+ */
 .bg-solid-blue   { -fx-background-color: linear-gradient(to right, #0EA5E9, #3B82F6); }
+
+/**
+ * Un buen manguerazo de pintura de tonos atardecer (naranja) para fondo de tarjeta.
+ */
 .bg-solid-orange { -fx-background-color: linear-gradient(to right, #F97316, #EF4444); }
+
+/**
+ * Un buen manguerazo de pintura lila y morada para fondo de tarjeta.
+ */
 .bg-solid-purple { -fx-background-color: linear-gradient(to right, #8B5CF6, #A855F7); }
+
+/**
+ * Un buen manguerazo de pintura verde naturaleza para fondo de tarjeta.
+ */
 .bg-solid-green  { -fx-background-color: linear-gradient(to right, #10B981, #22C55E); }
 
-/* Barra de Filtros y Búsqueda */
+/**
+ * Deja limpio de polvo y paja el contenedor que aloja la caja de buscar.
+ */
 .filter-bar {
     -fx-background-color: transparent;
 }
+
+/**
+ * Construye la caja alargada blanca y con bordes donde uno teclea lo que busca.
+ */
 .search-box {
     -fx-background-color: white;
     -fx-background-radius: 8;
@@ -572,16 +897,26 @@
     -fx-border-color: #E2E8F0;
     -fx-border-radius: 8;
 }
+
+/**
+ * Le quita los bordes molestos al propio recuadro en el que escribimos las letras.
+ */
 .search-input {
     -fx-background-color: transparent;
     -fx-padding: 12 0 12 0;
     -fx-font-size: 14px;
 }
+
+/**
+ * Asegura que cuando hacemos clic para escribir siga viéndose todo limpio e invisible al fondo.
+ */
 .search-input:focused {
     -fx-background-color: transparent;
 }
 
-/* Botones de Filtro (Tabs) */
+/**
+ * Da forma ovalada a las pestañitas que hacen de filtros con borde gris y fondo blanco.
+ */
 .filter-btn {
     -fx-background-color: white;
     -fx-text-fill: #475569;
@@ -593,6 +928,10 @@
     -fx-padding: 8 15 8 15;
     -fx-cursor: hand;
 }
+
+/**
+ * Tinte azul marino profundo que cubre el botón de la pestaña en la que se ha hecho clic.
+ */
 .filter-btn-active {
     -fx-background-color: #0F172A;
     -fx-text-fill: white;
@@ -604,9 +943,9 @@
     -fx-cursor: hand;
 }
 
-/* =======================================
-   ESTILOS DE LA TABLA (TableView)
-======================================= */
+/**
+ * Envuelve los listados de datos en una capa blanca con esquinas curvas y sombreado suave.
+ */
 .custom-table {
     -fx-background-color: white;
     -fx-background-radius: 12;
@@ -614,30 +953,54 @@
     -fx-border-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 10, 0, 0, 4);
 }
+
+/**
+ * Limpia el fondo gris feo de donde van los títulos de las columnas y le pone una raya divisoria debajo.
+ */
 .custom-table .column-header-background {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent #E2E8F0 transparent;
     -fx-border-width: 0 0 1 0;
 }
+
+/**
+ * Despeja de fondos extraños a los bloques individuales que forman los títulos de las columnas.
+ */
 .custom-table .column-header {
     -fx-background-color: transparent;
     -fx-padding: 15 10 15 10;
 }
+
+/**
+ * Oscurece y marca con negrita los nombres de la parte alta de la tabla.
+ */
 .custom-table .column-header .label {
     -fx-text-fill: #0F172A;
     -fx-font-weight: bold;
     -fx-font-size: 13px;
     -fx-alignment: center-left;
 }
+
+/**
+ * Estructura las líneas de la lista en blanco puro con su obligatoria línea de separación grisácea.
+ */
 .custom-table .table-row-cell {
     -fx-background-color: white;
     -fx-border-color: transparent transparent #F1F5F9 transparent;
     -fx-border-width: 0 0 1 0;
-    -fx-cell-size: 50px; /* Altura de las filas */
+    -fx-cell-size: 50px;
 }
+
+/**
+ * Suelta una capa de color gris súper claro sobre la fila en la que apoyas el puntero del ratón.
+ */
 .custom-table .table-row-cell:hover {
     -fx-background-color: #F8FAFC;
 }
+
+/**
+ * Configura que los textos de las casillas se vean alineados a la izquierda y con tono apagado.
+ */
 .custom-table .table-cell {
     -fx-text-fill: #475569;
     -fx-font-size: 13px;
@@ -645,29 +1008,40 @@
     -fx-padding: 0 10 0 10;
     -fx-border-color: transparent;
 }
-/* --- ESTILOS PARA LA VENTANA MODAL FLOTANTE --- */
+
+/**
+ * Fabrica el contenedor tipo carta blanca flotante con sombra para cuando saltan pantallas por encima.
+ */
 .modal-root {
     -fx-background-color: white;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1;
-    /* Simula una sombra sutil */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 5);
 }
 
+/**
+ * Tamaño prominente e imponente para lo primero que lees al saltar una ventana.
+ */
 .modal-title {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #1a1a24;
 }
 
+/**
+ * Textito gris discreto que acompaña arriba de cada hueco de información.
+ */
 .modal-label {
     -fx-font-size: 13px;
     -fx-font-weight: bold;
     -fx-text-fill: #757575;
 }
 
+/**
+ * Enmarca el contenido a mostrar en un rectángulo gris de lectura cómoda sin modificar.
+ */
 .modal-value {
     -fx-font-size: 14px;
     -fx-text-fill: #212121;
@@ -676,6 +1050,9 @@
     -fx-padding: 8;
 }
 
+/**
+ * Aplica el mismo aspecto de caja gris redondeada pero diseñado para las listas desplegables.
+ */
 .modal-combo {
     -fx-font-size: 14px;
     -fx-background-color: #f5f6fa;
@@ -684,19 +1061,28 @@
     -fx-border-radius: 5;
 }
 
-/* Botones del Modal */
+/**
+ * Botón morado que domina el escenario listo para aprobar y guardar la información metida.
+ */
 .btn-guardar {
-    -fx-background-color: #7c4dff; /* El morado de tu botón principal */
+    -fx-background-color: #7c4dff;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
     -fx-padding: 8 20 8 20;
     -fx-cursor: hand;
 }
+
+/**
+ * Lo vuelve más oscuro para que quede claro que ha sentido tu clic.
+ */
 .btn-guardar:hover {
     -fx-background-color: #651fff;
 }
 
+/**
+ * Botón fantasma que vive del texto gris y sirve para huir y cancelar procesos sin guardar.
+ */
 .btn-cancelar {
     -fx-background-color: transparent;
     -fx-text-fill: #757575;
@@ -704,16 +1090,19 @@
     -fx-cursor: hand;
     -fx-padding: 8 15 8 15;
 }
+
+/**
+ * Se enfada en rojo avisando de que vas a destruir o salir si lo tocas definitivamente.
+ */
 .btn-cancelar:hover {
     -fx-text-fill: #d32f2f;
     -fx-background-color: #ffebee;
     -fx-background-radius: 8;
 }
 
-
-/* =======================================
-   ESTILOS DE LA TABLA (PÍLDORAS Y BOTONES)
-======================================= */
+/**
+ * Define un encapsulado ovalado base ideal para meter palabras de categorías o estados.
+ */
 .pill-estado {
     -fx-padding: 4 12 4 12;
     -fx-background-radius: 20;
@@ -721,40 +1110,59 @@
     -fx-font-size: 11px;
 }
 
+/**
+ * Cubre el fondo de rojo clarito y el texto de granate para alertar de que falta acción.
+ */
 .pill-pendiente {
     -fx-background-color: #ffebee;
     -fx-text-fill: #c62828;
 }
 
+/**
+ * Cubre de naranja suave el fondo con un texto más chillón para avisar de que hay un proceso a medias.
+ */
 .pill-progreso {
     -fx-background-color: #fff8e1;
     -fx-text-fill: #f57f17;
 }
 
+/**
+ * Desprende tranquilidad llenando de verde pastel la chapa con un texto forestal para lo acabado.
+ */
 .pill-completado {
     -fx-background-color: #e8f5e9;
     -fx-text-fill: #2e7d32;
 }
 
+/**
+ * Versión aburrida en grises pálidos para cuando no hay nada reseñable que decir sobre un estado.
+ */
 .pill-default {
     -fx-background-color: #f5f5f5;
     -fx-text-fill: #616161;
 }
 
-/* Botón transparente de Ver Detalles en la tabla */
+/**
+ * Esconde el fondo de los botoncitos incrustados en la tabla para dejar que solo el texto azul actúe.
+ */
 .btn-accion-tabla {
     -fx-background-color: transparent;
-    -fx-text-fill: #3B82F6; /* Azul de tu diseño */
+    -fx-text-fill: #3B82F6;
     -fx-cursor: hand;
     -fx-font-weight: bold;
 }
+
+/**
+ * Raya por debajo las palabras sueltas cuando pasas el ratón para confirmar que hacen cosas.
+ */
 .btn-accion-tabla:hover {
     -fx-text-fill: #1D4ED8;
-    -fx-underline: true; /* Subrayado al pasar el ratón */
+    -fx-underline: true;
 }
-/* =======================================
-   NUEVOS ESTILOS PARA MODAL DE CREACIÓN
-======================================= */
+
+/**
+ * Despeja el color a un simple texto gris grueso para ser la típica equis 'X' de escape.
+ */
 .btn-close-modal {
     -fx-background-color: transparent;
     -fx-text-fill: #94A3B8;
@@ -762,10 +1170,17 @@
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
+
+/**
+ * Pinta de rojo alarmante la equis de cerrar para que no te quepa duda de su función demoledora.
+ */
 .btn-close-modal:hover {
-    -fx-text-fill: #EF4444; /* Se pone rojo al pasar el ratón */
+    -fx-text-fill: #EF4444;
 }
 
+/**
+ * Combina varios morados en un botón redondeado pensado para el acto de crear de cero.
+ */
 .btn-crear {
     -fx-background-color: linear-gradient(to right, #8B5CF6, #6366F1);
     -fx-text-fill: white;
@@ -774,13 +1189,17 @@
     -fx-padding: 8 20 8 20;
     -fx-cursor: hand;
 }
+
+/**
+ * Intensifica la gama de lila en el degradado al rozarlo con el cursor.
+ */
 .btn-crear:hover {
     -fx-background-color: linear-gradient(to right, #7C3AED, #4F46E5);
 }
 
-/* =======================================
-   BOTONES SECUNDARIOS (FOTOS Y FIRMAS)
-======================================= */
+/**
+ * Pinta un botón humilde, todo en grises y blancos rotos para funciones que no son protagonistas.
+ */
 .btn-secundario {
     -fx-background-color: #F1F5F9;
     -fx-text-fill: #475569;
@@ -791,49 +1210,72 @@
     -fx-border-color: #E2E8F0;
     -fx-border-radius: 8;
 }
+
+/**
+ * Marca el contorno sumándole oscuridad cuando interaccionas con él.
+ */
 .btn-secundario:hover {
     -fx-background-color: #E2E8F0;
     -fx-text-fill: #0F172A;
 }
+
+/**
+ * Difumina a la mitad su presencia visual si la aplicación dicta que ese botón no se puede pulsar ahora.
+ */
 .btn-secundario:disabled {
     -fx-opacity: 0.5;
     -fx-cursor: default;
 }
 
-/* =======================================
-   PANTALLA INVENTARIO - ESTADOS Y BOTONES
-======================================= */
+/**
+ * Refleja un estado sano mezclando verdes como si diera luz verde en un semáforo.
+ */
 .pill-stock-ok {
     -fx-background-color: #DCFCE7;
     -fx-text-fill: #16A34A;
 }
 
+/**
+ * Enciende las alarmas con un fondo rosado y letra roja avisando de problemas de escasez.
+ */
 .pill-stock-bajo {
     -fx-background-color: #FEE2E2;
     -fx-text-fill: #EF4444;
 }
 
-/* Botones de acción de la tabla */
+/**
+ * Enmarca una palabra en azul puro sirviendo como un enlace claro para corregir información.
+ */
 .btn-accion-edit {
     -fx-background-color: transparent;
     -fx-text-fill: #3B82F6;
     -fx-cursor: hand;
     -fx-font-weight: bold;
 }
+
+/**
+ * Responde al ratón aumentando la oscuridad del azul de editar.
+ */
 .btn-accion-edit:hover { -fx-text-fill: #1D4ED8; }
 
+/**
+ * Enmarca una palabra en rojo intenso listo para apretar un gatillo destructivo.
+ */
 .btn-accion-delete {
     -fx-background-color: transparent;
     -fx-text-fill: #EF4444;
     -fx-cursor: hand;
     -fx-font-weight: bold;
 }
+
+/**
+ * Responde al ratón volviendo el color casi sangre, para recalcar que vas a eliminar algo.
+ */
 .btn-accion-delete:hover { -fx-text-fill: #B91C1C; }
 
-/* =======================================
-   REFINAMIENTO VISUAL TABLA INVENTARIO
-======================================= */
-/* Píldora de Categoría */
+/**
+ * Moldea una etiqueta hueca bordeada con trazo gris ideal para clasificar cosas sin agobiar con color.
+ */
 .pill-categoria {
     -fx-border-color: #E2E8F0;
     -fx-border-radius: 20;
@@ -844,33 +1286,47 @@
     -fx-font-weight: bold;
 }
 
-/* Icono azul cuadrado del Material */
+/**
+ * Cubre de celeste claro un pequeño rincón para depositar ahí el icono descriptivo.
+ */
 .icon-material-box {
     -fx-background-color: #EFF6FF;
     -fx-background-radius: 6;
     -fx-padding: 4 6 4 6;
 }
+
+/**
+ * Aplica un tinte azul fuerte a lo que haya pintado dentro de la caja de iconos.
+ */
 .icon-material-text {
     -fx-text-fill: #3B82F6;
     -fx-font-size: 14px;
 }
 
-/* Fila entera roja si el stock es bajo */
+/**
+ * Ordena a la tabla entera que se bañe en un rosa pálido cuando las alarmas saltan en esa línea.
+ */
 .row-bajo-stock {
-    -fx-background-color: #FEF2F2 !important; /* Fondo rojizo claro */
+    -fx-background-color: #FEF2F2 !important;
 }
+
+/**
+ * Refuerza ese tono rosado si tu ratón coincide encima de ese fallo alarmante.
+ */
 .row-bajo-stock:hover {
     -fx-background-color: #FEE2E2 !important;
 }
 
-/* Texto del stock en rojo intenso */
+/**
+ * Interviene agresivamente de rojo vivo ese texto en particular sin importar otras reglas de alrededor.
+ */
 .text-rojo-stock {
     -fx-text-fill: #EF4444 !important;
 }
 
-/* =======================================
-   ICONOS SVG (ESTILO LUCIDE)
-======================================= */
+/**
+ * Pule los contornos de los trazados de los SVG para que luzcan modernos y sin esquinas cortantes.
+ */
 .icon-lucide {
     -fx-fill: transparent;
     -fx-stroke-width: 2;
@@ -878,40 +1334,57 @@
     -fx-stroke-line-join: round;
 }
 
+/**
+ * Fuerza el trazado de una imagen vectorial concretamente a tono azul de mar.
+ */
 .icon-lucide-blue {
-    -fx-stroke: #3B82F6; /* Azul base */
+    -fx-stroke: #3B82F6;
 }
 
-/* Efectos hover para los botones de acción */
+/**
+ * Conecta el dibujo al texto pintándolos del mismo color al ver que es la zona de editar.
+ */
 .btn-accion-edit .icon-lucide {
     -fx-stroke: #3B82F6;
 }
+
+/**
+ * Sincroniza la bajada de brillo del SVG cuando el ratón surca la zona del editar completo.
+ */
 .btn-accion-edit:hover .icon-lucide {
-    -fx-stroke: #1D4ED8; /* Azul más oscuro al pasar ratón */
+    -fx-stroke: #1D4ED8;
 }
 
+/**
+ * Conecta el dibujo rojo directamente con el texto que te permite extirpar datos.
+ */
 .btn-accion-delete .icon-lucide {
-    -fx-stroke: #EF4444; /* Rojo base */
+    -fx-stroke: #EF4444;
 }
+
+/**
+ * Sincroniza el modo agresivo tiñendo de carmesí el SVG a la vez que oscurece las letras de eliminar.
+ */
 .btn-accion-delete:hover .icon-lucide {
-    -fx-stroke: #B91C1C; /* Rojo oscuro al pasar ratón */
+    -fx-stroke: #B91C1C;
 }
-/* =======================================
-   ICONOS DE MARCA DE AGUA EN TARJETAS KPI
-======================================= */
+
+/**
+ * Superpone en el fondo del bloque visual unas huellas semitransparentes en blanco que le dan textura de diseño moderno.
+ */
 .kpi-watermark-icon {
     -fx-fill: transparent;
-    -fx-stroke: rgba(255, 255, 255, 0.3); /* Blanco al 30% de opacidad */
+    -fx-stroke: rgba(255, 255, 255, 0.3);
     -fx-stroke-width: 2;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: round;
 }
 
-/* =======================================
-   BOTONES VERDES (Añadir Material, etc.)
-======================================= */
+/**
+ * Monta un botón contundente que respira positividad y energía en verde esmeralda liso.
+ */
 .btn-green {
-    -fx-background-color: #10B981; /* Verde esmeralda */
+    -fx-background-color: #10B981;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -919,23 +1392,29 @@
     -fx-background-radius: 8;
     -fx-cursor: hand;
 }
+
+/**
+ * Profundiza el tono de verde en señal de haber recibido interacciones del usuario.
+ */
 .btn-green:hover {
-    -fx-background-color: #059669; /* Verde más oscuro al pasar el ratón */
+    -fx-background-color: #059669;
 }
 
-/* =======================================
-   PANTALLA TÉCNICOS - TARJETAS Y ESTILOS
-======================================= */
+/**
+ * Acopla una superficie blanca limpia como presentación en el tablón principal y le dota de un sombreado liviano a su alrededor.
+ */
 .tecnico-card {
     -fx-background-color: white;
     -fx-background-radius: 12;
     -fx-border-radius: 12;
     -fx-border-color: #E2E8F0;
     -fx-padding: 25;
-    /* Sombra muy suave para dar profundidad */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.04), 10, 0, 0, 4);
 }
 
+/**
+ * Moldea una burbuja gigantesca perfecta para que un texto muy visible se convierta en una imagen perfilera improvisada.
+ */
 .avatar-large {
     -fx-background-radius: 50;
     -fx-text-fill: white;
@@ -945,33 +1424,50 @@
     -fx-pref-width: 50px;
     -fx-pref-height: 50px;
 }
-/* --- NUEVO: Avatar Cuadrado Redondeado con Degradado --- */
+
+/**
+ * Diseña un híbrido de caja y curva, con matices cósmicos cruzando desde azul hasta violáceo asegurando su forma estricta.
+ */
 .avatar-squircle {
-    -fx-background-color: linear-gradient(to bottom right, #3B82F6, #A855F7); /* Degradado Azul a Morado */
-    -fx-background-radius: 14; /* Bordes redondeados estilo app móvil */
+    -fx-background-color: linear-gradient(to bottom right, #3B82F6, #A855F7);
+    -fx-background-radius: 14;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 20px;
     -fx-alignment: center;
     -fx-pref-width: 55px;
     -fx-pref-height: 55px;
-    -fx-min-width: 55px; /* Evita que se aplaste */
+    -fx-min-width: 55px;
     -fx-min-height: 55px;
 }
 
+/**
+ * Crea una medallita ovalada que destaca claramente un valor positivo sin ser abrumadora para la vista.
+ */
 .pill-activo { -fx-background-color: #DCFCE7; -fx-text-fill: #16A34A; -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; }
+
+/**
+ * Genera el opuesto exacto para restar atención y manifestar un momento carente de acción de este individuo u objeto.
+ */
 .pill-inactivo { -fx-background-color: #F1F5F9; -fx-text-fill: #64748B; -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold; }
 
+/**
+ * Condensa las descripciones anexas transformándolas en susurros visuales que no roban atención.
+ */
 .text-sm-gray { -fx-text-fill: #64748B; -fx-font-size: 12px; }
 
-/* --- NUEVO: Separador de la tarjeta --- */
+/**
+ * Trata un simple borde alto en color niebla para escindir información dentro del recinto de los datos.
+ */
 .card-divider {
     -fx-border-color: #F1F5F9;
     -fx-border-width: 1 0 0 0;
     -fx-padding: 15 0 0 0;
 }
 
-/* --- NUEVO: Botones estilo píldora (Outline) --- */
+/**
+ * Moldea una elipse limpia dibujada a lápiz que hace el papel de modificar datos sin abrumar.
+ */
 .btn-pill-edit {
     -fx-background-color: transparent;
     -fx-border-color: #E2E8F0;
@@ -981,11 +1477,18 @@
     -fx-cursor: hand;
     -fx-padding: 8 0;
 }
+
+/**
+ * Mancha tibiamente la elipse vacía para transmitir amabilidad ante la interacción del ratón.
+ */
 .btn-pill-edit:hover {
     -fx-background-color: #F8FAFC;
     -fx-border-color: #CBD5E1;
 }
 
+/**
+ * Pone en guardia con su trazo rojizo para que antes de romper algo seas consciente de ello mediante este óvalo.
+ */
 .btn-pill-delete {
     -fx-background-color: transparent;
     -fx-border-color: #FECACA;
@@ -995,14 +1498,18 @@
     -fx-cursor: hand;
     -fx-padding: 8 0;
 }
+
+/**
+ * Completa la advertencia de romper datos desparramando un leve tinte sanguíneo alrededor.
+ */
 .btn-pill-delete:hover {
     -fx-background-color: #FEF2F2;
     -fx-border-color: #FCA5A5;
 }
 
-/* =======================================
-   PÍLDORAS SELECCIONABLES (Modal Técnicos)
-======================================= */
+/**
+ * Diseña un elemento similar al anterior, pero gris y con relleno ajustado para usarse como piezas seleccionables en un grupo.
+ */
 .pill-especialidad {
     -fx-background-color: transparent;
     -fx-border-color: #CBD5E1;
@@ -1013,32 +1520,35 @@
     -fx-font-size: 12px;
     -fx-cursor: hand;
 }
-/* Cuando haces clic en la píldora para activarla */
+
+/**
+ * Pega un chispazo azul en toda la estructura de la burbuja seleccionable afirmando la validación visual de la elección de este ítem.
+ */
 .pill-especialidad:selected {
     -fx-background-color: #EFF6FF;
     -fx-border-color: #3B82F6;
     -fx-text-fill: #1D4ED8;
 }
 
-/* =======================================
-   PANTALLA CLIENTES - DEGRADADOS Y TARJETAS
-======================================= */
-/* Degradados de las tarjetas KPI */
+/**
+ * Da un bañado de pintura exótica muy vibrante viajando entre tonos de flores al fondo que apliques.
+ */
 .bg-gradient-magenta {
     -fx-background-color: linear-gradient(to right, #D946EF, #A855F7);
 }
+
+/**
+ * Transporta el fuego al fondo pintándolo al calor de una paleta muy naranja rojiza y llena de ardor visual.
+ */
 .bg-gradient-orange {
     -fx-background-color: linear-gradient(to right, #F97316, #EF4444);
 }
 
-/* =======================================
-   BOTÓN AÑADIR CLIENTE (Con Degradado)
-======================================= */
+/**
+ * Aglutina varios comandos visuales y cálidos junto con esquinas suavizadas para construir una llamada a la acción en tonos fuego.
+ */
 .btn-orange {
-    /* AQUÍ ESTÁ LA MAGIA: El degradado naranja a rojo-naranja de tu diseño */
     -fx-background-color: linear-gradient(to right, #F97316, #EF4444);
-
-    /* Mantenemos el resto de estilos para que funcione como un botón */
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -1047,12 +1557,16 @@
     -fx-cursor: hand;
 }
 
-/* Opcional: Un pequeño cambio de color al pasar el ratón por encima (hover) */
+/**
+ * Refresca la viveza del fuego del botón calentándolo más hacia el tono de la luz para confirmar la pulsación inminente.
+ */
 .btn-orange:hover {
-    -fx-background-color: linear-gradient(to right, #FB923C, #F87171); /* Un degradado más claro */
+    -fx-background-color: linear-gradient(to right, #FB923C, #F87171);
 }
 
-/* Squircle Naranja del Cliente */
+/**
+ * Reproduce el estilo curvo enigmático anterior, pero lo cubre completamente de esos mismos cálidos atardeceres al dárselo de comer al perfil.
+ */
 .avatar-squircle-orange {
     -fx-background-color: linear-gradient(to bottom right, #F97316, #EF4444);
     -fx-background-radius: 14;
@@ -1061,7 +1575,9 @@
     -fx-min-width: 55px;  -fx-min-height: 55px;
 }
 
-/* Píldora de Empresa */
+/**
+ * Construye una pegatina corporativa oval con azules muy definidos pensada para calificar visualmente datos empresariales.
+ */
 .pill-empresa {
     -fx-background-color: #E0E7FF;
     -fx-text-fill: #4338CA;
@@ -1071,22 +1587,27 @@
     -fx-font-weight: bold;
 }
 
-/* Notas del cliente */
+/**
+ * Tira un trazo casi etéreo para delimitar una postdata en la esquina del recuadro general de detalles.
+ */
 .nota-divider {
     -fx-border-color: #F1F5F9;
     -fx-border-width: 1 0 0 0;
     -fx-padding: 12 0 0 0;
 }
+
+/**
+ * Inclina tenuemente la tipografía dándole la voz pálida tradicional reservada para las descripciones ajenas o accesorias.
+ */
 .text-nota {
     -fx-text-fill: #64748B;
     -fx-font-style: italic;
     -fx-font-size: 13px;
 }
 
-/* =======================================
-   MODAL CLIENTES - DEGRADADOS Y TOGGLES
-======================================= */
-/* El botón de Crear Cliente con el degradado Naranja -> Magenta */
+/**
+ * Construye un botón atractivo de gran potencia con un fundido a medio camino entre la fruta y el algodón de azúcar que incita al guardado.
+ */
 .btn-gradient-orange-pink {
     -fx-background-color: linear-gradient(to right, #EA580C, #DB2777);
     -fx-text-fill: white;
@@ -1096,11 +1617,17 @@
     -fx-background-radius: 8;
     -fx-cursor: hand;
 }
+
+/**
+ * Modula las variables del fundido anterior tornándolo levemente hacia lo vibrante y fluorescente.
+ */
 .btn-gradient-orange-pink:hover {
     -fx-background-color: linear-gradient(to right, #F97316, #EC4899);
 }
 
-/* Botones de Tipo de Cliente (Empresa / Particular) */
+/**
+ * Define una botonera alargada de contorno y fondo neutro hecha para funcionar como interruptores alternos inofensivos.
+ */
 .toggle-tipo-cliente {
     -fx-background-color: white;
     -fx-border-color: #CBD5E1;
@@ -1112,16 +1639,19 @@
     -fx-padding: 10 0;
     -fx-cursor: hand;
 }
-/* Cuando está pulsado (Azul eléctrico) */
+
+/**
+ * Apodera con urgencia azul la franja escogida del interruptor haciendo indiscutible cuál parte reina sobre la contraria en todo instante.
+ */
 .toggle-tipo-cliente:selected {
     -fx-background-color: #2563EB;
     -fx-border-color: #2563EB;
     -fx-text-fill: white;
 }
 
-/* =======================================
-   NAVEGADOR DE SEMANAS (DASHBOARD)
-======================================= */
+/**
+ * Rodea en una concha inmaculada a las piezas enlazadas dispuestas a controlar los turnos y saltos de almanaque en las métricas de días.
+ */
 .week-nav-container {
     -fx-background-color: white;
     -fx-background-radius: 20;
@@ -1130,6 +1660,9 @@
     -fx-padding: 4 8;
 }
 
+/**
+ * Esboza un círculo desnudo habilitado para recibir dedos y punteros con gracia en funciones de transporte lineal.
+ */
 .btn-nav-week {
     -fx-background-color: transparent;
     -fx-cursor: hand;
@@ -1137,36 +1670,50 @@
     -fx-background-radius: 50;
 }
 
+/**
+ * Premia el curioseo visual en su zona con una caricia a duras penas imperceptible color albaricoque en su trastienda circular.
+ */
 .btn-nav-week:hover {
-    -fx-background-color: #FFF7ED; /* Fondo súper sutil naranja */
+    -fx-background-color: #FFF7ED;
 }
 
-/* Si la flecha está bloqueada  */
+/**
+ * Vacía de su poderío al elemento y lo vuelve medio ciego impidiendo interactuaciones prohibidas en secuencias lógicas de las flechas.
+ */
 .btn-nav-week:disabled {
     -fx-opacity: 0.2;
     -fx-cursor: default;
 }
 
+/**
+ * Ajusta la fisonomía estricta e internamente gruesa de las picas con las que diriges la función de retroceso o avance de las jornadas del calendario.
+ */
 .btn-nav-week .icon-lucide {
-    -fx-stroke: #94A3B8; /* Color gris por defecto */
+    -fx-stroke: #94A3B8;
     -fx-stroke-width: 2.5;
     -fx-fill: transparent;
 }
 
-/* Se vuelve naranja intenso al pasar el ratón */
+/**
+ * Pega un fogonazo rojizo sutil acompañando exactamente al ratón cuando acaricia el símbolo exacto dentro del círculo del viaje calendárico.
+ */
 .btn-nav-week:hover .icon-lucide {
     -fx-stroke: #EA580C;
 }
 
+/**
+ * Sostiene la fecha exacta con porte oscuro entre las dos escoltas conectoras de viajes logrando armonizar de conjunto.
+ */
 .label-week-range {
     -fx-font-weight: bold;
     -fx-font-size: 15px;
     -fx-text-fill: #0F172A;
     -fx-padding: 0 15;
 }
-/* =======================================
-   TOOLTIPS DEL GRÁFICO (Bocadillos)
-======================================= */
+
+/**
+ * Dibuja un diálogo emergente impoluto y rodeado por sombra elegante destinado a contarte que escondía el trozo del mapa en que reposas el ratón.
+ */
 .chart-tooltip {
     -fx-background-color: white;
     -fx-text-fill: #0F172A;
@@ -1176,28 +1723,36 @@
     -fx-background-radius: 8;
     -fx-border-color: #E2E8F0;
     -fx-border-radius: 8;
-    /* Sombra elegante como en tu diseño */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
 }
 
-/* =======================================
-   ACTIVIDAD RECIENTE (Nuevo Diseño)
-======================================= */
-/* Fondos de los iconos (Squircles) */
+/**
+ * Transiciona entre un mar claro y su abismo sirviendo de colchón sutil para los símbolos en listas.
+ */
 .icon-wrapper-blue {
     -fx-background-color: linear-gradient(to bottom right, #3B82F6, #2563EB);
     -fx-background-radius: 12;
 }
+
+/**
+ * Transiciona entre las llamas del sol de mediodía de colchón para abrigar las ideas pictóricas en listados.
+ */
 .icon-wrapper-orange {
     -fx-background-color: linear-gradient(to bottom right, #F97316, #EA580C);
     -fx-background-radius: 12;
 }
+
+/**
+ * Transiciona del chicle al mosto envolviendo delicadamente cualquier idea en recuadros sin vértices crudos de listas de cosas.
+ */
 .icon-wrapper-purple {
     -fx-background-color: linear-gradient(to bottom right, #D946EF, #A855F7);
     -fx-background-radius: 12;
 }
 
-/* Píldoras de Estado (Colores Pastel) */
+/**
+ * Etiqueta inofensivamente con celestes marinos una fase específica en el progreso de la narración de las vidas y quehaceres.
+ */
 .status-pill-blue {
     -fx-background-color: #DBEAFE;
     -fx-text-fill: #1D4ED8;
@@ -1206,6 +1761,10 @@
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
+
+/**
+ * Etiqueta en cálido ámbar suave otra fase temporal previniendo visualmente el letargo con gracia en la cronología.
+ */
 .status-pill-orange {
     -fx-background-color: #FFEDD5;
     -fx-text-fill: #C2410C;
@@ -1214,6 +1773,10 @@
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
+
+/**
+ * Relaja en campo santo de menta una situación particular en el recuento lineal para expresar finiquito visual amigable.
+ */
 .status-pill-green {
     -fx-background-color: #DCFCE7;
     -fx-text-fill: #15803D;
@@ -1223,20 +1786,28 @@
     -fx-font-weight: bold;
 }
 
+/**
+ * Susurra a pie de página en voz baja y ceniza sobre cuándo tuvieron lugar esas anotaciones de crónicas del pasado de esta app.
+ */
 .time-text {
     -fx-text-fill: #94A3B8;
     -fx-font-size: 12px;
 }
-/* =======================================
-   NUEVOS ICONOS KPI (Diseño Squircle Moderno)
-======================================= */
+
+/**
+ * Encajona un color magma vivo imponiéndole medidas perfectas donde jamás se va a distorsionar esa bella curva de esquinas.
+ */
 .kpi-squircle-orange {
     -fx-background-color: linear-gradient(to bottom right, #FF6B00, #FF2A00);
     -fx-background-radius: 14;
     -fx-min-width: 48px; -fx-min-height: 48px;
     -fx-pref-width: 48px; -fx-pref-height: 48px;
-    -fx-max-width: 48px; -fx-max-height: 48px; /* ESTO EVITA QUE SE ESTIRE */
+    -fx-max-width: 48px; -fx-max-height: 48px;
 }
+
+/**
+ * Encajona un color ultramar imponiéndole medidas inmutables salvaguardando para siempre esa geometría redonda cuadrada en el centro.
+ */
 .kpi-squircle-blue {
     -fx-background-color: linear-gradient(to bottom right, #00C6FF, #0072FF);
     -fx-background-radius: 14;
@@ -1244,6 +1815,10 @@
     -fx-pref-width: 48px; -fx-pref-height: 48px;
     -fx-max-width: 48px; -fx-max-height: 48px;
 }
+
+/**
+ * Encajona un bosque en su cajita de gradiente imponiendo dimensiones fijas de inalterabilidad para sostener figuras interiores impolutas.
+ */
 .kpi-squircle-green {
     -fx-background-color: linear-gradient(to bottom right, #22C55E, #059669);
     -fx-background-radius: 14;
@@ -1251,6 +1826,10 @@
     -fx-pref-width: 48px; -fx-pref-height: 48px;
     -fx-max-width: 48px; -fx-max-height: 48px;
 }
+
+/**
+ * Encajona el néctar floral fundido con reglas métricas férreas para unificar estéticas en todos sus primos coloreados superiores.
+ */
 .kpi-squircle-purple {
     -fx-background-color: linear-gradient(to bottom right, #E100FF, #7F00FF);
     -fx-background-radius: 14;
@@ -1258,35 +1837,49 @@
     -fx-pref-width: 48px; -fx-pref-height: 48px;
     -fx-max-width: 48px; -fx-max-height: 48px;
 }
-/* Las líneas finas y elegantes de los iconos blancos */
+
+/**
+ * Proporciona hilos de nube para las geometrías de las tarjetas y asegurar que todas fluyen con igual redondez exquisita y vaciado.
+ */
 .icon-kpi-white {
     -fx-stroke: white;
     -fx-fill: transparent;
-    -fx-stroke-width: 2.2; /* Ni muy gordo ni muy fino */
+    -fx-stroke-width: 2.2;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: round;
 }
 
-/* El icono de la flecha de Crecimiento (Solo morado, sin fondo) */
+/**
+ * Desnuda la punta ascendente que indica bonanza librándola de todo relleno al pintarla estrictamente del color principal.
+ */
 .icon-crecimiento-purple {
-    -fx-stroke: #9333EA; /* Morado intenso */
+    -fx-stroke: #9333EA;
     -fx-fill: transparent;
     -fx-stroke-width: 2.5;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: round;
 }
-/* =======================================
-   ICONO DE FILTRO (EMBUDO)
-======================================= */
+
+/**
+ * Configura el molde invisible básico y curvo pensado para darle vida futura a la figura filtradora del contenido.
+ */
 .filter-icon {
     -fx-stroke-width: 2;
     -fx-stroke-line-cap: round;
     -fx-stroke-line-join: round;
     -fx-fill: transparent;
 }
+
+/**
+ * Reafirma la monotonía asfáltica de la imagen cónica de separar datos mientas nadie actúe sobre este regulador inactivo de la lista.
+ */
 .filter-btn .filter-icon {
-    -fx-stroke: #475569; /* Gris oscuro cuando no está seleccionado */
+    -fx-stroke: #475569;
 }
+
+/**
+ * Ilumina drásticamente a blanco impoluto a la misma silueta desde el preciso instante en que la decisión te ha encriptado de azul su base subyacente de apoyo.
+ */
 .filter-btn-active .filter-icon {
-    -fx-stroke: white; /* Blanco cuando está activo */
+    -fx-stroke: white;
 }

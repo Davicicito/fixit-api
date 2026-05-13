@@ -40,11 +40,8 @@ public class MaterialCrearModalController implements Initializable {
     }
 
     private void cargarDesplegables() {
-        // 1. Cargar las unidades fijas (EN MAYÚSCULAS PARA QUE QUEDE MÁS BONITO)
+        // 1. Cargar las unidades fijas
         comboUnidad.setItems(FXCollections.observableArrayList("UNIDAD", "METROS", "LITROS", "KILOS", "CAJAS"));
-
-        // ELIMINAMOS el setValue("unidad") para que el desplegable empiece vacío.
-        // Así obligamos al usuario a elegir una opción conscientemente.
         comboUnidad.setPromptText("Selecciona unidad");
 
         // 2. Cargar Categorías desde MySQL
@@ -57,23 +54,20 @@ public class MaterialCrearModalController implements Initializable {
 
     @FXML
     public void crearMaterial() {
-        // 1. PRIMER MURO: Comprobar campos obligatorios (Nombre, Unidad y Categoría)
         String nombre = txtNombre.getText();
         String unidadSeleccionada = comboUnidad.getValue();
         Categoria categoriaSeleccionada = comboCategoria.getValue();
 
         if (nombre == null || nombre.trim().isEmpty() || unidadSeleccionada == null || categoriaSeleccionada == null) {
             mostrarError("Campos Incompletos", "Por favor, el Nombre, la Unidad de medida y la Categoría son obligatorios.");
-            return; // Cortamos en seco, no se guarda.
+            return;
         }
 
-        // 2. SEGUNDO MURO: Comprobar que los números son números reales (No letras, no símbolos raros)
         int stockFinal = 0;
         int stockMinFinal = 0;
         double precioFinal = 0.0;
 
         try {
-            // Si el campo está vacío, le ponemos un 0 automáticamente. Si tiene texto, intentamos convertirlo a número.
             String txtS = txtStock.getText() != null ? txtStock.getText().trim() : "";
             if (!txtS.isEmpty()) stockFinal = Integer.parseInt(txtS);
 
@@ -83,19 +77,16 @@ public class MaterialCrearModalController implements Initializable {
             String txtP = txtPrecio.getText() != null ? txtPrecio.getText().trim() : "";
             if (!txtP.isEmpty()) precioFinal = Double.parseDouble(txtP.replace(",", "."));
 
-            // ¿Qué pasa si intentan meter números negativos? Bloqueo.
             if (stockFinal < 0 || stockMinFinal < 0 || precioFinal < 0) {
                 mostrarError("Valores no válidos", "El stock y el precio no pueden ser números negativos.");
                 return;
             }
 
         } catch (NumberFormatException e) {
-            // Si el Integer.parseInt o Double.parseDouble fallan porque el usuario ha escrito "cinco" en vez de "5"
             mostrarError("Formato incorrecto", "Revisa los campos de Stock y Precio. Solo se admiten números.");
             return;
         }
 
-        // 3. TODO CORRECTO: Guardamos en base de datos
         try {
             Material nuevoMaterial = new Material();
             nuevoMaterial.setNombre(nombre.trim());
@@ -113,7 +104,7 @@ public class MaterialCrearModalController implements Initializable {
         }
     }
 
-    // Método auxiliar para lanzar las ventanitas de error
+    // Método auxiliar para lanzar las ventanas de error
     private void mostrarError(String cabecera, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error de Validación");

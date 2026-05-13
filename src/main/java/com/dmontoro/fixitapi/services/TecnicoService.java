@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service //
+@Service
 public class TecnicoService {
 
-    @Autowired //
+    @Autowired
     private TecnicoRepository tecnicoRepository;
 
     // Obtener todos los técnicos para que el administrador los gestione
@@ -24,7 +24,7 @@ public class TecnicoService {
         return tecnicoRepository.findById(id);
     }
 
-    // Guardar o actualizar un técnico (Aquí se define el rol al crearlo)
+    // Guardar o actualizar un técnico
     public Tecnico saveTecnico(Tecnico tecnico) {
         return tecnicoRepository.save(tecnico);
     }

@@ -32,11 +32,8 @@ public class MaterialEditarModalController {
 
     private Material materialActual;
 
-    // Se llama desde el InventarioController para pasarle los datos
     public void cargarDatosMaterial(Material material) {
         this.materialActual = material;
-
-        // Cargar listas
         comboUnidad.setItems(FXCollections.observableArrayList("unidad", "metros", "litros", "kilos", "cajas"));
         comboCategoria.setItems(FXCollections.observableArrayList(categoriaRepository.findAll()));
         comboCategoria.setConverter(new StringConverter<Categoria>() {
@@ -71,7 +68,7 @@ public class MaterialEditarModalController {
         }
 
         try {
-            // Actualizamos el objeto que ya teníamos
+            // Actualizamos el objeto
             materialActual.setNombre(txtNombre.getText().trim());
             materialActual.setUnidad(comboUnidad.getValue());
             materialActual.setCategoria(comboCategoria.getValue());
@@ -79,7 +76,6 @@ public class MaterialEditarModalController {
             materialActual.setStockMinimo(parsearEntero(txtStockMinimo.getText()));
             materialActual.setPrecio(parsearDecimal(txtPrecio.getText()));
 
-            // Guardamos (como el objeto ya tiene un ID, Spring Boot hace un UPDATE)
             materialRepository.save(materialActual);
             cerrarModal();
 

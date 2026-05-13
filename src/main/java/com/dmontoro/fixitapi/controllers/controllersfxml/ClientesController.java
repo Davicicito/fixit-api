@@ -103,10 +103,10 @@ public class ClientesController implements Initializable {
 
     private VBox crearTarjetaCliente(Cliente c, int totalAvisos, int avisosActivos) {
         VBox card = new VBox(15);
-        card.getStyleClass().add("tecnico-card"); // Usamos el mismo borde/sombra de Técnicos
-        card.setPrefWidth(420); // Un poco más ancha que los técnicos para que quepa la info
+        card.getStyleClass().add("tecnico-card");
+        card.setPrefWidth(420);
 
-        // 1. CABECERA (Icono Edificio + Nombre + Píldora)
+        // 1. CABECERA
         HBox header = new HBox(15);
         header.setAlignment(Pos.CENTER_LEFT);
 
@@ -127,7 +127,7 @@ public class ClientesController implements Initializable {
         nombreBox.getChildren().addAll(nombre, tipo);
         header.getChildren().addAll(avatarBox, nombreBox);
 
-        // 2. CONTACTO (Dirección, Email, Teléfono con iconos Lucide)
+        // 2. CONTACTO
         VBox contacto = new VBox(8);
 
         HBox dirBox = new HBox(8); dirBox.setAlignment(Pos.CENTER_LEFT);
@@ -157,7 +157,7 @@ public class ClientesController implements Initializable {
         notaContent.getChildren().addAll(notaIcon, notaLbl);
         notasBox.getChildren().add(notaContent);
 
-        // --- ZONA INFERIOR ---
+        //ZONA INFERIOR
         VBox separadorAbajo = new VBox(15);
         separadorAbajo.getStyleClass().add("card-divider");
 
@@ -168,14 +168,12 @@ public class ClientesController implements Initializable {
         VBox activosBox = new VBox(2); HBox.setHgrow(activosBox, Priority.ALWAYS);
         Label trTitulo = new Label("Avisos Activos"); trTitulo.getStyleClass().add("text-sm-gray");
         Label trNum = new Label(String.valueOf(avisosActivos));
-        // Aumentado a 22px
         trNum.setStyle("-fx-font-weight: bold; -fx-font-size: 22px; -fx-text-fill: #EA580C;");
         activosBox.getChildren().addAll(trTitulo, trNum);
 
         VBox totalesBox = new VBox(2);
         Label toTitulo = new Label("Total Avisos"); toTitulo.getStyleClass().add("text-sm-gray");
         Label toNum = new Label(String.valueOf(totalAvisos));
-        // Aumentado a 22px
         toNum.setStyle("-fx-font-weight: bold; -fx-font-size: 22px; -fx-text-fill: #0F172A;");
         totalesBox.getChildren().addAll(toTitulo, toNum);
 
@@ -184,20 +182,18 @@ public class ClientesController implements Initializable {
         // 5. BOTONES ACCIÓN
         HBox accionesBox = new HBox(15);
 
-        // --- BOTÓN EDITAR ---
+        // BOTÓN EDITAR
         Button btnEdit = new Button(" Editar");
         SVGPath editIcon = new SVGPath(); editIcon.setContent("M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7 M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"); editIcon.getStyleClass().add("icon-lucide"); editIcon.setStyle("-fx-stroke: #0F172A;");
         btnEdit.setGraphic(editIcon); btnEdit.getStyleClass().add("btn-pill-edit"); btnEdit.setMaxWidth(Double.MAX_VALUE); HBox.setHgrow(btnEdit, Priority.ALWAYS);
 
-        // 👇 AQUÍ PONEMOS LA ACCIÓN DEL BOTÓN EDITAR 👇
         btnEdit.setOnAction(e -> abrirModalCliente(c));
 
-        // --- BOTÓN ELIMINAR ---
+        // BOTÓN ELIMINAR
         Button btnDelete = new Button(" Eliminar");
         SVGPath deleteIcon = new SVGPath(); deleteIcon.setContent("M3 6h18 M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6 M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2 M10 11v6 M14 11v6"); deleteIcon.getStyleClass().add("icon-lucide"); deleteIcon.setStyle("-fx-stroke: #EF4444;");
         btnDelete.setGraphic(deleteIcon); btnDelete.getStyleClass().add("btn-pill-delete"); btnDelete.setMaxWidth(Double.MAX_VALUE); HBox.setHgrow(btnDelete, Priority.ALWAYS);
 
-        // 👇 AQUÍ PONEMOS LA ACCIÓN DEL BOTÓN ELIMINAR (Con Confirmación) 👇
         btnDelete.setOnAction(e -> {
             javafx.scene.control.Alert confirm = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Eliminar Cliente");
@@ -208,7 +204,7 @@ public class ClientesController implements Initializable {
                 if (response == javafx.scene.control.ButtonType.OK) {
                     try {
                         clienteRepository.delete(c);
-                        cargarDatos(); // Refrescamos la pantalla
+                        cargarDatos();
                     } catch (Exception ex) {
                         javafx.scene.control.Alert error = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
                         error.setTitle("No se puede eliminar");
@@ -220,7 +216,6 @@ public class ClientesController implements Initializable {
             });
         });
 
-        // Juntamos los botones y cerramos la tarjeta
         accionesBox.getChildren().addAll(btnEdit, btnDelete);
 
         separadorAbajo.getChildren().addAll(statsBox, accionesBox);
@@ -231,7 +226,7 @@ public class ClientesController implements Initializable {
 
     @FXML
     public void abrirModalCrearCliente() {
-        abrirModalCliente(null); // 'null' significa que vamos a crear uno nuevo
+        abrirModalCliente(null); //
     }
 
     private void abrirModalCliente(Cliente c) {
@@ -256,7 +251,7 @@ public class ClientesController implements Initializable {
         }
     }
 
-    // --- SESIÓN Y NAVEGACIÓN ---
+    // SESIÓN Y NAVEGACIÓN
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal; this.rolActual = rolReal;
         if (lblNombreUsuario != null) lblNombreUsuario.setText(nombreReal.substring(0, 1).toUpperCase() + nombreReal.substring(1));
@@ -264,9 +259,8 @@ public class ClientesController implements Initializable {
         if (lblAvatar != null) lblAvatar.setText(nombreReal.substring(0, 2).toUpperCase());
     }
 
-    // =======================================================
-    // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
-    // =======================================================
+
+    // NAVEGACIÓN ENTRE PANTALLAS
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
     @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
@@ -278,7 +272,7 @@ public class ClientesController implements Initializable {
             loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
-            // EL ANTÍDOTO: Comprobamos a qué pantalla vamos y le enchufamos la mochila con tus datos
+            // Comprobamos a qué pantalla vamos y le ponemos sus datos
             Object controller = loader.getController();
             if (controller instanceof DashboardController) ((DashboardController) controller).setDatosUsuario(nombreActual, rolActual);
             else if (controller instanceof GestionAvisosController) ((GestionAvisosController) controller).setDatosUsuario(nombreActual, rolActual);
@@ -293,5 +287,5 @@ public class ClientesController implements Initializable {
         }
     }
 
-    @FXML public void cerrarSesion(MouseEvent event) { /* Igual que en las otras */ }
+    @FXML public void cerrarSesion(MouseEvent event) { }
 }

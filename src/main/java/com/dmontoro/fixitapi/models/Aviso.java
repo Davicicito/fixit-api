@@ -19,14 +19,13 @@ public class Aviso {
     private String descripcion;
     private String estado;
 
-    // NUEVO CAMPO AÑADIDO A LA BASE DE DATOS
     @Column(columnDefinition = "VARCHAR(20) DEFAULT 'MEDIA'")
     private String prioridad = "MEDIA";
 
-    @Column(name = "foto_averia")
+    @Column(columnDefinition = "LONGTEXT")
     private String fotoAveria;
 
-    @Column(name = "firma_cliente")
+    @Column(columnDefinition = "LONGTEXT")
     private String firmaCliente;
 
     @Column(name = "fecha_creacion")
@@ -47,6 +46,6 @@ public class Aviso {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    @OneToMany(mappedBy = "aviso")
+    @OneToMany(mappedBy = "aviso", fetch = FetchType.EAGER)
     private List<AvisoMaterial> avisoMateriales;
 }
