@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador de la ventana flotante encargada de crear o modificar a los trabajadores.
+ * Gestiona el formulario con sus datos personales y permite seleccionar visualmente las especialidades de cada uno.
+ */
 @Controller
 public class TecnicoModalController implements Initializable {
 
@@ -44,12 +48,26 @@ public class TecnicoModalController implements Initializable {
 
     private List<ToggleButton> botonesEspecialidad = new ArrayList<>();
 
+    /**
+     * Metodo que arranca automaticamente al abrir la ventana.
+     * Prepara el menu desplegable del estado laboral colocando las opciones de activo e inactivo.
+     *
+     * @param location Ubicacion del archivo de la interfaz grafica.
+     * @param resources Recursos necesarios para construir la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         comboEstado.setItems(FXCollections.observableArrayList("ACTIVO", "INACTIVO"));
         comboEstado.setValue("ACTIVO");
     }
 
+    /**
+     * Revisa si vamos a crear un tecnico nuevo o a editar uno que ya existe.
+     * Si es nuevo prepara todos los campos en blanco. Si ya existe rellena el formulario con su informacion,
+     * busca todas las especialidades disponibles en la base de datos y deja pulsadas aquellas en las que el trabajador ya es experto.
+     *
+     * @param t El empleado con los datos extraidos de la base de datos o un objeto vacio si es nuevo.
+     */
     public void cargarDatosTecnico(Tecnico t) {
         this.tecnicoActual = t;
 
@@ -92,6 +110,10 @@ public class TecnicoModalController implements Initializable {
         }
     }
 
+    /**
+     * Comprueba que los campos obligatorios esten rellenados y junta todas las especialidades marcadas en un solo bloque de texto.
+     * Despues transfiere todos esos datos al objeto del trabajador y lo manda a guardar en la base de datos.
+     */
     @FXML
     public void guardarTecnico() {
         if (txtNombre.getText().isEmpty() || txtEmail.getText().isEmpty()) {
@@ -141,6 +163,11 @@ public class TecnicoModalController implements Initializable {
         }
     }
 
+    /**
+     * Muestra una alerta en pantalla si ocurre algun problema durante el guardado o si el administrador deja datos vacios.
+     *
+     * @param mensaje Explicacion detallada del error que ha ocurrido.
+     */
     private void mostrarError(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -149,6 +176,9 @@ public class TecnicoModalController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Cierra la ventana emergente actual y vuelve a la pantalla de la plantilla de empleados.
+     */
     @FXML
     public void cerrarModal() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();

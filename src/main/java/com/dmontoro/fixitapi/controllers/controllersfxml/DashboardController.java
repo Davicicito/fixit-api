@@ -24,6 +24,8 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.input.MouseEvent;
@@ -39,6 +41,11 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador principal de la pantalla de inicio o panel de control.
+ * Muestra de un vistazo las estadisticas de la empresa, los graficos de rendimiento
+ * y las ultimas averias registradas en el sistema.
+ */
 @Controller
 @Scope("prototype")
 public class DashboardController implements Initializable {
@@ -63,8 +70,6 @@ public class DashboardController implements Initializable {
     @FXML private Label lblNombreUsuario;
     @FXML private Label lblRolUsuario;
 
-
-
     private int semanasAtras = 0;
 
     @Autowired
@@ -73,6 +78,14 @@ public class DashboardController implements Initializable {
     @Autowired
     private org.springframework.context.ConfigurableApplicationContext springContext;
 
+    /**
+     * Arranca automaticamente al abrir el panel de control.
+     * Descarga todos los avisos de la base de datos y llama a los demas metodos
+     * para que pinten los graficos y calculen los numeros totales.
+     *
+     * @param location Ubicacion del archivo visual.
+     * @param resources Recursos necesarios para la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         List<Aviso> avisosReales = avisoRepository.findAll();
@@ -87,6 +100,12 @@ public class DashboardController implements Initializable {
         calcularCrecimientoMensual(avisosReales);
     }
 
+    /**
+     * Cuenta cuantos trabajos hay pendientes, en progreso y completados.
+     * Actualiza las cuatro tarjetas principales de la parte de arriba con los numeros calculados.
+     *
+     * @param avisos Lista con todos los trabajos traidos del servidor.
+     */
     private void cargarKpisReales(List<Aviso> avisos) {
         long pendientes = 0;
         long enProgreso = 0;
@@ -104,12 +123,19 @@ public class DashboardController implements Initializable {
         lblUrgentes.setText(String.valueOf(avisos.size()));
     }
 
+    /**
+     * Retrocede una semana en el tiempo para ver el rendimiento pasado en el grafico de barras.
+     */
     @FXML
     public void semanaAnterior() {
         semanasAtras++;
         cargarGraficoSemanas();
     }
 
+    /**
+     * Avanza una semana hacia el presente en el grafico de barras.
+     * Si ya estamos en la semana actual el boton no hace nada.
+     */
     @FXML
     public void semanaSiguiente() {
         if (semanasAtras > 0) {
@@ -118,6 +144,13 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Genera el grafico circular o de quesito.
+     * Agrupa los avisos por tipo de especialidad como fontaneria o electricidad y
+     * asigna un color representativo a cada seccion para diferenciar los oficios.
+     *
+     * @param avisos Lista de trabajos para calcular los porcentajes.
+     */
     private void cargarGraficoCircularReal(List<Aviso> avisos) {
         pieChartCategoria.getData().clear();
 
@@ -165,6 +198,12 @@ public class DashboardController implements Initializable {
         });
     }
 
+    /**
+     * Dibuja el grafico de lineas que muestra la evolucion del trabajo mes a mes.
+     * Solo tiene en cuenta los registros creados en el año actual para ver la tendencia real de crecimiento.
+     *
+     * @param avisos Lista de trabajos para contar cuantos hay cada mes.
+     */
     private void cargarGraficoLineasMensualReal(List<Aviso> avisos) {
         lineChartTendencia.getData().clear();
 
@@ -218,6 +257,13 @@ public class DashboardController implements Initializable {
             }
         });
     }
+
+    /**
+     * Busca los tres ultimos avisos creados en el dia de hoy.
+     * Crea pequeñas tarjetas visuales indicando el cliente, el estado y hace cuanto tiempo entraron.
+     *
+     * @param avisos Lista total de avisos para buscar los mas recientes.
+     */
     private void cargarActividadRecienteReal(List<Aviso> avisos) {
         vboxActividadReciente.getChildren().clear();
 
@@ -319,6 +365,13 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Compara los trabajos de este mes con los del mes anterior.
+     * Calcula si la empresa ha crecido o ha bajado en volumen de trabajo y
+     * pone el porcentaje resultante en color verde o rojo para indicar el rendimiento.
+     *
+     * @param avisos Lista de trabajos para realizar las matematicas mensuales.
+     */
     private void calcularCrecimientoMensual(List<Aviso> avisos) {
         LocalDate hoy = LocalDate.now();
         int mesActual = hoy.getMonthValue();
@@ -367,6 +420,14 @@ public class DashboardController implements Initializable {
             lblCrecimientoIcon.setStyle("-fx-stroke: #6B7280; -fx-fill: transparent; -fx-stroke-width: 2.5;");
         }
     }
+
+    /**
+     * Recibe los datos del empleado que acaba de entrar al sistema.
+     * Pone su nombre en el menu lateral y saca las letras iniciales para pintar su foto de perfil.
+     *
+     * @param nombreReal Nombre del trabajador.
+     * @param rolReal Puesto de trabajo del empleado.
+     */
     public void setDatosUsuario(String nombreReal, String rolReal) {
         String nombreFormateado = nombreReal.substring(0, 1).toUpperCase() + nombreReal.substring(1);
 
@@ -386,10 +447,18 @@ public class DashboardController implements Initializable {
         lblAvatar.setText(iniciales.toUpperCase());
     }
 
+    /**
+     * Accion para salir de la cuenta.
+     * Cierra la ventana principal y vuelve a abrir la pantalla inicial para que entre otro empleado.
+     *
+     * @param event Clic del raton en el boton de cerrar sesion.
+     */
     @FXML
     public void cerrarSesion(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
+            loader.setControllerFactory(springContext::getBean);
+
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.hide();
@@ -404,6 +473,12 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Navega hacia la pantalla de gestion de avisos.
+     * Mantiene vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irAGestionAvisos(MouseEvent event) {
         try {
@@ -419,6 +494,12 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Navega hacia la pantalla del inventario.
+     * Mantiene vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irAInventario(MouseEvent event) {
         try {
@@ -434,6 +515,12 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Navega hacia la pantalla de la lista de tecnicos.
+     * Mantiene vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irATecnicos(MouseEvent event) {
         try {
@@ -449,6 +536,12 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Navega hacia la pantalla del directorio de clientes.
+     * Mantiene vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irAClientes(MouseEvent event) {
         try {
@@ -464,6 +557,11 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * Rellena el grafico de barras de la derecha.
+     * Analiza la semana seleccionada, averigua que dias son y cuenta cuantos avisos
+     * nuevos han entrado y cuantos se han terminado durante cada uno de esos dias.
+     */
     private void cargarGraficoSemanas() {
         LocalDate hoy = LocalDate.now().minusWeeks(semanasAtras);
         LocalDate lunes = hoy.with(java.time.DayOfWeek.MONDAY);

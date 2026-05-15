@@ -31,6 +31,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador de la pantalla de clientes.
+ * Se encarga de mostrar la lista de clientes en forma de tarjetas visuales,
+ * gestionar la barra de busqueda y calcular las estadisticas generales.
+ */
 @Controller
 @Scope("prototype")
 public class ClientesController implements Initializable {
@@ -47,6 +52,14 @@ public class ClientesController implements Initializable {
     private String nombreActual = "Administrador";
     private String rolActual = "Jefe de Equipo";
 
+    /**
+     * Metodo que arranca al cargar la pantalla.
+     * Llama a la funcion de cargar datos y prepara la barra de busqueda para que
+     * filtre los clientes en tiempo real cada vez que el usuario teclea una letra.
+     *
+     * @param location La ubicacion del archivo visual.
+     * @param resources Los recursos necesarios para cargar la vista.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cargarDatos();
@@ -55,6 +68,12 @@ public class ClientesController implements Initializable {
         }
     }
 
+    /**
+     * Borra las tarjetas de la pantalla y vuelve a traer todos los clientes de la base de datos.
+     * Revisa el texto escrito en el buscador para mostrar solo los que coincidan.
+     * Tambien cuenta cuantos clientes hay en total y cuantos de ellos tienen averias pendientes
+     * para actualizar los marcadores de la parte superior.
+     */
     private void cargarDatos() {
         flowPaneClientes.getChildren().clear();
 
@@ -101,6 +120,16 @@ public class ClientesController implements Initializable {
         lblTotalAvisosCard.setText(String.valueOf(totalAvisosGlobal));
     }
 
+    /**
+     * Fabrica la tarjeta visual de un cliente con toda su informacion.
+     * Dibuja los iconos, coloca el nombre, los datos de contacto y crea los botones
+     * de editar y eliminar con sus respectivas acciones y alertas de confirmacion.
+     *
+     * @param c El cliente con los datos extraidos de la base de datos.
+     * @param totalAvisos La cantidad total de averias que ha tenido el cliente en la historia.
+     * @param avisosActivos La cantidad de averias que tiene pendientes de solucionar ahora mismo.
+     * @return La tarjeta visual completa lista para colocar en la pantalla.
+     */
     private VBox crearTarjetaCliente(Cliente c, int totalAvisos, int avisosActivos) {
         VBox card = new VBox(15);
         card.getStyleClass().add("tecnico-card");
@@ -224,11 +253,22 @@ public class ClientesController implements Initializable {
         return card;
     }
 
+    /**
+     * Accion del boton de crear nuevo cliente.
+     * Llama a la funcion encargada de abrir la ventana emergente indicando que es un cliente vacio.
+     */
     @FXML
     public void abrirModalCrearCliente() {
         abrirModalCliente(null); //
     }
 
+    /**
+     * Abre la ventana emergente para trabajar con un cliente.
+     * Si recibe un cliente vacio permite crearlo desde cero, y si recibe uno que ya existe
+     * carga sus datos para poder modificarlos. Al cerrar la ventana refresca la lista.
+     *
+     * @param c El cliente a editar, o nulo si se va a crear uno nuevo.
+     */
     private void abrirModalCliente(Cliente c) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/ClienteModal.fxml"));
@@ -252,6 +292,13 @@ public class ClientesController implements Initializable {
     }
 
     // SESIÓN Y NAVEGACIÓN
+    /**
+     * Recibe y guarda el nombre y el rol del administrador que ha iniciado sesion.
+     * Actualiza el menu lateral izquierdo para que muestre el nombre, el rol y las iniciales en el avatar.
+     *
+     * @param nombreReal El nombre completo del administrador.
+     * @param rolReal El puesto o nivel de permisos del administrador.
+     */
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal; this.rolActual = rolReal;
         if (lblNombreUsuario != null) lblNombreUsuario.setText(nombreReal.substring(0, 1).toUpperCase() + nombreReal.substring(1));
@@ -261,11 +308,23 @@ public class ClientesController implements Initializable {
 
 
     // NAVEGACIÓN ENTRE PANTALLAS
+    /** Navega hacia el panel principal. */
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
+    /** Navega hacia la pantalla de avisos. */
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
+    /** Navega hacia la pantalla de inventario. */
     @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
+    /** Navega hacia la pantalla de tecnicos. */
     @FXML public void irATecnicos(MouseEvent event) { navegarAPantalla(event, "/FXML/Tecnicos.fxml"); }
 
+    /**
+     * Metodo comun que gestiona el cambio de pantallas en el menu lateral.
+     * Carga la nueva pantalla solicitada y le pasa los datos del administrador
+     * para que no se pierda la sesion al cambiar de pestaña.
+     *
+     * @param event El clic del raton sobre el boton del menu.
+     * @param ruta La ruta exacta del archivo visual que se quiere abrir.
+     */
     private void navegarAPantalla(MouseEvent event, String ruta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
@@ -287,5 +346,10 @@ public class ClientesController implements Initializable {
         }
     }
 
+    /**
+     * Metodo preparado para cerrar la sesion del administrador y volver a la pantalla inicial.
+     *
+     * @param event El clic del raton sobre el boton de cerrar sesion.
+     */
     @FXML public void cerrarSesion(MouseEvent event) { }
 }

@@ -34,6 +34,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador de la pantalla de inventario.
+ * Gestiona la tabla de materiales y herramientas disponibles en el almacen.
+ * Permite buscar elementos, ver el valor economico almacenado y controlar que productos estan a punto de agotarse.
+ */
 @Controller
 @Scope("prototype")
 public class InventarioController implements Initializable {
@@ -76,6 +81,13 @@ public class InventarioController implements Initializable {
     private ObservableList<Material> masterData = FXCollections.observableArrayList();
     private FilteredList<Material> filteredData;
 
+    /**
+     * Arranca la pantalla de inventario preparando la estructura de la tabla y descargando los datos iniciales.
+     * Tambien activa el buscador para que filtre los productos al instante segun se escribe.
+     *
+     * @param location Ubicacion del archivo de la interfaz grafica.
+     * @param resources Recursos necesarios para construir la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configurarColumnasTabla();
@@ -98,6 +110,12 @@ public class InventarioController implements Initializable {
         }
     }
 
+    /**
+     * Configura el aspecto visual de cada columna de la tabla.
+     * Añade iconos decorativos a los nombres de los materiales, etiquetas de colores para las categorias
+     * y resalta en rojo aquellos productos que tienen un stock inferior al minimo permitido.
+     * Tambien crea los botones de editar y eliminar para cada fila.
+     */
     private void configurarColumnasTabla() {
         // 1. COLUMNA MATERIAL
         colMaterial.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -316,6 +334,12 @@ public class InventarioController implements Initializable {
             }
         });
     }
+
+    /**
+     * Descarga la lista de materiales actualizada desde la base de datos y rellena la tabla.
+     * Ademas, realiza los calculos necesarios para saber cuantos productos hay en total,
+     * cuantos tienen poco stock y cual es el valor economico total del almacen para actualizar las tarjetas informativas superiores.
+     */
     private void cargarDatosTablaYKpis() {
         List<Material> materiales = materialRepository.findAll();
 
@@ -351,6 +375,13 @@ public class InventarioController implements Initializable {
         lblValorTotalCard.setText(String.format("€%.2f", Math.floor(valorTotal)));
     }
 
+    /**
+     * Recibe los datos del trabajador que ha iniciado sesion en el sistema y actualiza
+     * el menu lateral izquierdo para mostrar su nombre formateado y su puesto de trabajo.
+     *
+     * @param nombreReal Nombre completo del usuario activo.
+     * @param rolReal Puesto de trabajo o nivel de acceso del usuario.
+     */
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal;
         this.rolActual = rolReal;
@@ -360,9 +391,28 @@ public class InventarioController implements Initializable {
     }
 
     // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
+
+    /**
+     * Navega hacia el panel principal manteniendo los datos del trabajador para no perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
+
+    /**
+     * Navega hacia la pantalla de gestion de avisos manteniendo los datos del trabajador para no perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
 
+    /**
+     * Metodo centralizado para cambiar de pantalla.
+     * Carga el nuevo archivo visual y transfiere los datos del usuario a la nueva vista para asegurar que la sesion siga abierta.
+     *
+     * @param event Clic del raton sobre el boton del menu.
+     * @param ruta Ruta del archivo visual que se desea cargar en la pantalla.
+     */
     private void navegarAPantalla(MouseEvent event, String ruta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
@@ -382,6 +432,11 @@ public class InventarioController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Abre una pequeña ventana flotante sobre la pantalla actual para añadir un material nuevo al inventario.
+     * Cuando el usuario cierra esa ventana la tabla se actualiza sola para mostrar el nuevo elemento.
+     */
     @FXML
     public void abrirModalCrearMaterial() {
         try {
@@ -400,6 +455,12 @@ public class InventarioController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navega hacia la pantalla de tecnicos manteniendo los datos del trabajador para no perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irATecnicos(MouseEvent event) {
         try {
@@ -417,6 +478,12 @@ public class InventarioController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navega hacia la pantalla de clientes manteniendo los datos del trabajador para no perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irAClientes(MouseEvent event) {
         try {
@@ -435,10 +502,16 @@ public class InventarioController implements Initializable {
         }
     }
 
+    /**
+     * Cierra la sesion del sistema y devuelve al administrador a la pantalla de acceso.
+     *
+     * @param event Clic del raton sobre el boton de cerrar sesion.
+     */
     @FXML
     public void cerrarSesion(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
+            loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1200, 800));

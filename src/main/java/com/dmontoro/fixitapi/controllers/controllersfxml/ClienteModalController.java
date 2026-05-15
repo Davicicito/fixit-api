@@ -12,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador para la ventana emergente de clientes.
+ * Sirve para registrar un cliente nuevo en el sistema o para editar la informacion de uno ya existente.
+ */
 @Controller
 public class ClienteModalController implements Initializable {
 
@@ -32,6 +36,13 @@ public class ClienteModalController implements Initializable {
     private Cliente clienteActual;
     private ToggleGroup grupoTipo;
 
+    /**
+     * Prepara los elementos de la pantalla al abrir la ventana.
+     * Agrupa los botones de tipo de cliente para que solo se pueda marcar uno y selecciona la opcion de empresa por defecto.
+     *
+     * @param location  La ubicacion del archivo visual.
+     * @param resources Los recursos necesarios para cargar la vista.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Agrupamos los botones para que solo se pueda elegir uno a la vez
@@ -43,6 +54,13 @@ public class ClienteModalController implements Initializable {
         btnEmpresa.setSelected(true);
     }
 
+    /**
+     * Configura la ventana dependiendo de la accion elegida.
+     * Si recibe un cliente vacio, prepara los textos para crear uno nuevo.
+     * Si recibe un cliente con datos, rellena todos los recuadros de la pantalla con su informacion para poder modificarla.
+     *
+     * @param c El cliente con los datos extraidos de la base de datos.
+     */
     public void cargarDatosCliente(Cliente c) {
         this.clienteActual = c;
 
@@ -67,6 +85,11 @@ public class ClienteModalController implements Initializable {
         }
     }
 
+    /**
+     * Recoge lo escrito en el formulario y verifica que los campos principales no esten vacios.
+     * Si todo esta bien, guarda el cliente en la base de datos y cierra esta ventana.
+     * Si ocurre un problema, muestra un mensaje de fallo.
+     */
     @FXML
     public void guardarCliente() {
         if (txtNombre.getText().isEmpty() || txtEmail.getText().isEmpty() || txtTelefono.getText().isEmpty() || txtDireccion.getText().isEmpty()) {
@@ -96,6 +119,11 @@ public class ClienteModalController implements Initializable {
         }
     }
 
+    /**
+     * Lanza una alerta visual en la pantalla para avisar al usuario de que falta un campo por rellenar o ha ocurrido un fallo al guardar.
+     *
+     * @param mensaje El texto explicativo que se mostrara dentro de la alerta.
+     */
     private void mostrarError(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error de Validación");
@@ -104,6 +132,9 @@ public class ClienteModalController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Cierra la ventana emergente actual y devuelve el control a la pantalla principal.
+     */
     @FXML
     public void cerrarModal() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();

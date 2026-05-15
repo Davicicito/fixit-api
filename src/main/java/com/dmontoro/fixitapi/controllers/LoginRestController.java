@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+/**
+ * Controlador exclusivo para gestionar la entrada desde la aplicacion movil.
+ * Funciona como un vigilante de seguridad que pide el correo y la clave al tecnico
+ * antes de dejarle pasar a ver sus trabajos asignados.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class LoginRestController {
@@ -20,6 +25,15 @@ public class LoginRestController {
     private TecnicoRepository tecnicoRepository;
 
     // Este método escucha cuando el móvil hace un POST a /api/auth/login
+    /**
+     * Recibe la peticion del telefono movil cuando un empleado intenta iniciar sesion.
+     * Busca en el registro de la empresa si existe un trabajador con ese correo y si su clave es correcta.
+     * Si acierta le envia toda su ficha personal para que la aplicacion arranque de forma personalizada,
+     * y si falla le bloquea la puerta devolviendo un error de seguridad.
+     *
+     * @param request El paquete con el correo y la contraseña que el empleado ha escrito en su pantalla.
+     * @return El perfil completo del trabajador si acierta o un texto de aviso si se ha equivocado.
+     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
 

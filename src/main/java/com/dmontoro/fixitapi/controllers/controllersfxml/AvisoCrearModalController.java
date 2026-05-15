@@ -23,6 +23,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador para la ventana modal encargada de crear un nuevo aviso.
+ * Gestiona la interfaz donde el administrador selecciona el cliente, el técnico,
+ * la categoría y otros detalles para registrar una nueva avería o trabajo.
+ */
 @Controller
 public class AvisoCrearModalController implements Initializable {
 
@@ -37,11 +42,23 @@ public class AvisoCrearModalController implements Initializable {
     @Autowired private TecnicoRepository tecnicoRepository;
     @Autowired private CategoriaRepository categoriaRepository;
 
+    /**
+     * Método que se ejecuta automáticamente al abrir la ventana.
+     * Se encarga de preparar la pantalla, llamando a la función que rellena los menús desplegables.
+     *
+     * @param location  La ubicación relativa del archivo FXML.
+     * @param resources Los recursos usados para localizar la vista.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cargarDesplegables();
     }
 
+    /**
+     * Consulta la base de datos para obtener las listas de clientes, técnicos y categorías,
+     * y las coloca en sus respectivos menús desplegables (ComboBox) para que el usuario pueda elegir.
+     * Además, aplica un filtro para mostrar únicamente a los técnicos que están en activo.
+     */
     private void cargarDesplegables() {
         // 1. Cargar Prioridades
         comboPrioridad.setItems(FXCollections.observableArrayList("ALTA", "MEDIA", "BAJA"));
@@ -57,9 +74,10 @@ public class AvisoCrearModalController implements Initializable {
         // 3. Cargar Técnicos desde MySQL
         List<Tecnico> todosLosUsuarios = tecnicoRepository.findAll();
 
-        // Usamos Java Streams para quedarnos con los que tienen el rol de Técnico
+        // Usamos Java Streams para quedarnos con los que tienen el rol de Técnico y están ACTIVOS
         List<Tecnico> soloTecnicos = todosLosUsuarios.stream()
                 .filter(t -> t.getRol() != null && !t.getRol().equalsIgnoreCase("Administrador"))
+                .filter(t -> t.getActivo() != null && t.getActivo())
                 .collect(Collectors.toList());
 
         comboTecnico.setItems(FXCollections.observableArrayList(soloTecnicos));
@@ -76,6 +94,12 @@ public class AvisoCrearModalController implements Initializable {
         });
     }
 
+    /**
+     * Recoge toda la información introducida en el formulario para crear un aviso nuevo.
+     * Comprueba que no falten datos obligatorios y verifica que el técnico seleccionado cumpla
+     * con los requisitos (tener la especialidad adecuada y estar activo).
+     * Si todo está correcto, guarda el aviso en la base de datos y cierra la ventana.
+     */
     @FXML
     public void crearAviso() {
         // 1. OBTENER TODOS LOS DATOS DE LA PANTALLA
@@ -98,7 +122,7 @@ public class AvisoCrearModalController implements Initializable {
             return; // Cortamos el método aquí, no le dejamos avanzar
         }
 
-        // 3. VALIDACIÓN DE ESPECIALIDAD DEL TÉCNICO
+        // 3. VALIDACIÓN DE ESPECIALIDAD Y ESTADO DEL TÉCNICO
         if (tecnicoSeleccionado != null) {
             String especialidadesTecnico = tecnicoSeleccionado.getEspecialidad();
             String nombreCategoria = categoriaSeleccionada.getNombre();
@@ -112,7 +136,17 @@ public class AvisoCrearModalController implements Initializable {
                         "Sus especialidades son: " + (especialidadesTecnico != null ? especialidadesTecnico : "Ninguna") + ".");
                 alerta.showAndWait();
 
-                return; // Cortamos el método aquí, no se guarda.
+                return;
+            }
+
+            if (tecnicoSeleccionado.getActivo() == null || !tecnicoSeleccionado.getActivo()) {
+                javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                alerta.setTitle("Técnico Inactivo");
+                alerta.setHeaderText("Técnico no disponible");
+                alerta.setContentText("El técnico " + tecnicoSeleccionado.getNombre() + " se encuentra inactivo o dado de baja.\n\nPor favor, selecciona un técnico que esté en activo para asignar este aviso.");
+                alerta.showAndWait();
+
+                return;
             }
         }
 
@@ -129,6 +163,11 @@ public class AvisoCrearModalController implements Initializable {
         // 5. CERRAMOS LA VENTANA
         cerrarModal();
     }
+
+    /**
+     * Cierra la ventana emergente actual, ya sea porque se ha guardado el aviso con éxito
+     * o porque el usuario ha decidido cancelar la operación.
+     */
     @FXML
     public void cerrarModal() {
         Stage stage = (Stage) txtDescripcion.getScene().getWindow();

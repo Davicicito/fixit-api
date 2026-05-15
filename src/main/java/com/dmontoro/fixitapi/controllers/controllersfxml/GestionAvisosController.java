@@ -31,6 +31,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador de la pantalla principal de gestion de avisos.
+ * Muestra una tabla con todos los trabajos, permite buscar o filtrar por estado y gestionar la creacion o revision de averias.
+ */
 @Controller
 @Scope("prototype")
 public class GestionAvisosController implements Initializable {
@@ -76,6 +80,13 @@ public class GestionAvisosController implements Initializable {
     private String nombreActual = "Administrador";
     private String rolActual = "Jefe de Equipo";
 
+    /**
+     * Metodo que se ejecuta al cargar la pantalla.
+     * Prepara las columnas de la tabla, carga los datos iniciales y activa el buscador en tiempo real para que filtre segun se escribe.
+     *
+     * @param location Ubicacion del archivo visual.
+     * @param resources Recursos necesarios para la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configurarColumnasTabla();
@@ -91,18 +102,36 @@ public class GestionAvisosController implements Initializable {
 
 
     // LÓGICA DE BOTONES DE FILTRO
+    /**
+     * Cambia el filtro activo para mostrar todos los avisos sin excepcion.
+     */
     @FXML
     public void filtrarPorTodos() { cambiarEstadoFiltro("TODOS", btnFiltroTodos); }
 
+    /**
+     * Cambia el filtro activo para mostrar unicamente los avisos pendientes.
+     */
     @FXML
     public void filtrarPorPendiente() { cambiarEstadoFiltro("PENDIENTE", btnFiltroPendiente); }
 
+    /**
+     * Cambia el filtro activo para mostrar unicamente los avisos en curso.
+     */
     @FXML
     public void filtrarPorProgreso() { cambiarEstadoFiltro("EN PROGRESO", btnFiltroProgreso); }
 
+    /**
+     * Cambia el filtro activo para mostrar unicamente los avisos ya finalizados.
+     */
     @FXML
     public void filtrarPorCompletado() { cambiarEstadoFiltro("COMPLETADO", btnFiltroCompletado); }
 
+    /**
+     * Actualiza visualmente los botones de filtro para marcar cual esta pulsado y guarda el estado elegido para aplicar la busqueda.
+     *
+     * @param nuevoEstado El estado que queremos filtrar en texto.
+     * @param botonPulsado El boton fisico que acaba de hacer clic el usuario.
+     */
     private void cambiarEstadoFiltro(String nuevoEstado, Button botonPulsado) {
         this.estadoFiltroActual = nuevoEstado;
 
@@ -122,6 +151,9 @@ public class GestionAvisosController implements Initializable {
         aplicarFiltros();
     }
 
+    /**
+     * Revisa toda la lista de avisos y oculta los que no coinciden con el estado seleccionado o con el texto escrito en la barra de busqueda superior.
+     */
     private void aplicarFiltros() {
         if (filteredData == null) return;
 
@@ -170,6 +202,10 @@ public class GestionAvisosController implements Initializable {
 
     // CONFIGURACIÓN DE TABLA Y DATOS
 
+    /**
+     * Define como se muestra la informacion dentro de la tabla.
+     * Dibuja elementos visuales como las pildoras de colores para los estados, los iconos de las categorias y añade el boton de ver detalles en cada fila.
+     */
     private void configurarColumnasTabla() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -345,6 +381,9 @@ public class GestionAvisosController implements Initializable {
         });
     }
 
+    /**
+     * Descarga de la base de datos la lista completa de trabajos, rellena la tabla y cuenta cuantos hay de cada tipo para actualizar los marcadores de la zona superior.
+     */
     private void cargarDatosTablaYKpis() {
         List<Aviso> avisos = avisoRepository.findAll();
 
@@ -376,6 +415,10 @@ public class GestionAvisosController implements Initializable {
         lblCompletadosCard.setText(String.valueOf(completados));
     }
 
+    /**
+     * Despliega una pequeña ventana flotante sobre la pantalla actual para que el administrador pueda registrar una averia nueva.
+     * Al cerrarla, refresca la tabla automaticamente.
+     */
     @FXML
     public void abrirModalCrearAviso() {
         try {
@@ -396,6 +439,12 @@ public class GestionAvisosController implements Initializable {
         }
     }
 
+    /**
+     * Recibe los datos del empleado que ha iniciado sesion, formatea su nombre y calcula sus iniciales para mostrar su perfil en el menu lateral.
+     *
+     * @param nombreReal Nombre completo del trabajador.
+     * @param rolReal Puesto del trabajador.
+     */
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal;
         this.rolActual = rolReal;
@@ -416,6 +465,11 @@ public class GestionAvisosController implements Initializable {
         lblAvatar.setText(iniciales.toUpperCase());
     }
 
+    /**
+     * Navega hacia el panel principal manteniendo vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irADashboard(MouseEvent event) {
         try {
@@ -433,6 +487,12 @@ public class GestionAvisosController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navega hacia la pantalla de inventario manteniendo vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irAInventario(MouseEvent event) {
         try {
@@ -450,6 +510,12 @@ public class GestionAvisosController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navega hacia la pantalla de tecnicos manteniendo vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irATecnicos(MouseEvent event) {
         try {
@@ -467,6 +533,12 @@ public class GestionAvisosController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navega hacia la pantalla de clientes manteniendo vivos los datos del trabajador para no perder la sesion al cambiar de pestaña.
+     *
+     * @param event Clic del raton en el menu lateral.
+     */
     @FXML
     public void irAClientes(MouseEvent event) {
         try {
@@ -485,10 +557,16 @@ public class GestionAvisosController implements Initializable {
         }
     }
 
+    /**
+     * Cierra la ventana del sistema y devuelve al usuario a la pantalla de acceso.
+     *
+     * @param event Clic del raton sobre el boton de cerrar sesion.
+     */
     @FXML
     public void cerrarSesion(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
+            loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

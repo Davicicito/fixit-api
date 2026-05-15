@@ -31,6 +31,10 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador de la pantalla principal de la plantilla de empleados.
+ * Muestra a todo el equipo en forma de tarjetas visuales, calcula la media de valoracion de cada uno y permite gestionarlos.
+ */
 @Controller
 @Scope("prototype")
 public class TecnicosController implements Initializable {
@@ -59,6 +63,13 @@ public class TecnicosController implements Initializable {
     private String nombreActual = "Administrador";
     private String rolActual = "Jefe de Equipo";
 
+    /**
+     * Arranca la pantalla y descarga la informacion inicial de la base de datos.
+     * Ademas activa la barra de busqueda superior para que filtre los resultados al momento segun se escribe.
+     *
+     * @param location Ubicacion del archivo de la interfaz.
+     * @param resources Recursos necesarios para construir la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cargarDatos();
@@ -70,6 +81,11 @@ public class TecnicosController implements Initializable {
         }
     }
 
+    /**
+     * Vacia el panel principal y vuelve a colocar a todos los trabajadores uno a uno.
+     * Calcula cuantos trabajos ha hecho cada tecnico y su nota media basandose en las valoraciones reales de los clientes.
+     * Finalmente actualiza los marcadores superiores con los totales.
+     */
     private void cargarDatos() {
         flowPaneTecnicos.getChildren().clear();
 
@@ -149,11 +165,24 @@ public class TecnicosController implements Initializable {
         double mediaGlobal = totalTecnicosReales > 0 ? (sumaCalificacionesGlobal / totalTecnicosReales) : 0;
         lblCalificacionCard.setText(String.format("%.1f", mediaGlobal).replace(",", "."));
     }
+
+    /**
+     * Despliega una ventana emergente en blanco para registrar un nuevo empleado en el sistema.
+     */
     @FXML
     public void abrirModalCrearTecnico() {
         abrirModalTecnico(null);
     }
 
+    /**
+     * Fabrica visualmente el recuadro de cada empleado con todos sus datos.
+     * Dibuja su nombre, su estado laboral, sus medios de contacto y sus especialidades.
+     * Tambien añade los botones de edicion y borrado con sus correspondientes alertas de seguridad.
+     *
+     * @param t El empleado con toda su informacion sacada de la base de datos.
+     * @param trabajos El numero de averias totales que ha atendido este empleado.
+     * @return El componente visual completo listo para ponerlo en pantalla.
+     */
     private VBox crearTarjetaTecnico(Tecnico t, int trabajos) {
         VBox card = new VBox(15);
         card.getStyleClass().add("tecnico-card");
@@ -288,7 +317,12 @@ public class TecnicosController implements Initializable {
         return card;
     }
 
-
+    /**
+     * Coge el nombre completo del empleado y recorta las primeras letras para crear su foto de perfil.
+     *
+     * @param nombre El nombre completo escrito.
+     * @return Las letras iniciales en mayusculas.
+     */
     private String extraerIniciales(String nombre) {
         if (nombre == null || nombre.isEmpty()) return "??";
         String[] partes = nombre.trim().split(" ");
@@ -297,6 +331,12 @@ public class TecnicosController implements Initializable {
         return nombre.toUpperCase();
     }
 
+    /**
+     * Guarda los datos del jefe que ha iniciado sesion y los coloca en el panel lateral izquierdo.
+     *
+     * @param nombreReal El nombre del administrador activo.
+     * @param rolReal El puesto o nivel de acceso del administrador.
+     */
     public void setDatosUsuario(String nombreReal, String rolReal) {
         this.nombreActual = nombreReal;
         this.rolActual = rolReal;
@@ -307,9 +347,34 @@ public class TecnicosController implements Initializable {
     }
 
     // NAVEGACIÓN UNIVERSAL (A PRUEBA DE BUGS DE SESIÓN)
+    /**
+     * Navega hacia la pantalla de inicio sin perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu izquierdo.
+     */
     @FXML public void irADashboard(MouseEvent event) { navegarAPantalla(event, "/FXML/Dashboard.fxml"); }
+
+    /**
+     * Navega hacia la pantalla de trabajos pendientes sin perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu izquierdo.
+     */
     @FXML public void irAGestionAvisos(MouseEvent event) { navegarAPantalla(event, "/FXML/GestionAvisos.fxml"); }
+
+    /**
+     * Navega hacia la pantalla del almacen sin perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu izquierdo.
+     */
     @FXML public void irAInventario(MouseEvent event) { navegarAPantalla(event, "/FXML/Inventario.fxml"); }
+
+    /**
+     * Metodo centralizado para cambiar de pestaña en el menu lateral.
+     * Carga el nuevo archivo visual y transfiere los datos del jefe para evitar que se cierre la sesion.
+     *
+     * @param event Clic del raton sobre el boton correspondiente.
+     * @param ruta Ruta exacta del archivo de diseño que se desea abrir.
+     */
     private void navegarAPantalla(MouseEvent event, String ruta) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
@@ -329,6 +394,13 @@ public class TecnicosController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Muestra la ventana emergente para trabajar con la ficha de un empleado.
+     * Pasa los datos del trabajador a la ventana para poder modificarlos y refresca la lista al terminar.
+     *
+     * @param t El empleado seleccionado para editar o un valor nulo si se va a crear uno desde cero.
+     */
     private void abrirModalTecnico(Tecnico t) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/TecnicoModal.fxml"));
@@ -349,6 +421,12 @@ public class TecnicosController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Navega hacia la pantalla de la agenda de clientes sin perder la sesion activa.
+     *
+     * @param event Clic del raton en el menu izquierdo.
+     */
     @FXML
     public void irAClientes(MouseEvent event) {
         try {
@@ -367,10 +445,16 @@ public class TecnicosController implements Initializable {
         }
     }
 
+    /**
+     * Finaliza la sesion actual y devuelve al administrador a la pantalla de entrada principal.
+     *
+     * @param event Clic del raton sobre el boton inferior izquierdo.
+     */
     @FXML
     public void cerrarSesion(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Login.fxml"));
+            loader.setControllerFactory(springContext::getBean);
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1200, 800));

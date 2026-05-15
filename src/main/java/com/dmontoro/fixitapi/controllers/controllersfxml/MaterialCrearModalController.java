@@ -18,6 +18,10 @@ import org.springframework.stereotype.Controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador de la ventana flotante para registrar nuevos materiales en el almacen.
+ * Gestiona el formulario de creacion y verifica que los datos introducidos sean correctos antes de guardarlos.
+ */
 @Controller
 public class MaterialCrearModalController implements Initializable {
 
@@ -34,11 +38,22 @@ public class MaterialCrearModalController implements Initializable {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    /**
+     * Metodo que se ejecuta de forma automatica al abrir la ventana.
+     * Llama a la funcion encargada de rellenar los menus desplegables con las opciones disponibles.
+     *
+     * @param location Ubicacion del archivo de la interfaz.
+     * @param resources Recursos visuales de la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cargarDesplegables();
     }
 
+    /**
+     * Rellena las listas desplegables del formulario.
+     * Añade las opciones fijas de medidas de cantidad y descarga las categorias desde la base de datos para que el usuario pueda seleccionarlas.
+     */
     private void cargarDesplegables() {
         // 1. Cargar las unidades fijas
         comboUnidad.setItems(FXCollections.observableArrayList("UNIDAD", "METROS", "LITROS", "KILOS", "CAJAS"));
@@ -52,6 +67,11 @@ public class MaterialCrearModalController implements Initializable {
         });
     }
 
+    /**
+     * Recoge toda la informacion que el usuario ha escrito en el formulario.
+     * Comprueba que no falten datos obligatorios y que los numeros escritos para el stock o el precio sean validos y positivos.
+     * Si todo es correcto, guarda el nuevo articulo en la base de datos y cierra la pantalla.
+     */
     @FXML
     public void crearMaterial() {
         String nombre = txtNombre.getText();
@@ -104,6 +124,12 @@ public class MaterialCrearModalController implements Initializable {
         }
     }
 
+    /**
+     * Crea una pequeña ventana de alerta para avisar al administrador de que ha cometido un fallo al rellenar los datos.
+     *
+     * @param cabecera Titulo principal del mensaje de fallo.
+     * @param mensaje Explicacion detallada del problema.
+     */
     // Método auxiliar para lanzar las ventanas de error
     private void mostrarError(String cabecera, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -113,6 +139,9 @@ public class MaterialCrearModalController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Cierra la ventana emergente actual y devuelve el control a la pantalla del inventario.
+     */
     @FXML
     public void cerrarModal() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();

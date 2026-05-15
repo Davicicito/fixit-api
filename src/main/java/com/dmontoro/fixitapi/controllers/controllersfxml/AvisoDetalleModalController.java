@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -21,6 +22,12 @@ import org.springframework.stereotype.Controller;
 
 import java.io.File;
 
+/**
+ * Controlador de la ventana modal que muestra los detalles completos de un aviso.
+ * Permite al administrador ver toda la información del trabajo, incluyendo los
+ * materiales gastados, y ver las imágenes (foto de la avería y firma del cliente).
+ * También permite actualizar el estado del aviso (siempre que no esté ya completado).
+ */
 @Controller
 public class AvisoDetalleModalController {
 
@@ -40,6 +47,14 @@ public class AvisoDetalleModalController {
 
     private Aviso avisoActual;
 
+    /**
+     * Recibe el aviso seleccionado en la tabla principal y rellena toda la pantalla
+     * con sus datos. Además, junta la descripción original con la lista de materiales
+     * gastados para que el jefe pueda leerlo todo de un vistazo.
+     * También se encarga de bloquear el botón de cambiar estado si el aviso ya se terminó.
+     *
+     * @param aviso El objeto Aviso con todos los datos extraídos de la base de datos.
+     */
     public void cargarDatosAviso(Aviso aviso) {
         this.avisoActual = aviso;
 
@@ -71,20 +86,45 @@ public class AvisoDetalleModalController {
         comboEstado.setItems(FXCollections.observableArrayList("PENDIENTE", "EN PROGRESO", "COMPLETADO"));
         comboEstado.setValue(aviso.getEstado());
 
+
+        if ("COMPLETADO".equalsIgnoreCase(aviso.getEstado())) {
+            comboEstado.setDisable(true);
+            comboEstado.setTooltip(new Tooltip("Un aviso completado está cerrado y no puede cambiar de estado."));
+        } else {
+            comboEstado.setDisable(false);
+            comboEstado.setTooltip(null);
+        }
+
         btnVerFoto.setDisable(aviso.getFotoAveria() == null || aviso.getFotoAveria().trim().isEmpty());
         btnVerFirma.setDisable(aviso.getFirmaCliente() == null || aviso.getFirmaCliente().trim().isEmpty());
     }
 
+    /**
+     * Acción del botón "Ver Foto". Coge la imagen de la avería guardada en el aviso
+     * y llama a la función que abre el visor de imágenes.
+     */
     @FXML
     public void verFotoAveria() {
         abrirVisorImagenes("Foto de la Avería - Aviso #" + avisoActual.getId(), avisoActual.getFotoAveria());
     }
 
+    /**
+     * Acción del botón "Ver Firma". Coge la firma del cliente guardada en el aviso
+     * y llama a la función que abre el visor de imágenes.
+     */
     @FXML
     public void verFirmaCliente() {
         abrirVisorImagenes("Firma del Cliente - Aviso #" + avisoActual.getId(), avisoActual.getFirmaCliente());
     }
 
+    /**
+     * Esta función es la encargada de hacer que se abran las imágenes. Coge el texto
+     * en formato Base64 que nos llega de la base de datos, lo limpia de espacios raros, lo
+     * decodifica y lo transforma en una imagen visual. Luego, abre una pequeña ventana para mostrarla.
+     *
+     * @param titulo       El texto que saldrá en la parte superior de la ventana (ej. "Foto de la avería").
+     * @param base64String La cadena de texto gigante que representa la imagen.
+     */
     private void abrirVisorImagenes(String titulo, String base64String) {
         try {
             String textoLimpio = base64String.replaceAll("[\\n\\r\\t ]", "");
@@ -126,6 +166,10 @@ public class AvisoDetalleModalController {
         }
     }
 
+    /**
+     * Guarda el nuevo estado del aviso (si el administrador lo ha modificado en el desplegable)
+     * en la base de datos y automáticamente cierra la ventana de detalles.
+     */
     @FXML
     public void guardarCambios() {
         if (avisoActual != null) {
@@ -135,6 +179,9 @@ public class AvisoDetalleModalController {
         }
     }
 
+    /**
+     * Cierra la ventana emergente actual.
+     */
     @FXML
     public void cerrarModal() {
         Stage stage = (Stage) lblTituloFormulario.getScene().getWindow();

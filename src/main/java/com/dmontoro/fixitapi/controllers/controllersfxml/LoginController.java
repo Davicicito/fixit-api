@@ -26,6 +26,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controlador de la pantalla de inicio de sesion.
+ * Se encarga de validar las credenciales del usuario para permitirle el acceso al sistema y
+ * muestra estadisticas generales animadas en la pantalla de bienvenida.
+ */
 @Controller
 public class LoginController implements Initializable {
 
@@ -44,6 +49,15 @@ public class LoginController implements Initializable {
 
     @Autowired private ConfigurableApplicationContext springContext;
 
+    /**
+     * Metodo que se ejecuta automaticamente al cargar la pantalla de login.
+     * Arranca la animacion de la llave giratoria y descarga de la base de datos
+     * el numero total de trabajadores, clientes y trabajos para mostrarlos en el panel lateral.
+     * Tambien calcula el porcentaje de exito basandose en los trabajos terminados.
+     *
+     * @param location Ubicacion del archivo visual.
+     * @param resources Recursos necesarios para construir la ventana.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         RotateTransition rt = new RotateTransition(Duration.seconds(4), iconoLlave);
@@ -76,6 +90,13 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Recoge los datos escritos en el formulario y comprueba si el usuario existe en la base de datos.
+     * Valida que la contraseña sea correcta y que el trabajador tenga permisos de administrador.
+     * Si todo esta bien, le da acceso al sistema y carga el panel principal a pantalla completa.
+     *
+     * @param event Clic del raton sobre el boton de entrar.
+     */
     @FXML
     public void iniciarSesion(ActionEvent event) {
         String email = txtEmail.getText().trim();
@@ -125,11 +146,18 @@ public class LoginController implements Initializable {
         }
     }
 
-    // Método auxiliar para mostrar los mensajes de error con una ventana bonita
+    /**
+     * Metodo de ayuda que crea una pequeña ventana emergente para avisar al usuario si se ha equivocado
+     * al escribir sus datos o si no tiene permiso para entrar.
+     *
+     * @param titulo Texto corto que resume el fallo.
+     * @param mensaje Explicacion detallada del problema.
+     */
     private void mostrarError(String titulo, String mensaje) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
         alert.setTitle("Error de inicio de sesión");
         alert.setHeaderText(titulo);
         alert.setContentText(mensaje);
         alert.showAndWait();
-    }}
+    }
+}
